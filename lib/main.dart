@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/auth/ui/login_screen.dart';
+import 'package:steppa/factory/ui/factory_attendance_screen.dart';
 import 'package:steppa/factory/ui/factory_dashboard_screen.dart';
+import 'package:steppa/factory/ui/factory_inventory_screen.dart';
+import 'package:steppa/factory/ui/factory_materials_screen.dart';
 import 'package:steppa/head_office/ui/head_office_dashboard_screen.dart';
 
 import 'online_shop/ui/home.dart';
@@ -20,7 +24,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Home(),
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/factoryDashboard': (context) => const FactoryDashboard(),
+        '/factoryAttendance': (context) => const FactoryAttendance(),
+        '/factoryMaterials': (context) => const FactoryMaterials(),
+        '/factoryInventory': (context) => const FactoryInventory(),
+        '/headOfficeDashboard': (context) => const HeadOfficeDashboard(),
+      },
+      home: const LoginScreen(),
     );
   }
 }
