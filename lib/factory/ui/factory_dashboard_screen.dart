@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:steppa/factory/ui/widgets/factory_drawer.dart';
 // import 'package:fl_chart/fl_chart.dart';
 
 class FactoryDashboard extends StatelessWidget {
@@ -13,7 +14,7 @@ class FactoryDashboard extends StatelessWidget {
         title: const Text('Factory Dashboard'),
         backgroundColor: Colors.blue,
       ),
-      drawer: _buildDrawer(), // Sidebar menu
+      drawer: const FactoryDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -24,21 +25,31 @@ class FactoryDashboard extends StatelessWidget {
                 'Dashboard',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
+              const Text(
+                'DStatus Produksi: Aktif', //aktif, downtime, maintenance
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
               Row(
                 children:[
                   Expanded(
                     flex: 3,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            child: _buildCard('Laporan', 'Posisi Keuangan', Icons.pie_chart),
-                          ),
-                          Container(
-                            child: _buildCard('Laporan', 'Laba Rugi', Icons.bar_chart),
-                          ),
-                        ],
-                      )
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              fit: FlexFit.tight,
+                              child: _buildInfoCard('Schedule', 'Steppa sports f2'),
+                            ),
+                            Flexible(
+                              fit: FlexFit.tight,
+                              child: _buildInfoCard('Currently', 'On Track'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
                   ),
                       // const SizedBox(height: 16),
                       // Row(
@@ -59,19 +70,15 @@ class FactoryDashboard extends StatelessWidget {
                         ),
                         Container(
                           width: double.infinity,
-                          child: _buildInfoCard('Produk Terjual Bulan Ini', '7 Kotak/Pcs')
+                          child: _buildInfoCard('Jumlah Produk Cacat', '7 Kotak/Pcs')
                         ),
                         Container(
                           width: double.infinity,
-                          child: _buildInfoCard('Pendapatan Kotor Bulan Ini', 'Rp. 145,000')
+                          child: _buildInfoCard('Waktu Siklus Produksi', '3h 06m')
                         ),
                         Container(
                           width: double.infinity,
-                          child: _buildInfoCard('Biaya Produksi Bulan Ini', 'Rp. 1,000,000')
-                        ),
-                        Container(
-                          width: double.infinity,
-                          child: _buildInfoCard('Pengeluaran Bulan Ini', 'Rp. 500,000')
+                          child: _buildInfoCard('Barang Stok Menipis', 'Karet')
                         ),
                       ],
                     ),
@@ -81,43 +88,6 @@ class FactoryDashboard extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  // Sidebar menu
-  Widget _buildDrawer() {
-    return Drawer(
-      child: ListView(
-        children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
-            child: Text(
-              'Manufacturer',
-              style: TextStyle(color: Colors.white, fontSize: 24),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.dashboard),
-            title: const Text('Dashboard'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Absensi'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            onTap: () {},
-          ),
-        ],
       ),
     );
   }
