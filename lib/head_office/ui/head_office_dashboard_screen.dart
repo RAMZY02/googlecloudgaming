@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/head_office/ui/dashboard_card.dart';
 import 'package:steppa/head_office/ui/employee_management_screen.dart';
 import 'package:steppa/head_office/ui/finance_report_screen.dart';
+import 'package:steppa/head_office/ui/production_report_screen.dart';
+import 'package:steppa/head_office/ui/selling_report_screen.dart';
+
+import 'about_screen.dart';
 
 class HeadOfficeDashboard extends StatelessWidget {
   const HeadOfficeDashboard({Key? key}) : super(key: key);
@@ -10,29 +15,68 @@ class HeadOfficeDashboard extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Head Office Dashboard'),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: GridView.count(
+          crossAxisCount: 2, // Jumlah kolom
+          crossAxisSpacing: 16.0,
+          mainAxisSpacing: 16.0,
           children: [
-            ElevatedButton(
-              onPressed: () {
+            DashboardCard(
+              icon: Icons.bar_chart,
+              title: 'Finance Reports',
+              onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FinanceReportScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const FinanceReportScreen(),
+                  ),
                 );
               },
-              child: const Text('View Finance Reports'),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
+            DashboardCard(
+              icon: Icons.people,
+              title: 'Manage Employees',
+              onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const EmployeeManagementScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const EmployeeManagementScreen(),
+                  ),
                 );
               },
-              child: const Text('Manage Employees'),
+            ),
+            DashboardCard(
+              icon: Icons.factory, // Menggunakan ikon yang relevan untuk produksi
+              title: 'Production Reports',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProductionReportsScreen()),
+                );
+              },
+            ),
+            DashboardCard(
+              icon: Icons.attach_money, // Ikon relevan untuk penjualan
+              title: 'Selling Reports',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SellingReportsScreen()),
+                );
+              },
+            ),
+            DashboardCard(
+              icon: Icons.info,
+              title: 'About Us',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutScreen()),
+                );
+              },
             ),
           ],
         ),
