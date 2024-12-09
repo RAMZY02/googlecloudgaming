@@ -78,7 +78,7 @@ class _HomeState extends State<Home> {
             },
           ),
         ],
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.white,
       ),
       drawer: Drawer(
         child: ListView(
