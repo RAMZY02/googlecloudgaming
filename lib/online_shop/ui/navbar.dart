@@ -84,7 +84,10 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
                     decoration: const InputDecoration(
                       hintText: 'Cari sepatu...',
                       border: InputBorder.none,
-                      hintStyle: TextStyle(color: Colors.grey),
+                      hintStyle:
+                        TextStyle(color: Colors.grey,
+                          fontSize: 12.0,
+                        ),
                     ),
                   ),
                 ),
