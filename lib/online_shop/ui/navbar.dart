@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 class Navbar extends StatelessWidget implements PreferredSizeWidget {
   final bool isSearching;
-  final String searchQuery;
+  final String? searchQuery;
   final Function(String) onSearchChanged;
   final Function() onToggleSearch;
   final Function() onCartPressed;
+  final Function(String) onCategorySelected;
 
   const Navbar({
     Key? key,
@@ -14,78 +15,100 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
     required this.onSearchChanged,
     required this.onToggleSearch,
     required this.onCartPressed,
+    required this.onCategorySelected,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    double calculateFontSize(double width) {
+      if (width > 600) return 16; // Layar besar
+      if (width > 400) return 14; // Layar sedang
+      return 12; // Layar kecil
+    }
+
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
-      title: isSearching
-          ? TextField(
-        onChanged: onSearchChanged,
-        autofocus: true,
-        decoration: const InputDecoration(
-          hintText: 'Cari sepatu...',
-          border: InputBorder.none,
-          hintStyle: TextStyle(color: Colors.grey),
-        ),
-        style: const TextStyle(color: Colors.black),
-      )
-          : Row(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Logo Responsif
-          Image.asset(
-            'assets/logoSteppa.png',
-            height: 50,
-            width: 50,
-            errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.broken_image, size: 50);
-            },
-          ),
-          const SizedBox(width: 10),
-
-          // Navigasi Kategori
           Row(
-            children: ['MEN', 'WOMEN', 'CHILD', 'BABY']
-                .map(
-                  (category) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: InkWell(
-                  onTap: () {
-                    print('$category dipilih');
-                  },
-                  child: Text(
-                    category,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+            children: [
+              Image.asset(
+                'assets/logoSteppa.png',
+                height: 40,
+                width: 40,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.broken_image, size: 40);
+                },
+              ),
+              if (screenWidth > 300) ...[
+                Row(
+                  children: ['MEN', 'WOMEN', 'CHILD', 'BABY']
+                      .map(
+                        (category) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: InkWell(
+                        onTap: () => onCategorySelected(category),
+                        child: Text(
+                          category,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                      .toList(),
+                ),
+              ]
+            ],
+          ),
+          Row(
+            children: [
+              if (isSearching)
+                Container(
+                  width: screenWidth > 600
+                      ? screenWidth * 0.2
+                      : screenWidth * 0.2,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TextField(
+                    onChanged: onSearchChanged,
+                    autofocus: true,
+                    decoration: const InputDecoration(
+                      hintText: 'Cari sepatu...',
+                      border: InputBorder.none,
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
                 ),
+              IconButton(
+                onPressed: onToggleSearch,
+                icon: Icon(
+                  isSearching ? Icons.close : Icons.search,
+                  color: Colors.black,
+                ),
               ),
-            )
-                .toList(),
+              IconButton(
+                onPressed: onCartPressed,
+                icon: const Icon(
+                  Icons.shopping_cart,
+                  color: Colors.black,
+                ),
+              ),
+            ],
           ),
         ],
       ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            isSearching ? Icons.close : Icons.search,
-            color: Colors.black,
-          ),
-          onPressed: onToggleSearch,
-        ),
-        IconButton(
-          icon: const Icon(Icons.shopping_cart, color: Colors.black),
-          onPressed: onCartPressed,
-        ),
-      ],
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(56);
 }

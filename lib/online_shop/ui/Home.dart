@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'navbar.dart'; // Import Navbar from the navbar.dart file
+import 'navbar.dart'; // Import Navbar dari navbar.dart
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -11,7 +11,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isSearching = false;
-  String searchQuery = '';
+  String? searchQuery = null; // Default searchQuery adalah null
   final List<Map<String, String>> carouselItems = [
     {'image': 'assets/carousel1.jpg', 'label': 'Promo 1'},
     {'image': 'assets/carousel2.jpg', 'label': 'Promo 2'},
@@ -27,18 +27,26 @@ class _HomeState extends State<Home> {
     {'name': 'Adidas Zoom', 'price': '500.000', 'image': 'assets/zoom.jpeg'},
   ];
 
+  // Fungsi untuk menangani klik kategori
+  void _handleCategoryClick(String category) {
+    setState(() {
+      searchQuery = null; // Set searchQuery ke null
+      isSearching = false; // Keluar dari mode pencarian
+    });
+    print('$category dipilih');
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Filter the products based on the search query
-    final filteredProducts = searchQuery.isEmpty
+    // Filter produk berdasarkan searchQuery
+    final filteredProducts = searchQuery == null || searchQuery!.isEmpty
         ? allProducts
         : allProducts.where((product) {
       final name = product['name']!.toLowerCase();
-      final query = searchQuery.toLowerCase();
+      final query = searchQuery!.toLowerCase();
       return name.contains(query);
     }).toList();
 
-    // Decide the content to show based on the search state
     return Scaffold(
       appBar: Navbar(
         isSearching: isSearching,
@@ -52,17 +60,17 @@ class _HomeState extends State<Home> {
           setState(() {
             isSearching = !isSearching;
             if (!isSearching) {
-              searchQuery = ''; // Clear the search query when toggling back
+              searchQuery = null; // Hapus query pencarian saat menutup search
             }
           });
         },
         onCartPressed: () {
           print('Keranjang dibuka');
         },
+        onCategorySelected: _handleCategoryClick, // Handle kategori
       ),
-      body: isSearching && searchQuery.isNotEmpty
-          ? // Show SearchPage content
-      filteredProducts.isEmpty
+      body: searchQuery != null
+          ? (filteredProducts.isEmpty
           ? Center(
         child: Text(
           'Tidak ada hasil untuk: "$searchQuery"',
@@ -78,8 +86,7 @@ class _HomeState extends State<Home> {
                 : 2;
 
             return GridView.builder(
-              gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: crossAxisCount,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
@@ -105,8 +112,8 @@ class _HomeState extends State<Home> {
                             fit: BoxFit.cover,
                             errorBuilder:
                                 (context, error, stackTrace) {
-                              return const Icon(
-                                  Icons.broken_image, size: 50);
+                              return const Icon(Icons.broken_image,
+                                  size: 50);
                             },
                           ),
                         ),
@@ -114,8 +121,7 @@ class _HomeState extends State<Home> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               product['name']!,
@@ -127,8 +133,7 @@ class _HomeState extends State<Home> {
                             const SizedBox(height: 4),
                             Text(
                               'Rp. ${product['price']}',
-                              style:
-                              const TextStyle(color: Colors.green),
+                              style: const TextStyle(color: Colors.green),
                             ),
                             const SizedBox(height: 8),
                             ElevatedButton.icon(
@@ -153,9 +158,8 @@ class _HomeState extends State<Home> {
             );
           },
         ),
-      )
-          : // Show Home content (Carousel)
-      CarouselSlider(
+      ))
+          : CarouselSlider(
         items: carouselItems.map((item) {
           return Builder(
             builder: (BuildContext context) {
@@ -192,7 +196,7 @@ class _HomeState extends State<Home> {
           );
         }).toList(),
         options: CarouselOptions(
-          height: MediaQuery.of(context).size.width * 0.3, // Responsive carousel height
+          height: MediaQuery.of(context).size.width * 0.3,
           autoPlay: true,
           enlargeCenterPage: true,
           viewportFraction: 0.9,
