@@ -23,95 +23,139 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     double calculateFontSize(double width) {
-      if (width > 600) return 16; // Layar besar
-      if (width > 400) return 14; // Layar sedang
-      return 12; // Layar kecil
+      double baseFontSize = width * 0.02; // Hitung ukuran font berdasarkan lebar layar
+      return baseFontSize > 16 ? 16 : baseFontSize; // Maksimal ukuran font adalah 16
     }
 
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+    double calculateTextBoxWidth(double width) {
+      if (width > 600) {
+        return width * 0.4; // Lebar untuk layar besar
+      } else if (width > 400) {
+        return width * 0.5; // Lebar untuk layar sedang
+      } else {
+        return width * 0.7; // Lebar untuk layar kecil
+      }
+    }
+
+    double calculateTextBoxHeight(double width) {
+      if (width > 600) {
+        return 50; // Tinggi untuk layar besar
+      } else if (width > 400) {
+        return 45; // Tinggi untuk layar sedang
+      } else {
+        return 40; // Tinggi untuk layar kecil
+      }
+    }
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          toolbarHeight: 70, // Tinggi navbar standar
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset(
-                'assets/logoSteppa.png',
-                height: 40,
-                width: 40,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.broken_image, size: 40);
-                },
-              ),
-              if (screenWidth > 300) ...[
-                Row(
-                  children: ['MEN', 'WOMEN', 'CHILD', 'BABY']
-                      .map(
-                        (category) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: InkWell(
-                        onTap: () => onCategorySelected(category),
-                        child: Text(
-                          category,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/logoSteppa.png',
+                    height: screenWidth * 0.2 > 40 ? 40 : screenWidth * 0.2,
+                    width: screenWidth * 0.2 > 40 ? 40 : screenWidth * 0.2,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.broken_image,
+                        size: screenWidth * 0.2 > 40 ? 40 : screenWidth * 0.2,
+                      );
+                    },
+                  ),
+                  if (screenWidth > 300) ...[
+                    Row(
+                      children: ['MEN', 'WOMEN', 'CHILD', 'BABY']
+                          .map(
+                            (category) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: InkWell(
+                            onTap: () => onCategorySelected(category),
+                            child: Text(
+                              category,
+                              style: TextStyle(
+                                fontSize: calculateFontSize(screenWidth),
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      )
+                          .toList(),
                     ),
-                  )
-                      .toList(),
-                ),
-              ]
+                  ]
+                ],
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: onToggleSearch,
+                    icon: Icon(
+                      isSearching ? Icons.close : Icons.search,
+                      color: Colors.black,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: onCartPressed,
+                    icon: const Icon(
+                      Icons.shopping_cart,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-          Row(
-            children: [
-              if (isSearching)
+        ),
+        // Kotak teks pencarian muncul di bawah navbar
+        if (isSearching)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            alignment: Alignment.centerRight,
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
                 Container(
-                  width: screenWidth > 600
-                      ? screenWidth * 0.2
-                      : screenWidth * 0.2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  width: calculateTextBoxWidth(screenWidth),
+                  height: calculateTextBoxHeight(screenWidth),
                   child: TextField(
                     onChanged: onSearchChanged,
                     autofocus: true,
-                    decoration: const InputDecoration(
+                    style: TextStyle(
+                      fontSize: calculateFontSize(screenWidth), // Ukuran font dinamis
+                    ),
+                    decoration: InputDecoration(
                       hintText: 'Cari sepatu...',
-                      border: InputBorder.none,
-                      hintStyle:
-                        TextStyle(color: Colors.grey,
-                          fontSize: 12.0,
-                        ),
+                      border: const OutlineInputBorder(),
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: screenWidth > 600 ? 12 : 8, // Padding vertikal menyesuaikan
+                        horizontal: 12,
+                      ),
                     ),
                   ),
                 ),
-              IconButton(
-                onPressed: onToggleSearch,
-                icon: Icon(
-                  isSearching ? Icons.close : Icons.search,
-                  color: Colors.black,
-                ),
-              ),
-              IconButton(
-                onPressed: onCartPressed,
-                icon: const Icon(
-                  Icons.shopping_cart,
-                  color: Colors.black,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ],
-      ),
+      ],
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(56);
+  Size get preferredSize {
+    final double baseHeight = 70; // Tinggi AppBar standar
+    return Size.fromHeight(isSearching ? baseHeight + 60 : baseHeight);
+  }
 }
