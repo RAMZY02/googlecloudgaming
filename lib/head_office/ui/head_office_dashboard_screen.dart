@@ -68,16 +68,6 @@ class HeadOfficeDashboard extends StatelessWidget {
                 );
               },
             ),
-            DashboardCard(
-              icon: Icons.info,
-              title: 'About Us',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AboutScreen()),
-                );
-              },
-            ),
           ],
         ),
       ),
