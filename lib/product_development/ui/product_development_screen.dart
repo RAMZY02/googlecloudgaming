@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'pending_designs_screen.dart';
 
 class ProductDevelopmentScreen extends StatefulWidget {
   const ProductDevelopmentScreen({Key? key}) : super(key: key);
@@ -12,7 +13,6 @@ class ProductDevelopmentScreen extends StatefulWidget {
 class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
   Uint8List? _selectedImageBytes;
 
-  // Function to pick an image
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedImage = await picker.pickImage(source: ImageSource.gallery);
@@ -29,8 +29,63 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Product Development'),
+        title: const Text('Design Upload'),
         backgroundColor: Colors.blue,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: const Text(
+                'Product Development',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.upload),
+              title: const Text('Design Upload'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProductDevelopmentScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.pending),
+              title: const Text('Pending Designs'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PendingDesignsScreen(),
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Back To Menu'),
+              onTap: () {
+                // Navigasi ke halaman LoginScreen
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/login');
+              },
+            ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
