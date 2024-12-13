@@ -7,6 +7,7 @@ import 'package:steppa/factory/ui/factory_materials_screen.dart';
 import 'package:steppa/head_office/ui/head_office_dashboard_screen.dart';
 import 'package:steppa/online_shop/ui/home.dart';
 import 'package:steppa/oracle_data_screen.dart';
+import 'package:steppa/product_development/ui/product_development_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/headOfficeDashboard': (context) => const HeadOfficeDashboard(),
         '/homeCatalog': (context) => const Home(),
         '/oracleData': (context) => OracleDataScreen(),
+        '/productDevelopmentDashboard': (context) => const ProductDevelopmentScreen(),
       },
       home: const LoginScreen(),
     );
