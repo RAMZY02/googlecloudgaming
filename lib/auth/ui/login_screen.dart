@@ -100,29 +100,51 @@ class LoginScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Column(
           children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/factoryDashboard');
-              },
-              child: Text('Factory'),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/factoryDashboard');
+                },
+                child: Text('Factory'),
+              ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/headOfficeDashboard');
-              },
-              child: Text('Head Office'),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/headOfficeDashboard');
+                },
+                child: Text('Head Office'),
+              ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/productDevelopmentDashboard');
-              },
-              child: Text('Product Development'),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/productDevelopmentDashboard');
+                },
+                child: Text('Product Development'),
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/homeCatalog');
+                },
+                child: Text('Shop'),
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/oracleData');
+                },
+                child: Text('Oracle Data'),
+              ),
             ),
           ],
         ),

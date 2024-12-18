@@ -5,7 +5,7 @@ import 'package:steppa/head_office/ui/finance_report_screen.dart';
 import 'package:steppa/head_office/ui/production_report_screen.dart';
 import 'package:steppa/head_office/ui/selling_report_screen.dart';
 
-import 'about_screen.dart';
+// import 'about_screen.dart';
 
 class HeadOfficeDashboard extends StatelessWidget {
   const HeadOfficeDashboard({Key? key}) : super(key: key);
@@ -65,16 +65,6 @@ class HeadOfficeDashboard extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const SellingReportsScreen()),
-                );
-              },
-            ),
-            DashboardCard(
-              icon: Icons.info,
-              title: 'About Us',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AboutScreen()),
                 );
               },
             ),

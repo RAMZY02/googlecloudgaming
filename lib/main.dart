@@ -5,7 +5,10 @@ import 'package:steppa/factory/ui/factory_dashboard_screen.dart';
 import 'package:steppa/factory/ui/factory_inventory_screen.dart';
 import 'package:steppa/factory/ui/factory_materials_screen.dart';
 import 'package:steppa/head_office/ui/head_office_dashboard_screen.dart';
-import 'package:steppa/online_shop/ui/Home.dart';
+import 'package:steppa/online_shop/ui/home.dart';
+import 'package:steppa/oracle_data_screen.dart';
+import 'package:steppa/product_development/ui/pending_designs_screen.dart';
+import 'package:steppa/product_development/ui/product_development_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,7 +33,10 @@ class MyApp extends StatelessWidget {
         '/factoryMaterials': (context) => const FactoryMaterials(),
         '/factoryInventory': (context) => const FactoryInventory(),
         '/headOfficeDashboard': (context) => const HeadOfficeDashboard(),
-        '/homePage': (context) => Home(),
+        '/homeCatalog': (context) => const Home(),
+        '/oracleData': (context) => OracleDataScreen(),
+        '/productDevelopmentDashboard': (context) => const ProductDevelopmentScreen(),
+        '/pendingDesigns': (context) => const PendingDesignsScreen(),
       },
       home: const LoginScreen(),
     );
