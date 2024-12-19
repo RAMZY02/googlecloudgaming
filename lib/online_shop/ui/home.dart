@@ -100,10 +100,18 @@ class _HomeState extends State<Home> {
         isSearching: isSearching,
         onSearchChanged: (value) {
           setState(() {
-            searchQuery = value;
+            searchQuery = value; // Perbarui nilai pencarian saat input berubah
           });
         },
-        onToggleSearch: _navigateToSearch,
+        onSearchSubmitted: (value) {
+          setState(() {
+            searchQuery = value; // Pastikan nilai pencarian diperbarui
+          });
+          _navigateToSearch(); // Navigasi ke halaman pencarian saat Enter ditekan
+        },
+        onToggleSearch: () {
+          Navigator.pushNamed(context, '/searchPage'); // Navigasi manual
+        },
         onCartPressed: () {
           print('Keranjang dibuka');
         },

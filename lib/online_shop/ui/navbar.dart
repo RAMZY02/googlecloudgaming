@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class Navbar extends StatelessWidget implements PreferredSizeWidget {
   final bool isSearching;
   final Function(String) onSearchChanged;
+  final Function(String) onSearchSubmitted;
   final Function() onToggleSearch;
   final Function() onCartPressed;
 
@@ -10,6 +11,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
     Key? key,
     required this.isSearching,
     required this.onSearchChanged,
+    required this.onSearchSubmitted, // Ditambahkan untuk menangani logika pencarian saat Enter ditekan
     required this.onToggleSearch,
     required this.onCartPressed,
   }) : super(key: key);
@@ -47,10 +49,10 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 Expanded(
                   child: TextField(
-                    onChanged: onSearchChanged,
+                    onChanged: onSearchChanged, // Tetap dipertahankan untuk interaksi langsung
                     onSubmitted: (value) {
                       if (value.trim().isNotEmpty) {
-                        onToggleSearch(); // Navigasi ke halaman pencarian
+                        onSearchSubmitted(value); // Menjalankan pencarian saat Enter ditekan
                       }
                     },
                     decoration: const InputDecoration(
