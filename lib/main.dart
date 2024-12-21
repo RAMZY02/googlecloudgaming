@@ -10,6 +10,7 @@ import 'package:steppa/oracle_data_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 
+import 'online_shop/ui/detail_product.dart';
 import 'online_shop/ui/search.dart';
 
 void main() {
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      routes: {
+      routes: <String, WidgetBuilder>{
         '/login': (context) => const LoginScreen(),
         '/factoryDashboard': (context) => const FactoryDashboard(),
         '/factoryAttendance': (context) => const FactoryAttendance(),
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/headOfficeDashboard': (context) => const HeadOfficeDashboard(),
         '/homePage': (context) => const Home(),
         '/searchPage': (context) => Search(),
+        '/detailProductPage': (context) => const DetailProduct(),
         '/oracleData': (context) => OracleDataScreen(),
         '/productDevelopmentDashboard': (context) => const ProductDevelopmentScreen(),
         '/pendingDesigns': (context) => const PendingDesignsScreen(),

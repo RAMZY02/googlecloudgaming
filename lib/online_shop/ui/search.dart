@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'detail_product.dart';
 import 'navbar.dart';
 
 class Search extends StatefulWidget {
@@ -17,48 +18,48 @@ class _SearchState extends State<Search> {
       'price': '900.000',
       'image': 'assets/nike.jpg',
       'colors': ['0xFF000000', '0xFFB71C1C', '0xFFFFFFFF'],
-      'size': '34-40',
-      'gender': 'WANITA',
+      'size': ['35', '36', '37', '38', '39', '40'],
+      'gender': 'FEMALE',
     },
     {
       'name': 'Reebok Rush',
       'price': '560.000',
       'image': 'assets/reebok.jpg',
       'colors': ['0xFF795548', '0xFFFF5722', '0xFF4CAF50'],
-      'size': 'M-XL',
-      'gender': '35-44',
+      'size': ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44'],
+      'gender': 'MALE',
     },
     {
       'name': 'Adidas Fury',
       'price': '770.000',
       'image': 'assets/adidas.jpeg',
       'colors': ['0xFF3F51B5', '0xFFFFEB3B'],
-      'size': '38-45',
-      'gender': 'PRIA',
+      'size': ['38', '39', '40', '41', '42', '43', '44', '45'],
+      'gender': 'MALE',
     },
     {
       'name': 'Adidas Neo Racer',
       'price': '700.000',
       'image': 'assets/neo.jpg',
       'colors': ['0xFF9E9E9E', '0xFF673AB7'],
-      'size': '33-38',
-      'gender': 'WANITA',
+      'size': ['33', '34', '35', '36', '37', '38'],
+      'gender': 'FEMALE',
     },
     {
       'name': 'Adidas AX2 Full Black',
       'price': '800.000',
       'image': 'assets/ax2.jpg',
       'colors': ['0xFF000000'],
-      'size': '36-43',
-      'gender': 'PRIA',
+      'size': ['36', '37', '38', '39', '40', '41', '42', '43'],
+      'gender': 'MALE',
     },
     {
       'name': 'Adidas Zoom',
       'price': '500.000',
       'image': 'assets/zoom.jpeg',
       'colors': ['0xFF2196F3', '0xFF4CAF50'],
-      'size': '32-41',
-      'gender': 'WANITA',
+      'size': ['32', '33', '34', '35', '36', '37', '38', '39', '40', '41'],
+      'gender': 'FEMALE',
     },
   ];
 
@@ -131,8 +132,13 @@ class _SearchState extends State<Search> {
             final product = filteredProducts[index];
             return GestureDetector(
               onTap: () {
-                print('Navigasi ke detail produk: ${product['name']}');
+                Navigator.pushNamed(
+                  context,
+                  '/detailProductPage',
+                  arguments: filteredProducts[index],
+                );
               },
+
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
@@ -208,8 +214,7 @@ class _SearchState extends State<Search> {
                               height: 10,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color:
-                                Color(int.parse(color)),
+                                color: Color(int.parse(color)),
                               ),
                             ))
                                 .toList(),

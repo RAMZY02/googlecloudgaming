@@ -84,14 +84,14 @@ class _HomeState extends State<Home> {
 
   void _navigateToSearch() {
     if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
-      Navigator.push(
+      Navigator.pushNamed(
         context,
-        MaterialPageRoute(
-          builder: (context) => Search(initialQuery: searchQuery!),
-        ),
+        '/searchPage',
+        arguments: searchQuery, // Kirim searchQuery sebagai argument
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
