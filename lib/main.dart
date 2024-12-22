@@ -37,7 +37,10 @@ class MyApp extends StatelessWidget {
         '/factoryInventory': (context) => const FactoryInventory(),
         '/headOfficeDashboard': (context) => const HeadOfficeDashboard(),
         '/homePage': (context) => const Home(),
-        '/searchPage': (context) => Search(),
+        '/searchPage': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as String?;
+          return Search(initialQuery: args); // Kirim args ke Search
+        },
         '/detailProductPage': (context) => const DetailProduct(),
         '/oracleData': (context) => OracleDataScreen(),
         '/productDevelopmentDashboard': (context) => const ProductDevelopmentScreen(),

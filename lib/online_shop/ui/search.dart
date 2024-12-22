@@ -70,6 +70,11 @@ class _SearchState extends State<Search> {
     super.initState();
     // Mengatur nilai awal searchQuery dari initialQuery
     searchQuery = widget.initialQuery;
+
+    // Jika initialQuery diberikan, langsung filter produk
+    if (searchQuery != null && searchQuery!.isNotEmpty) {
+      performSearch(searchQuery!);
+    }
   }
 
   void performSearch(String query) {
@@ -138,7 +143,6 @@ class _SearchState extends State<Search> {
                   arguments: filteredProducts[index],
                 );
               },
-
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(

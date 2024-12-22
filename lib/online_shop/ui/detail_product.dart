@@ -17,8 +17,10 @@ class _DetailProductState extends State<DetailProduct> {
       Navigator.pushNamed(
         context,
         '/searchPage',
-        arguments: searchQuery, // Kirim searchQuery sebagai argument
+        arguments: searchQuery,
       );
+
+
     }
   }
 
@@ -42,7 +44,9 @@ class _DetailProductState extends State<DetailProduct> {
           _navigateToSearch(); // Navigasi ke halaman pencarian saat Enter ditekan
         },
         onToggleSearch: () {
-          Navigator.pushNamed(context, '/searchPage'); // Navigasi manual
+          setState(() {
+            isSearching = !isSearching;
+          });
         },
         onCartPressed: () {
           print('Keranjang dibuka');

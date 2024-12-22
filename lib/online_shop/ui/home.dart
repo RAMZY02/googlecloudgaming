@@ -22,76 +22,67 @@ class _HomeState extends State<Home> {
     {'image': 'assets/carousel3.jpg', 'label': 'Promo 3'},
   ];
 
-  final List<Map<String, dynamic>> allProducts = [
+  final List<Map<String, dynamic>> newRelease = [
     {
       'name': 'Nike Roshe Run',
       'price': '900.000',
       'image': 'assets/nike.jpg',
       'colors': ['0xFF000000', '0xFFB71C1C', '0xFFFFFFFF'],
-      'size': '34-40',
-      'gender': 'WANITA',
+      'size': ['35', '36', '37', '38', '39', '40'],
+      'gender': 'FEMALE',
     },
     {
       'name': 'Reebok Rush',
       'price': '560.000',
       'image': 'assets/reebok.jpg',
       'colors': ['0xFF795548', '0xFFFF5722', '0xFF4CAF50'],
-      'size': 'M-XL',
-      'gender': '35-44',
+      'size': ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44'],
+      'gender': 'MALE',
     },
     {
       'name': 'Adidas Fury',
       'price': '770.000',
       'image': 'assets/adidas.jpeg',
       'colors': ['0xFF3F51B5', '0xFFFFEB3B'],
-      'size': '38-45',
-      'gender': 'PRIA',
+      'size': ['38', '39', '40', '41', '42', '43', '44', '45'],
+      'gender': 'MALE',
     },
     {
       'name': 'Adidas Neo Racer',
       'price': '700.000',
       'image': 'assets/neo.jpg',
       'colors': ['0xFF9E9E9E', '0xFF673AB7'],
-      'size': '33-38',
-      'gender': 'WANITA',
+      'size': ['33', '34', '35', '36', '37', '38'],
+      'gender': 'FEMALE',
     },
     {
       'name': 'Adidas AX2 Full Black',
       'price': '800.000',
       'image': 'assets/ax2.jpg',
       'colors': ['0xFF000000'],
-      'size': '36-43',
-      'gender': 'PRIA',
+      'size': ['36', '37', '38', '39', '40', '41', '42', '43'],
+      'gender': 'MALE',
     },
     {
       'name': 'Adidas Zoom',
       'price': '500.000',
       'image': 'assets/zoom.jpeg',
       'colors': ['0xFF2196F3', '0xFF4CAF50'],
-      'size': '32-41',
-      'gender': 'WANITA',
+      'size': ['32', '33', '34', '35', '36', '37', '38', '39', '40', '41'],
+      'gender': 'FEMALE',
     },
   ];
 
-  final List<Map<String, String>> newRelease = [
-    {'name': 'Nike Roshe Run', 'price': '900.000', 'image': 'assets/nike.jpg'},
-    {'name': 'Reebok Rush', 'price': '560.000', 'image': 'assets/reebok.jpg'},
-    {'name': 'Adidas Fury', 'price': '770.000', 'image': 'assets/adidas.jpeg'},
-    {'name': 'Adidas Neo Racer', 'price': '700.000', 'image': 'assets/neo.jpg'},
-    {'name': 'Adidas AX2 Full Black', 'price': '800.000', 'image': 'assets/ax2.jpg'},
-    {'name': 'Adidas Zoom', 'price': '500.000', 'image': 'assets/zoom.jpeg'},
-  ];
 
   void _navigateToSearch() {
     if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
       Navigator.pushNamed(
         context,
         '/searchPage',
-        arguments: searchQuery, // Kirim searchQuery sebagai argument
+        arguments: searchQuery,
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -186,57 +177,69 @@ class _HomeState extends State<Home> {
               ),
             ),
             CarouselSlider(
-              items: newRelease.map((item) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12),
-                              ),
-                              child: Image.asset(
-                                item['image']!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.broken_image, size: 50);
-                                },
-                              ),
-                            ),
+              items: newRelease.asMap().map((index, item) {
+                return MapEntry(
+                  index,
+                  Builder(
+                    builder: (BuildContext context) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/detailProductPage',
+                            arguments: newRelease[index], // Menggunakan indeks untuk mendapatkan item
+                          );
+                        },
+                        child: Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item['name']!,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold, fontSize: 14),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(12),
+                                  ),
+                                  child: Image.asset(
+                                    item['image']!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return const Icon(Icons.broken_image, size: 50);
+                                    },
+                                  ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Rp. ${item['price']}',
-                                  style: const TextStyle(color: Colors.green),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item['name']!,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold, fontSize: 14),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Rp. ${item['price']}',
+                                      style: const TextStyle(color: Colors.green),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  },
+                        ),
+                      );
+                    },
+                  ),
                 );
-              }).toList(),
+              }).values.toList(),
               options: CarouselOptions(
                 height: MediaQuery.of(context).size.height * 0.35 > 300
                     ? 300
