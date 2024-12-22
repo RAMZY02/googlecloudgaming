@@ -19,8 +19,6 @@ class _DetailProductState extends State<DetailProduct> {
         '/searchPage',
         arguments: searchQuery,
       );
-
-
     }
   }
 
@@ -34,14 +32,14 @@ class _DetailProductState extends State<DetailProduct> {
         isSearching: isSearching,
         onSearchChanged: (value) {
           setState(() {
-            searchQuery = value; // Perbarui nilai pencarian saat input berubah
+            searchQuery = value;
           });
         },
         onSearchSubmitted: (value) {
           setState(() {
-            searchQuery = value; // Pastikan nilai pencarian diperbarui
+            searchQuery = value;
           });
-          _navigateToSearch(); // Navigasi ke halaman pencarian saat Enter ditekan
+          _navigateToSearch();
         },
         onToggleSearch: () {
           setState(() {
@@ -52,90 +50,116 @@ class _DetailProductState extends State<DetailProduct> {
           print('Keranjang dibuka');
         },
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 2,
-              child: Center(
-                child: Image.asset(
-                  product['image'],
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.broken_image, size: 64),
-                    );
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              product['name'],
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Basketball Shoes',
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Rp ${product['price']}',
-              style: const TextStyle(
-                fontSize: 20,
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Select Size',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: product['size']
-                  .map<Widget>(
-                    (size) => ElevatedButton(
-                  onPressed: () {
-                    print('Size selected: $size');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.black),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 45,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+                    child: Center(
+                      child: Image.asset(
+                        product['image'],
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.broken_image, size: 64),
+                          );
+                        },
+                      ),
+                    ),
                   ),
-                  child: Text(size),
                 ),
-              )
-                  .toList(),
+                const SizedBox(width: 16),
+                Expanded(
+                  flex: 55,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 16.0, top: 16.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            product['name'],
+                            style: TextStyle(
+                              fontSize: constraints.maxWidth * 0.03 > 24 ? 24 : constraints.maxWidth * 0.03,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Basketball Shoes',
+                            style: TextStyle(
+                              fontSize: constraints.maxWidth * 0.02 > 16 ? 16 : constraints.maxWidth * 0.02,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Rp ${product['price']}',
+                            style: TextStyle(
+                              fontSize: constraints.maxWidth * 0.025 > 20 ? 20 : constraints.maxWidth * 0.025,
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Select Size',
+                            style: TextStyle(
+                              fontSize: constraints.maxWidth * 0.022 > 18 ? 18 : constraints.maxWidth * 0.022,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: product['size']
+                                .map<Widget>(
+                                  (size) => ElevatedButton(
+                                onPressed: () {
+                                  print('Size selected: $size');
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.black,
+                                  backgroundColor: Colors.white,
+                                  side: const BorderSide(color: Colors.black),
+                                ),
+                                child: Text(size),
+                              ),
+                            )
+                                .toList(),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              print('Add to Bag: ${product['name']}');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              minimumSize: const Size(double.infinity, 50),
+                            ),
+                            child: const Text(
+                              'Add to Bag',
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                print('Add to Bag: ${product['name']}');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                minimumSize: const Size(double.infinity, 50),
-              ),
-              child: const Text(
-                'Add to Bag',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
