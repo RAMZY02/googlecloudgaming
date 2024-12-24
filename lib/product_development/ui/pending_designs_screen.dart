@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'production_screen.dart';
+import 'product_development_screen.dart';
+
 
 class PendingDesignsScreen extends StatelessWidget {
   const PendingDesignsScreen({Key? key}) : super(key: key);
@@ -15,6 +18,73 @@ class PendingDesignsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Pending Designs'),
         backgroundColor: Colors.blue,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: const Text(
+                'Product Development',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.upload),
+              title: const Text('Design Upload'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProductDevelopmentScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.pending),
+              title: const Text('Pending Designs'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PendingDesignsScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.factory),
+              title: const Text('Production Planning'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProductionScreen(),
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Back To Menu'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/login');
+              },
+            ),
+          ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

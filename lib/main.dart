@@ -9,6 +9,8 @@ import 'package:steppa/online_shop/ui/home.dart';
 import 'package:steppa/oracle_data_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
+import 'package:steppa/product_development/ui/production_screen.dart';
+
 
 import 'online_shop/ui/detail_product.dart';
 import 'online_shop/ui/search.dart';
@@ -45,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/oracleData': (context) => OracleDataScreen(),
         '/productDevelopmentDashboard': (context) => const ProductDevelopmentScreen(),
         '/pendingDesigns': (context) => const PendingDesignsScreen(),
+        '/production': (context) => const ProductionScreen(),
       },
       home: const LoginScreen(),
     );

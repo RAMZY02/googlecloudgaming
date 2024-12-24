@@ -1,7 +1,8 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:typed_data';
 import 'pending_designs_screen.dart';
+import 'production_screen.dart';
 
 class ProductDevelopmentScreen extends StatefulWidget {
   const ProductDevelopmentScreen({Key? key}) : super(key: key);
@@ -74,12 +75,24 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                 );
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.factory),
+              title: const Text('Production Planning'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProductionScreen(),
+                  ),
+                );
+              },
+            ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Back To Menu'),
               onTap: () {
-                // Navigasi ke halaman LoginScreen
                 Navigator.pop(context);
                 Navigator.pushNamed(context, '/login');
               },
