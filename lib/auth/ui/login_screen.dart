@@ -110,15 +110,15 @@ class LoginScreen extends StatelessWidget {
                 child: Text('Factory'),
               ),
             ),
-            SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/headOfficeDashboard');
-                },
-                child: Text('Head Office'),
-              ),
-            ),
+            // SizedBox(height: 20),
+            // Center(
+            //   child: ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.pushNamed(context, '/headOfficeDashboard');
+            //     },
+            //     child: Text('Head Office'),
+            //   ),
+            // ),
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(
@@ -132,20 +132,29 @@ class LoginScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/homeCatalog');
+                  Navigator.pushNamed(context, '/homePage');
                 },
-                child: Text('Shop'),
+                child: Text('Online Shop'),
               ),
             ),
             SizedBox(height: 20),
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/oracleData');
+                  Navigator.pushNamed(context, '/offlineShop');
                 },
-                child: Text('Oracle Data'),
+                child: Text('Offine Shop'),
               ),
             ),
+            // SizedBox(height: 20),
+            // Center(
+            //   child: ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.pushNamed(context, '/oracleData');
+            //     },
+            //     child: Text('Oracle Data'),
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -10,10 +10,9 @@ import 'package:steppa/oracle_data_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
-
-
 import 'online_shop/ui/detail_product.dart';
 import 'online_shop/ui/search.dart';
+import 'offline_shop/ui/offline_shop_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -48,6 +47,7 @@ class MyApp extends StatelessWidget {
         '/productDevelopmentDashboard': (context) => const ProductDevelopmentScreen(),
         '/pendingDesigns': (context) => const PendingDesignsScreen(),
         '/production': (context) => const ProductionScreen(),
+        '/offlineShop': (context) => const OfflineShopScreen(),
       },
       home: const LoginScreen(),
     );
