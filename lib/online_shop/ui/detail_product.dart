@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/product.dart';
 import 'navbar.dart';
 
 class DetailProduct extends StatefulWidget {
@@ -24,8 +25,7 @@ class _DetailProductState extends State<DetailProduct> {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> product =
-    ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final Product product = ModalRoute.of(context)!.settings.arguments as Product;
 
     return Scaffold(
       appBar: Navbar(
@@ -47,7 +47,7 @@ class _DetailProductState extends State<DetailProduct> {
           });
         },
         onCartPressed: () {
-          print('Keranjang dibuka');
+          Navigator.pushNamed(context, '/cartPage');
         },
       ),
       body: LayoutBuilder(
@@ -63,7 +63,7 @@ class _DetailProductState extends State<DetailProduct> {
                     padding: const EdgeInsets.only(left: 16.0, top: 16.0),
                     child: Center(
                       child: Image.asset(
-                        product['image'],
+                        product.product_image,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
@@ -85,7 +85,7 @@ class _DetailProductState extends State<DetailProduct> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            product['name'],
+                            product.product_name,
                             style: TextStyle(
                               fontSize: constraints.maxWidth * 0.03 > 24 ? 24 : constraints.maxWidth * 0.03,
                               fontWeight: FontWeight.bold,
@@ -93,7 +93,7 @@ class _DetailProductState extends State<DetailProduct> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Basketball Shoes',
+                            product.product_category,
                             style: TextStyle(
                               fontSize: constraints.maxWidth * 0.02 > 16 ? 16 : constraints.maxWidth * 0.02,
                               color: Colors.grey,
@@ -101,7 +101,7 @@ class _DetailProductState extends State<DetailProduct> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Rp ${product['price']}',
+                            'Rp ${product.price}',
                             style: TextStyle(
                               fontSize: constraints.maxWidth * 0.025 > 20 ? 20 : constraints.maxWidth * 0.025,
                               color: Colors.green,
@@ -120,7 +120,7 @@ class _DetailProductState extends State<DetailProduct> {
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
-                            children: product['size']
+                            children: product.product_size
                                 .map<Widget>(
                                   (size) => ElevatedButton(
                                 onPressed: () {
@@ -139,7 +139,7 @@ class _DetailProductState extends State<DetailProduct> {
                           const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () {
-                              print('Add to Bag: ${product['name']}');
+                              print('Add to Bag: ${product.product_name}');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.black,

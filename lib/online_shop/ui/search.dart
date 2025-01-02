@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/product.dart';
 import 'detail_product.dart';
 import 'navbar.dart';
 
@@ -12,55 +13,73 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  final List<Map<String, dynamic>> allProducts = [
-    {
-      'name': 'Nike Roshe Run',
-      'price': '900.000',
-      'image': 'assets/nike.jpg',
-      'colors': ['0xFF000000', '0xFFB71C1C', '0xFFFFFFFF'],
-      'size': ['35', '36', '37', '38', '39', '40'],
-      'gender': 'FEMALE',
-    },
-    {
-      'name': 'Reebok Rush',
-      'price': '560.000',
-      'image': 'assets/reebok.jpg',
-      'colors': ['0xFF795548', '0xFFFF5722', '0xFF4CAF50'],
-      'size': ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44'],
-      'gender': 'MALE',
-    },
-    {
-      'name': 'Adidas Fury',
-      'price': '770.000',
-      'image': 'assets/adidas.jpeg',
-      'colors': ['0xFF3F51B5', '0xFFFFEB3B'],
-      'size': ['38', '39', '40', '41', '42', '43', '44', '45'],
-      'gender': 'MALE',
-    },
-    {
-      'name': 'Adidas Neo Racer',
-      'price': '700.000',
-      'image': 'assets/neo.jpg',
-      'colors': ['0xFF9E9E9E', '0xFF673AB7'],
-      'size': ['33', '34', '35', '36', '37', '38'],
-      'gender': 'FEMALE',
-    },
-    {
-      'name': 'Adidas AX2 Full Black',
-      'price': '800.000',
-      'image': 'assets/ax2.jpg',
-      'colors': ['0xFF000000'],
-      'size': ['36', '37', '38', '39', '40', '41', '42', '43'],
-      'gender': 'MALE',
-    },
-    {
-      'name': 'Adidas Zoom',
-      'price': '500.000',
-      'image': 'assets/zoom.jpeg',
-      'colors': ['0xFF2196F3', '0xFF4CAF50'],
-      'size': ['32', '33', '34', '35', '36', '37', '38', '39', '40', '41'],
-      'gender': 'FEMALE',
-    },
+  final List<Product> allProducts = [
+    Product(
+      product_id: '1',
+      product_name: 'Nike Roshe Run',
+      product_image: 'assets/nike.jpg',
+      product_description: '',
+      product_category: 'sport',
+      product_gender: 'male',
+      product_size: ['35', '36', '37', '38', '39', '40'],
+      stock_qty: 60,
+      price: 900000,
+    ),
+    Product(
+      product_id: '2',
+      product_name: 'Reebok Rush',
+      product_image: 'assets/reebok.jpg',
+      product_description: '',
+      product_category: 'sport',
+      product_gender: 'female',
+      product_size: ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44'],
+      stock_qty: 20,
+      price: 500000,
+    ),
+    Product(
+      product_id: '3',
+      product_name: 'Adidas Fury',
+      product_image: 'assets/adidas.jpeg',
+      product_description: '',
+      product_category: 'kets',
+      product_gender: 'male',
+      product_size: ['38', '39', '40', '41', '42', '43', '44', '45'],
+      stock_qty: 80,
+      price: 770000,
+    ),
+    Product(
+      product_id: '4',
+      product_name: 'Adidas Neo Racer',
+      product_image: 'assets/neo.jpg',
+      product_description: '',
+      product_category: 'sport',
+      product_gender: 'female',
+      product_size: ['33', '34', '35', '36', '37', '38'],
+      stock_qty: 20,
+      price: 700000,
+    ),
+    Product(
+      product_id: '5',
+      product_name: 'Adidas AX2 Full Black',
+      product_image: 'assets/ax2.jpg',
+      product_description: '',
+      product_category: 'casual',
+      product_gender: 'male',
+      product_size: ['36', '37', '38', '39', '40', '41', '42', '43'],
+      stock_qty: 40,
+      price: 800000,
+    ),
+    Product(
+      product_id: '6',
+      product_name: 'Adidas Zoom',
+      product_image: 'assets/zoom.jpeg',
+      product_description: '',
+      product_category: 'casual',
+      product_gender: 'female',
+      product_size: ['32', '33', '34', '35', '36', '37', '38', '39', '40', '41'],
+      stock_qty: 40,
+      price: 500000,
+    ),
   ];
 
   String? searchQuery;
@@ -68,10 +87,7 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     super.initState();
-    // Mengatur nilai awal searchQuery dari initialQuery
     searchQuery = widget.initialQuery;
-
-    // Jika initialQuery diberikan, langsung filter produk
     if (searchQuery != null && searchQuery!.isNotEmpty) {
       performSearch(searchQuery!);
     }
@@ -85,13 +101,12 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    // Filter produk berdasarkan searchQuery
     final filteredProducts = searchQuery == null || searchQuery!.isEmpty
         ? allProducts
         : allProducts.where((product) {
-      final name = product['name']!.toLowerCase();
-      final query = searchQuery?.toLowerCase();
-      return name.contains(query!);
+      final name = product.product_name.toLowerCase();
+      final query = searchQuery?.toLowerCase() ?? '';
+      return name.contains(query);
     }).toList();
 
     return Scaffold(
@@ -104,9 +119,9 @@ class _SearchState extends State<Search> {
           });
         },
         onCartPressed: () {
-          print('Keranjang dibuka');
+          Navigator.pushNamed(context, '/cartPage');
         },
-        onSearchSubmitted: performSearch, // Menjalankan filter saat Enter ditekan
+        onSearchSubmitted: performSearch,
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -140,7 +155,7 @@ class _SearchState extends State<Search> {
                 Navigator.pushNamed(
                   context,
                   '/detailProductPage',
-                  arguments: filteredProducts[index],
+                  arguments: product,
                 );
               },
               child: Card(
@@ -156,7 +171,7 @@ class _SearchState extends State<Search> {
                           top: Radius.circular(16),
                         ),
                         child: Image.asset(
-                          product['image']!,
+                          product.product_image,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
@@ -174,7 +189,7 @@ class _SearchState extends State<Search> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            product['name']!,
+                            product.product_name,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
@@ -184,7 +199,7 @@ class _SearchState extends State<Search> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Rp ${product['price']}',
+                            'Rp ${product.price}',
                             style: const TextStyle(
                               color: Colors.green,
                               fontSize: 12,
@@ -195,33 +210,10 @@ class _SearchState extends State<Search> {
                           Row(
                             children: [
                               Text(
-                                'Size: ${product['size']}',
+                                'Size: ${product.product_size.join(", ")}',
                                 style: const TextStyle(fontSize: 12),
                               ),
-                              const Spacer(),
-                              Text(
-                                product['gender'],
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.blue,
-                                ),
-                              ),
                             ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: product['colors']
-                                .map<Widget>((color) => Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 2),
-                              width: 10,
-                              height: 10,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(int.parse(color)),
-                              ),
-                            ))
-                                .toList(),
                           ),
                         ],
                       ),

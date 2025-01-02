@@ -1,9 +1,8 @@
 import 'dart:math';
-
+import '../models/product.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'navbar.dart';
-import 'search.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -22,57 +21,74 @@ class _HomeState extends State<Home> {
     {'image': 'assets/carousel3.jpg', 'label': 'Promo 3'},
   ];
 
-  final List<Map<String, dynamic>> newRelease = [
-    {
-      'name': 'Nike Roshe Run',
-      'price': '900.000',
-      'image': 'assets/nike.jpg',
-      'colors': ['0xFF000000', '0xFFB71C1C', '0xFFFFFFFF'],
-      'size': ['35', '36', '37', '38', '39', '40'],
-      'gender': 'FEMALE',
-    },
-    {
-      'name': 'Reebok Rush',
-      'price': '560.000',
-      'image': 'assets/reebok.jpg',
-      'colors': ['0xFF795548', '0xFFFF5722', '0xFF4CAF50'],
-      'size': ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44'],
-      'gender': 'MALE',
-    },
-    {
-      'name': 'Adidas Fury',
-      'price': '770.000',
-      'image': 'assets/adidas.jpeg',
-      'colors': ['0xFF3F51B5', '0xFFFFEB3B'],
-      'size': ['38', '39', '40', '41', '42', '43', '44', '45'],
-      'gender': 'MALE',
-    },
-    {
-      'name': 'Adidas Neo Racer',
-      'price': '700.000',
-      'image': 'assets/neo.jpg',
-      'colors': ['0xFF9E9E9E', '0xFF673AB7'],
-      'size': ['33', '34', '35', '36', '37', '38'],
-      'gender': 'FEMALE',
-    },
-    {
-      'name': 'Adidas AX2 Full Black',
-      'price': '800.000',
-      'image': 'assets/ax2.jpg',
-      'colors': ['0xFF000000'],
-      'size': ['36', '37', '38', '39', '40', '41', '42', '43'],
-      'gender': 'MALE',
-    },
-    {
-      'name': 'Adidas Zoom',
-      'price': '500.000',
-      'image': 'assets/zoom.jpeg',
-      'colors': ['0xFF2196F3', '0xFF4CAF50'],
-      'size': ['32', '33', '34', '35', '36', '37', '38', '39', '40', '41'],
-      'gender': 'FEMALE',
-    },
+  final List<Product> newRelease = [
+    Product(
+      product_id: '1',
+      product_name: 'Nike Roshe Run',
+      product_image: 'assets/nike.jpg',
+      product_description: '',
+      product_category: 'sport',
+      product_gender: 'male',
+      product_size: ['35', '36', '37', '38', '39', '40'],
+      stock_qty: 60,
+      price: 900000,
+    ),
+    Product(
+      product_id: '2',
+      product_name: 'Reebok Rush',
+      product_image: 'assets/reebok.jpg',
+      product_description: '',
+      product_category: 'sport',
+      product_gender: 'female',
+      product_size: ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44'],
+      stock_qty: 20,
+      price: 500000,
+    ),
+    Product(
+      product_id: '3',
+      product_name: 'Adidas Fury',
+      product_image: 'assets/adidas.jpeg',
+      product_description: '',
+      product_category: 'kets',
+      product_gender: 'male',
+      product_size: ['38', '39', '40', '41', '42', '43', '44', '45'],
+      stock_qty: 80,
+      price: 770000,
+    ),
+    Product(
+      product_id: '4',
+      product_name: 'Adidas Neo Racer',
+      product_image: 'assets/neo.jpg',
+      product_description: '',
+      product_category: 'sport',
+      product_gender: 'female',
+      product_size: ['33', '34', '35', '36', '37', '38'],
+      stock_qty: 20,
+      price: 700000,
+    ),
+    Product(
+      product_id: '5',
+      product_name: 'Adidas AX2 Full Black',
+      product_image: 'assets/ax2.jpg',
+      product_description: '',
+      product_category: 'casual',
+      product_gender: 'male',
+      product_size: ['36', '37', '38', '39', '40', '41', '42', '43'],
+      stock_qty: 40,
+      price: 800000,
+    ),
+    Product(
+      product_id: '6',
+      product_name: 'Adidas Zoom',
+      product_image: 'assets/zoom.jpeg',
+      product_description: '',
+      product_category: 'casual',
+      product_gender: 'female',
+      product_size: ['32', '33', '34', '35', '36', '37', '38', '39', '40', '41'],
+      stock_qty: 40,
+      price: 500000,
+    ),
   ];
-
 
   void _navigateToSearch() {
     if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
@@ -91,20 +107,20 @@ class _HomeState extends State<Home> {
         isSearching: isSearching,
         onSearchChanged: (value) {
           setState(() {
-            searchQuery = value; // Perbarui nilai pencarian saat input berubah
+            searchQuery = value;
           });
         },
         onSearchSubmitted: (value) {
           setState(() {
-            searchQuery = value; // Pastikan nilai pencarian diperbarui
+            searchQuery = value;
           });
-          _navigateToSearch(); // Navigasi ke halaman pencarian saat Enter ditekan
+          _navigateToSearch();
         },
         onToggleSearch: () {
-          Navigator.pushNamed(context, '/searchPage'); // Navigasi manual
+          Navigator.pushNamed(context, '/searchPage');
         },
         onCartPressed: () {
-          print('Keranjang dibuka');
+          Navigator.pushNamed(context, '/cartPage');
         },
       ),
       body: SingleChildScrollView(
@@ -112,151 +128,158 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 30),
-            CarouselSlider(
-              items: carouselItems.map((item) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Image.asset(
-                            item['image']!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Icon(Icons.broken_image, size: 50);
-                            },
-                          ),
-                          Positioned(
-                            bottom: 10,
-                            left: 10,
-                            child: Container(
-                              color: Colors.black54,
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              child: Text(
-                                item['label']!,
-                                style: const TextStyle(color: Colors.white, fontSize: 14),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-              options: CarouselOptions(
-                height: MediaQuery.of(context).size.width * 0.3,
-                autoPlay: true,
-                enlargeCenterPage: true,
-                viewportFraction: 0.9,
-                aspectRatio: 16 / 9,
-                initialPage: 0,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                top: MediaQuery.of(context).size.width > 600
-                    ? MediaQuery.of(context).size.height * 0.1
-                    : 30.0,
-                bottom: MediaQuery.of(context).size.height > 600
-                    ? MediaQuery.of(context).size.height * 0.02
-                    : 0.5,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Center(
-                  child: Text(
-                    '────────     New Release     ────────',
-                    style: TextStyle(
-                      fontSize: min(MediaQuery.of(context).size.width * 0.03, 28),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            CarouselSlider(
-              items: newRelease.asMap().map((index, item) {
-                return MapEntry(
-                  index,
-                  Builder(
-                    builder: (BuildContext context) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/detailProductPage',
-                            arguments: newRelease[index], // Menggunakan indeks untuk mendapatkan item
-                          );
-                        },
-                        child: Card(
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(12),
-                                  ),
-                                  child: Image.asset(
-                                    item['image']!,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return const Icon(Icons.broken_image, size: 50);
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item['name']!,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold, fontSize: 14),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Rp. ${item['price']}',
-                                      style: const TextStyle(color: Colors.green),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              }).values.toList(),
-              options: CarouselOptions(
-                height: MediaQuery.of(context).size.height * 0.35 > 300
-                    ? 300
-                    : MediaQuery.of(context).size.height * 0.35,
-                enlargeCenterPage: false,
-                viewportFraction: MediaQuery.of(context).size.width > 600
-                    ? 0.30
-                    : MediaQuery.of(context).size.width > 300
-                    ? 0.33
-                    : 0.9,
-                autoPlay: false,
-                enableInfiniteScroll: true,
-              ),
-            ),
+            _buildCarousel(),
+            _buildNewReleaseSectionTitle(context),
+            _buildNewReleaseCarousel(context),
             const SizedBox(height: 100),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildCarousel() {
+    return CarouselSlider(
+      items: carouselItems.map((item) {
+        return Builder(
+          builder: (BuildContext context) {
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset(
+                    item['image']!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.broken_image, size: 50);
+                    },
+                  ),
+                  Positioned(
+                    bottom: 10,
+                    left: 10,
+                    child: Container(
+                      color: Colors.black54,
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      child: Text(
+                        item['label']!,
+                        style: const TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }).toList(),
+      options: CarouselOptions(
+        height: MediaQuery.of(context).size.width * 0.3,
+        autoPlay: true,
+        enlargeCenterPage: true,
+        viewportFraction: 0.9,
+        aspectRatio: 16 / 9,
+        initialPage: 0,
+      ),
+    );
+  }
+
+  Widget _buildNewReleaseSectionTitle(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(
+        top: MediaQuery.of(context).size.width > 600
+            ? MediaQuery.of(context).size.height * 0.1
+            : 30.0,
+        bottom: MediaQuery.of(context).size.height > 600
+            ? MediaQuery.of(context).size.height * 0.02
+            : 0.5,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Center(
+          child: Text(
+            '────────     New Release     ────────',
+            style: TextStyle(
+              fontSize: min(MediaQuery.of(context).size.width * 0.03, 28),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNewReleaseCarousel(BuildContext context) {
+    return CarouselSlider(
+      items: newRelease.map((item) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/detailProductPage',
+              arguments: item,
+            );
+          },
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(12),
+                    ),
+                    child: Image.asset(
+                      item.product_image,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Icon(Icons.broken_image, size: 50);
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.product_name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Rp. ${item.price}',
+                        style: const TextStyle(color: Colors.green),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+      options: CarouselOptions(
+        height: MediaQuery.of(context).size.height * 0.35 > 300
+            ? 300
+            : MediaQuery.of(context).size.height * 0.35,
+        enlargeCenterPage: false,
+        viewportFraction: MediaQuery.of(context).size.width > 600
+            ? 0.30
+            : MediaQuery.of(context).size.width > 300
+            ? 0.33
+            : 0.9,
+        autoPlay: false,
+        enableInfiniteScroll: true,
       ),
     );
   }
