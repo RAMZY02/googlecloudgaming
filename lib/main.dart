@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/admin/ui/delete_design_screen.dart';
+import 'package:steppa/admin/ui/manage_stock_screen.dart';
 import 'package:steppa/auth/ui/login_screen.dart';
 import 'package:steppa/factory/ui/factory_attendance_screen.dart';
 import 'package:steppa/factory/ui/factory_dashboard_screen.dart';
@@ -52,6 +54,8 @@ class MyApp extends StatelessWidget {
         '/pendingDesigns': (context) => const PendingDesignsScreen(),
         '/production': (context) => const ProductionScreen(),
         '/offlineShop': (context) => const OfflineShopScreen(),
+        '/manage-stock': (context) => const ManageStockScreen(),
+        '/delete-design': (context) => const DeleteDesignScreen(),
       },
       home: const LoginScreen(),
     );

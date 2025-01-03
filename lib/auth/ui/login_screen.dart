@@ -146,6 +146,15 @@ class LoginScreen extends StatelessWidget {
                 child: Text('Offine Shop'),
               ),
             ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/manage-stock');
+                },
+                child: Text('Master Admin'),
+              ),
+            ),
             // SizedBox(height: 20),
             // Center(
             //   child: ElevatedButton(
