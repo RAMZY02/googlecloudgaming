@@ -7,12 +7,12 @@ import 'package:steppa/factory/ui/factory_materials_screen.dart';
 import 'package:steppa/head_office/ui/head_office_dashboard_screen.dart';
 import 'package:steppa/online_shop/ui/cart.dart';
 import 'package:steppa/online_shop/ui/home.dart';
-import 'package:steppa/oracle_data_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
 import 'online_shop/ui/detail_product.dart';
 import 'online_shop/ui/login.dart';
+import 'online_shop/ui/register.dart';
 import 'online_shop/ui/search.dart';
 import 'offline_shop/ui/offline_shop_screen.dart';
 
@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
         '/factoryInventory': (context) => const FactoryInventory(),
         '/headOfficeDashboard': (context) => const HeadOfficeDashboard(),
         '/loginPage': (context) => const Login(),
+        '/registerPage': (context) => const Register(),
         '/homePage': (context) => const Home(),
         '/searchPage': (context) {
           final args = ModalRoute.of(context)?.settings.arguments as String?;
@@ -47,7 +48,6 @@ class MyApp extends StatelessWidget {
         },
         '/detailProductPage': (context) => const DetailProduct(),
         '/cartPage': (context) => const Cart(),
-        '/oracleData': (context) => OracleDataScreen(),
         '/productDevelopmentDashboard': (context) => const ProductDevelopmentScreen(),
         '/pendingDesigns': (context) => const PendingDesignsScreen(),
         '/production': (context) => const ProductionScreen(),

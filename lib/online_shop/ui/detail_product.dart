@@ -137,6 +137,8 @@ class _DetailProductState extends State<DetailProduct> {
                                 .toList(),
                           ),
                           const SizedBox(height: 16),
+                            
+                          const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () {
                               print('Add to Bag: ${product.product_name}');
