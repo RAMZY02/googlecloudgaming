@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:typed_data';
-import 'pending_designs_screen.dart';
-import 'production_screen.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProductDevelopmentScreen extends StatefulWidget {
   const ProductDevelopmentScreen({Key? key}) : super(key: key);
@@ -13,6 +11,8 @@ class ProductDevelopmentScreen extends StatefulWidget {
 
 class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
   Uint8List? _selectedImageBytes;
+  String? _imageLink;
+  String? _shoeName;
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -26,6 +26,14 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
     }
   }
 
+  void _setImageFromLink() {
+    if (_imageLink != null && _imageLink!.isNotEmpty) {
+      setState(() {
+        _selectedImageBytes = null; // Reset any previously selected image
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,87 +41,39 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
         title: const Text('Design Upload'),
         backgroundColor: Colors.blue,
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: const Text(
-                'Product Development',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.upload),
-              title: const Text('Design Upload'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProductDevelopmentScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.pending),
-              title: const Text('Pending Designs'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PendingDesignsScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.factory),
-              title: const Text('Production Planning'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProductionScreen(),
-                  ),
-                );
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Back To Menu'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/login');
-              },
-            ),
-          ],
-        ),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Upload Your Shoe Design',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Shoe Name',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _shoeName = value;
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              decoration: const InputDecoration(
+                labelText: 'Image Link (Google Drive)',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _imageLink = value;
+                });
+              },
             ),
             const SizedBox(height: 20),
             GestureDetector(
               onTap: _pickImage,
               child: Container(
-                height: 500,
+                height: 450,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
@@ -127,9 +87,22 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                     fit: BoxFit.cover,
                   ),
                 )
+                    : (_imageLink != null && _imageLink!.isNotEmpty)
+                    ? ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    _imageLink!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Center(
+                        child: Text('Failed to load image'),
+                      );
+                    },
+                  ),
+                )
                     : const Center(
                   child: Text(
-                    'Tap to upload image',
+                    'Tap to upload image or use link',
                     style: TextStyle(color: Colors.grey),
                   ),
                 ),
@@ -138,13 +111,13 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                if (_selectedImageBytes != null) {
+                if ((_selectedImageBytes != null || (_imageLink != null && _imageLink!.isNotEmpty)) && _shoeName != null && _shoeName!.isNotEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Design Uploaded Successfully!')),
+                    SnackBar(content: Text('Design "$_shoeName" Uploaded Successfully!')),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please select an image first!')),
+                    const SnackBar(content: Text('Please complete all fields!')),
                   );
                 }
               },
