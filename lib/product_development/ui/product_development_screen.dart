@@ -52,6 +52,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
               ),
             ),
             ListTile(
+              leading: const Icon(Icons.upload),
               title: const Text('Design Upload'),
               onTap: () {
                 Navigator.pushReplacement(
@@ -61,15 +62,26 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.pending),
               title: const Text('Pending Designs'),
               onTap: () {
                 Navigator.pushReplacementNamed(context, '/pendingDesigns');
               },
             ),
             ListTile(
+              leading: const Icon(Icons.factory),
               title: const Text('Production Planning'),
               onTap: () {
                 Navigator.pushReplacementNamed(context, '/production');
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Back To Menu'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/login');
               },
             ),
           ],
