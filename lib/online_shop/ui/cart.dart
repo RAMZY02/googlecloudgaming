@@ -118,6 +118,9 @@ class _CartState extends State<Cart> {
         onCartPressed: () {
           Navigator.pushNamed(context, '/cartPage');
         },
+        onHistoryPressed: () {
+          Navigator.pushNamed(context, '/orderHistoryPage');
+        },
       ),
       body: Row(
         children: [

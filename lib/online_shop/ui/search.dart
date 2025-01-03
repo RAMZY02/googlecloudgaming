@@ -5,7 +5,6 @@ import 'navbar.dart';
 
 class Search extends StatefulWidget {
   final String? initialQuery;
-
   const Search({Key? key, this.initialQuery}) : super(key: key);
 
   @override
@@ -18,7 +17,7 @@ class _SearchState extends State<Search> {
       product_id: '1',
       product_name: 'Nike Roshe Run',
       product_image: 'assets/nike.jpg',
-      product_description: '',
+      product_description: 'Sepatu lari ringan dan nyaman dengan desain minimalis, cocok untuk penggunaan sehari-hari.',
       product_category: 'sport',
       product_gender: 'male',
       product_size: ['35', '36', '37', '38', '39', '40'],
@@ -29,7 +28,7 @@ class _SearchState extends State<Search> {
       product_id: '2',
       product_name: 'Reebok Rush',
       product_image: 'assets/reebok.jpg',
-      product_description: '',
+      product_description: 'Sepatu lari dengan teknologi responsif untuk performa maksimal, dirancang khusus untuk wanita.',
       product_category: 'sport',
       product_gender: 'female',
       product_size: ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44'],
@@ -40,7 +39,7 @@ class _SearchState extends State<Search> {
       product_id: '3',
       product_name: 'Adidas Fury',
       product_image: 'assets/adidas.jpeg',
-      product_description: '',
+      product_description: 'Sepatu kasual dengan desain futuristik dan nyaman dipakai sehari-hari, ideal untuk pria yang menginginkan gaya modern.',
       product_category: 'kets',
       product_gender: 'male',
       product_size: ['38', '39', '40', '41', '42', '43', '44', '45'],
@@ -51,7 +50,7 @@ class _SearchState extends State<Search> {
       product_id: '4',
       product_name: 'Adidas Neo Racer',
       product_image: 'assets/neo.jpg',
-      product_description: '',
+      product_description: 'Sepatu ringan dan fleksibel untuk aktivitas sehari-hari, dirancang khusus untuk wanita.',
       product_category: 'sport',
       product_gender: 'female',
       product_size: ['33', '34', '35', '36', '37', '38'],
@@ -62,7 +61,7 @@ class _SearchState extends State<Search> {
       product_id: '5',
       product_name: 'Adidas AX2 Full Black',
       product_image: 'assets/ax2.jpg',
-      product_description: '',
+      product_description: 'Sepatu outdoor dengan desain tangguh dan tahan lama, cocok untuk pria yang menyukai aktivitas luar ruangan.',
       product_category: 'casual',
       product_gender: 'male',
       product_size: ['36', '37', '38', '39', '40', '41', '42', '43'],
@@ -73,7 +72,7 @@ class _SearchState extends State<Search> {
       product_id: '6',
       product_name: 'Adidas Zoom',
       product_image: 'assets/zoom.jpeg',
-      product_description: '',
+      product_description: 'Sepatu kasual dengan desain modern dan nyaman untuk penggunaan sehari-hari, ideal untuk wanita yang menginginkan gaya trendi.',
       product_category: 'casual',
       product_gender: 'female',
       product_size: ['32', '33', '34', '35', '36', '37', '38', '39', '40', '41'],
@@ -121,10 +120,13 @@ class _SearchState extends State<Search> {
         onCartPressed: () {
           Navigator.pushNamed(context, '/cartPage');
         },
+        onHistoryPressed: () {
+          Navigator.pushNamed(context, '/orderHistoryPage');
+        },
         onSearchSubmitted: performSearch,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0), // Menambahkan padding kiri dan kanan secara global
         child: filteredProducts.isEmpty
             ? Center(
           child: Column(
@@ -141,8 +143,7 @@ class _SearchState extends State<Search> {
         )
             : GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount:
-            MediaQuery.of(context).size.width > 600 ? 4 : 2,
+            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
             childAspectRatio: 0.8,
@@ -176,8 +177,7 @@ class _SearchState extends State<Search> {
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
                               color: Colors.grey[300],
-                              child: const Icon(Icons.broken_image,
-                                  size: 40),
+                              child: const Icon(Icons.broken_image, size: 40),
                             );
                           },
                         ),

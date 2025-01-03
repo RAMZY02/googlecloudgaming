@@ -9,6 +9,7 @@ import 'package:steppa/factory/ui/factory_materials_screen.dart';
 import 'package:steppa/head_office/ui/head_office_dashboard_screen.dart';
 import 'package:steppa/online_shop/ui/cart.dart';
 import 'package:steppa/online_shop/ui/home.dart';
+import 'package:steppa/online_shop/ui/order_history.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         },
         '/detailProductPage': (context) => const DetailProduct(),
         '/cartPage': (context) => const Cart(),
+        '/orderHistoryPage': (context) => const OrderHistory(),
         '/productDevelopmentDashboard': (context) => const ProductDevelopmentScreen(),
         '/pendingDesigns': (context) => const PendingDesignsScreen(),
         '/production': (context) => const ProductionScreen(),

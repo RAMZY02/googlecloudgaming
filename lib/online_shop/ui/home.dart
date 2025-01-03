@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
       product_id: '1',
       product_name: 'Nike Roshe Run',
       product_image: 'assets/nike.jpg',
-      product_description: '',
+      product_description: 'Sepatu lari ringan dan nyaman dengan desain minimalis, cocok untuk penggunaan sehari-hari.',
       product_category: 'sport',
       product_gender: 'male',
       product_size: ['35', '36', '37', '38', '39', '40'],
@@ -37,7 +37,7 @@ class _HomeState extends State<Home> {
       product_id: '2',
       product_name: 'Reebok Rush',
       product_image: 'assets/reebok.jpg',
-      product_description: '',
+      product_description: 'Sepatu lari dengan teknologi responsif untuk performa maksimal, dirancang khusus untuk wanita.',
       product_category: 'sport',
       product_gender: 'female',
       product_size: ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44'],
@@ -48,7 +48,7 @@ class _HomeState extends State<Home> {
       product_id: '3',
       product_name: 'Adidas Fury',
       product_image: 'assets/adidas.jpeg',
-      product_description: '',
+      product_description: 'Sepatu kasual dengan desain futuristik dan nyaman dipakai sehari-hari, ideal untuk pria yang menginginkan gaya modern.',
       product_category: 'kets',
       product_gender: 'male',
       product_size: ['38', '39', '40', '41', '42', '43', '44', '45'],
@@ -59,7 +59,7 @@ class _HomeState extends State<Home> {
       product_id: '4',
       product_name: 'Adidas Neo Racer',
       product_image: 'assets/neo.jpg',
-      product_description: '',
+      product_description: 'Sepatu ringan dan fleksibel untuk aktivitas sehari-hari, dirancang khusus untuk wanita.',
       product_category: 'sport',
       product_gender: 'female',
       product_size: ['33', '34', '35', '36', '37', '38'],
@@ -70,7 +70,7 @@ class _HomeState extends State<Home> {
       product_id: '5',
       product_name: 'Adidas AX2 Full Black',
       product_image: 'assets/ax2.jpg',
-      product_description: '',
+      product_description: 'Sepatu outdoor dengan desain tangguh dan tahan lama, cocok untuk pria yang menyukai aktivitas luar ruangan.',
       product_category: 'casual',
       product_gender: 'male',
       product_size: ['36', '37', '38', '39', '40', '41', '42', '43'],
@@ -81,7 +81,7 @@ class _HomeState extends State<Home> {
       product_id: '6',
       product_name: 'Adidas Zoom',
       product_image: 'assets/zoom.jpeg',
-      product_description: '',
+      product_description: 'Sepatu kasual dengan desain modern dan nyaman untuk penggunaan sehari-hari, ideal untuk wanita yang menginginkan gaya trendi.',
       product_category: 'casual',
       product_gender: 'female',
       product_size: ['32', '33', '34', '35', '36', '37', '38', '39', '40', '41'],
@@ -121,6 +121,9 @@ class _HomeState extends State<Home> {
         },
         onCartPressed: () {
           Navigator.pushNamed(context, '/cartPage');
+        },
+        onHistoryPressed: () {
+          Navigator.pushNamed(context, '/orderHistoryPage');
         },
       ),
       body: SingleChildScrollView(

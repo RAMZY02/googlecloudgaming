@@ -12,8 +12,8 @@ List<Customer> dummyCustomers = [
   Customer(
     customerId: 'C001',
     name: 'John Doe',
-    email: 'john.doe@example.com',
-    password: 'password123',
+    email: 'asd@g.com',
+    password: '123',
     phoneNumber: '081234567890',
     address: 'Jl. Merdeka No. 1',
     city: 'Jakarta',
@@ -48,7 +48,6 @@ class _LoginState extends State<Login> {
         _errorMessage = '';
       });
 
-      // Check if email exists
       Customer? customer = dummyCustomers.firstWhereOrNull(
             (cust) => cust.email.toLowerCase() == _email.toLowerCase(),
       );
@@ -62,7 +61,6 @@ class _LoginState extends State<Login> {
           _errorMessage = 'Password salah.';
         });
       } else {
-        // Successful login
         Navigator.pushReplacementNamed(context, '/homePage', arguments: customer);
       }
     }
@@ -71,127 +69,159 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: 400,
+      body: Stack(
+        children: [
+          // Background image
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/loginBg.jpg'), // Path gambar Anda
+                fit: BoxFit.cover,
+              ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'MASUK',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Jadilah member - Anda akan mendapatkan diskon 20% untuk pembelian pertama Anda. Dapatkan penawaran, undangan, dan hadiah eksklusif.',
-                  ),
-                  const SizedBox(height: 24),
-                  if (_errorMessage.isNotEmpty)
-                    Container(
-                      padding: const EdgeInsets.all(8.0),
-                      color: Colors.red[100],
-                      child: Row(
+          ),
+          // Content
+          Center(
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 400,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.6), // Warna hitam transparan
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.error, color: Colors.red),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              _errorMessage,
-                              style: const TextStyle(color: Colors.red),
+                          const Text(
+                            'LOGIN',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Anda akan mendapatkan diskon 20% untuk pembelian pertama Anda. Dapatkan penawaran, undangan, dan hadiah eksklusif.',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          if (_errorMessage.isNotEmpty)
+                            Container(
+                              padding: const EdgeInsets.all(8.0),
+                              color: Colors.red[100],
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.error, color: Colors.red),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      _errorMessage,
+                                      style: const TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: 'Email',
+                              border: OutlineInputBorder(),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Masukkan email Anda';
+                              }
+                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                return 'Format email tidak valid';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _email = value!.trim();
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: 'Password',
+                              border: OutlineInputBorder(),
+                              filled: true,
+                              fillColor: Colors.white,
+                              suffixIcon: Icon(Icons.visibility),
+                            ),
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Masukkan password Anda';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) {
+                              _password = value!.trim();
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _login,
+                              child: const Text(
+                                  'Login',
+                                  style: TextStyle(color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blueAccent,
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Don't have an account?",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/registerPage');
+                                },
+                                child: const Text(
+                                  'Register',
+                                  style: TextStyle(color: Colors.lightBlueAccent),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                  const SizedBox(height: 16),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Email',
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Masukkan email Anda';
-                            }
-                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                              return 'Format email tidak valid';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _email = value!.trim();
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            border: const OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.visibility),
-                              onPressed: () {},
-                            ),
-                          ),
-                          obscureText: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Masukkan password Anda';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) {
-                            _password = value!.trim();
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _login,
-                            child: const Text('Login'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              textStyle: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("Don't have an account?"),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/registerPage');
-                              },
-                              child: const Text('Register'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
                   ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'dart:math'; // Perlu untuk fungsi min
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 import 'navbar.dart';
@@ -49,18 +50,24 @@ class _DetailProductState extends State<DetailProduct> {
         onCartPressed: () {
           Navigator.pushNamed(context, '/cartPage');
         },
+        onHistoryPressed: () {
+          Navigator.pushNamed(context, '/orderHistoryPage');
+        },
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 1000, // Lebar maksimum konten dibatasi 1000 piksel
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  flex: 45,
+                  flex: 6, // Mengubah flex menjadi 6 untuk bagian kiri
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+                    padding: const EdgeInsets.only(left: 16.0),
                     child: Center(
                       child: Image.asset(
                         product.product_image,
@@ -68,7 +75,7 @@ class _DetailProductState extends State<DetailProduct> {
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
                             color: Colors.grey[300],
-                            child: const Icon(Icons.broken_image, size: 64),
+                            child: const Icon(Icons.broken_image, size: 104),
                           );
                         },
                       ),
@@ -77,9 +84,9 @@ class _DetailProductState extends State<DetailProduct> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  flex: 55,
+                  flex: 4, // Mengubah flex menjadi 4 untuk bagian kanan
                   child: Padding(
-                    padding: const EdgeInsets.only(right: 16.0, top: 16.0),
+                    padding: const EdgeInsets.only(right: 16.0, top: 30.0, left: 15.0),
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +94,7 @@ class _DetailProductState extends State<DetailProduct> {
                           Text(
                             product.product_name,
                             style: TextStyle(
-                              fontSize: constraints.maxWidth * 0.03 > 24 ? 24 : constraints.maxWidth * 0.03,
+                              fontSize: min(MediaQuery.of(context).size.width * 0.09, 24),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -95,7 +102,7 @@ class _DetailProductState extends State<DetailProduct> {
                           Text(
                             product.product_category,
                             style: TextStyle(
-                              fontSize: constraints.maxWidth * 0.02 > 16 ? 16 : constraints.maxWidth * 0.02,
+                              fontSize: min(MediaQuery.of(context).size.width * 0.08, 18),
                               color: Colors.grey,
                             ),
                           ),
@@ -103,7 +110,7 @@ class _DetailProductState extends State<DetailProduct> {
                           Text(
                             'Rp ${product.price}',
                             style: TextStyle(
-                              fontSize: constraints.maxWidth * 0.025 > 20 ? 20 : constraints.maxWidth * 0.025,
+                              fontSize: min(MediaQuery.of(context).size.width * 0.08, 22),
                               color: Colors.green,
                               fontWeight: FontWeight.bold,
                             ),
@@ -112,7 +119,7 @@ class _DetailProductState extends State<DetailProduct> {
                           Text(
                             'Select Size',
                             style: TextStyle(
-                              fontSize: constraints.maxWidth * 0.022 > 18 ? 18 : constraints.maxWidth * 0.022,
+                              fontSize: min(MediaQuery.of(context).size.width * 0.08, 20),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -131,25 +138,38 @@ class _DetailProductState extends State<DetailProduct> {
                                   backgroundColor: Colors.white,
                                   side: const BorderSide(color: Colors.black),
                                 ),
-                                child: Text(size),
+                                child: Text(
+                                  size,
+                                  style: TextStyle(
+                                    fontSize: min(MediaQuery.of(context).size.width * 0.07, 14),
+                                  ),
+                                ),
                               ),
                             )
                                 .toList(),
                           ),
                           const SizedBox(height: 16),
-                            
+                          Text(
+                            '${product.product_description}',
+                            style: TextStyle(
+                              fontSize: min(MediaQuery.of(context).size.width * 0.08, 18),
+                            ),
+                          ),
                           const SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () {
                               print('Add to Bag: ${product.product_name}');
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
+                              backgroundColor: Colors.blueAccent,
                               minimumSize: const Size(double.infinity, 50),
                             ),
-                            child: const Text(
+                            child: Text(
                               'Add to Bag',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
+                              style: TextStyle(
+                                fontSize: min(MediaQuery.of(context).size.width * 0.08, 16),
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -160,8 +180,8 @@ class _DetailProductState extends State<DetailProduct> {
                 ),
               ],
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

@@ -6,6 +6,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
   final Function(String) onSearchSubmitted;
   final Function() onToggleSearch;
   final Function() onCartPressed;
+  final Function() onHistoryPressed;
 
   const Navbar({
     Key? key,
@@ -14,6 +15,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
     required this.onSearchSubmitted, // Ditambahkan untuk menangani logika pencarian saat Enter ditekan
     required this.onToggleSearch,
     required this.onCartPressed,
+    required this.onHistoryPressed,
   }) : super(key: key);
 
   @override
@@ -35,7 +37,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
           // Kotak Pencarian
           Container(
             width: MediaQuery.of(context).size.width * 0.4, // Lebar lebih pendek
-            height: 30, // Tinggi kotak pencarian
+            height: 40, // Tinggi kotak pencarian
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20), // Border melengkung
@@ -58,10 +60,10 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
                     decoration: const InputDecoration(
                       hintText: 'Cari produk...',
                       border: InputBorder.none,
-                      hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
+                      hintStyle: TextStyle(fontSize: 15, color: Colors.grey),
                       contentPadding: EdgeInsets.symmetric(vertical: 14), // Vertikal teks di tengah
                     ),
-                    style: const TextStyle(fontSize: 12, color: Colors.black),
+                    style: const TextStyle(fontSize: 15, color: Colors.black),
                   ),
                 ),
               ],
@@ -75,13 +77,18 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           onPressed: () {},
           icon: const Icon(Icons.person_outline, color: Colors.blue),
-          iconSize: 20,
+          iconSize: 25,
         ),
         // Ikon keranjang
         IconButton(
           onPressed: onCartPressed,
           icon: const Icon(Icons.shopping_cart_outlined, color: Colors.blue),
-          iconSize: 20,
+          iconSize: 25,
+        ),
+        IconButton(
+          onPressed: onHistoryPressed,
+          icon: const Icon(Icons.history, color: Colors.blue),
+          iconSize: 25,
         ),
       ],
     );
