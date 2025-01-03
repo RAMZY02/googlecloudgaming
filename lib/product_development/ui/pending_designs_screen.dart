@@ -1,19 +1,39 @@
 import 'package:flutter/material.dart';
-import 'production_screen.dart';
-import 'product_development_screen.dart';
+import 'package:steppa/product_development/models/design.dart';
+import 'package:steppa/product_development/ui/product_development_screen.dart';
+import 'package:steppa/product_development/ui/production_screen.dart';
 
-
-class PendingDesignsScreen extends StatelessWidget {
+class PendingDesignsScreen extends StatefulWidget {
   const PendingDesignsScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final List<String> dummyImages = [
-      'assets/nike.jpg', // URL gambar dummy
-      'assets/reebok.jpg',
-      'assets/adidas.jpeg',
-    ];
+  State<PendingDesignsScreen> createState() => _PendingDesignsScreenState();
+}
 
+class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
+  List<Design> designs = [
+    Design(
+        name: "Nike Air Zoom",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3zenzeewmwTBRTG0R1kZwDEiT013hybhtg&s"),
+    Design(
+        name: "Adidas Ultra Boost",
+        image: "https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/p1/294/2024/08/27/Artikel-452-3055304001.jpg"),
+    Design(
+        name: "Puma RS-X",
+        image: "https://m.media-amazon.com/images/I/71Vhhy6VmSL._AC_SL1500_.jpg"),
+  ];
+
+  void _acceptDesign(int index) {
+    setState(() {
+      designs.removeAt(index);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Design accepted successfully!')),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pending Designs'),
@@ -89,30 +109,85 @@ class PendingDesignsScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.builder(
-          itemCount: dummyImages.length,
+          itemCount: designs.length,
           itemBuilder: (context, index) {
+            final design = designs[index];
             return Card(
               margin: const EdgeInsets.only(bottom: 16.0),
               child: ListTile(
                 leading: Image.network(
-                  dummyImages[index],
+                  design.image,
                   width: 50,
                   height: 50,
                   fit: BoxFit.cover,
                 ),
-                title: Text('Design ${index + 1}'),
+                title: Text(design.name),
                 subtitle: const Text('Waiting for approval'),
-                trailing: IconButton(
-                  icon: const Icon(Icons.check_circle, color: Colors.green),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Approved Design ${index + 1}')),
-                    );
-                  },
-                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PendingDesignDetailScreen(
+                        design: design,
+                        onAccept: () => _acceptDesign(index),
+                      ),
+                    ),
+                  );
+                },
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+class PendingDesignDetailScreen extends StatelessWidget {
+  final Design design;
+  final VoidCallback onAccept;
+
+  const PendingDesignDetailScreen({
+    Key? key,
+    required this.design,
+    required this.onAccept,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Design Details'),
+        backgroundColor: Colors.blue,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.network(
+              design.image,
+              height: 500,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              design.name,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                onAccept();
+                Navigator.pop(context);
+              },
+              child: const Text('Accept Design'),
+            ),
+          ],
         ),
       ),
     );

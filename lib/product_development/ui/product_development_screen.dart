@@ -41,6 +41,40 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
         title: const Text('Design Upload'),
         backgroundColor: Colors.blue,
       ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text(
+                'Navigation',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ListTile(
+              title: const Text('Design Upload'),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProductDevelopmentScreen()),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Pending Designs'),
+              onTap: () {
+                Navigator.pushReplacementNamed(context, '/pendingDesigns');
+              },
+            ),
+            ListTile(
+              title: const Text('Production Planning'),
+              onTap: () {
+                Navigator.pushReplacementNamed(context, '/production');
+              },
+            ),
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -111,7 +145,9 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                if ((_selectedImageBytes != null || (_imageLink != null && _imageLink!.isNotEmpty)) && _shoeName != null && _shoeName!.isNotEmpty) {
+                if ((_selectedImageBytes != null || (_imageLink != null && _imageLink!.isNotEmpty)) &&
+                    _shoeName != null &&
+                    _shoeName!.isNotEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Design "$_shoeName" Uploaded Successfully!')),
                   );
