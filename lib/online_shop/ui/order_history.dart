@@ -9,8 +9,45 @@ class OrderHistory extends StatefulWidget {
 }
 
 class _OrderHistoryState extends State<OrderHistory> {
+  bool isSearching = false;
+  String? searchQuery;
+
+  void _navigateToSearch() {
+    if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
+      Navigator.pushNamed(
+        context,
+        '/searchPage',
+        arguments: searchQuery,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: Navbar(
+        isSearching: isSearching,
+        onSearchChanged: (value) {
+          setState(() {
+            searchQuery = value;
+          });
+        },
+        onSearchSubmitted: (value) {
+          setState(() {
+            searchQuery = value;
+          });
+          _navigateToSearch();
+        },
+        onToggleSearch: () {
+          Navigator.pushNamed(context, '/searchPage');
+        },
+        onCartPressed: () {
+          Navigator.pushNamed(context, '/cartPage');
+        },
+        onHistoryPressed: () {
+          Navigator.pushNamed(context, '/orderHistoryPage');
+        },
+      ),
+    );
   }
 }
