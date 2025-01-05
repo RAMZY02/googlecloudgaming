@@ -1,37 +1,37 @@
 class Product {
-  String product_Name;
-  String product_Category;
-  String product_Gender;
-  String price;
-  String product_Image;
+  String product_name;
+  String product_category;
+  String product_gender;
+  int price;
+  String product_image;
 
   Product({
-    required this.product_Name,
-    required this.product_Category,
-    required this.product_Gender,
+    required this.product_name,
+    required this.product_category,
+    required this.product_gender,
     required this.price,
-    required this.product_Image,
+    required this.product_image,
   });
 
   // Mengubah JSON menjadi objek Product
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      product_Name: json['product_name'] ?? '',
-      product_Category: json['product_category'] ?? '',
-      product_Gender: json['product_gender'] ?? '',
+      product_name: json['product_name'] ?? '',
+      product_category: json['product_category'] ?? '',
+      product_gender: json['product_gender'] ?? '',
       price: json['price']?.toDouble() ?? 0.0,
-      product_Image: json['product_image'] ?? '',
+      product_image: json['product_image'] ?? '',
     );
   }
 
   // Mengubah objek Product menjadi JSON
   Map<String, dynamic> toJson() {
     return {
-      'product_name': product_Name,
-      'product_category': product_Category,
-      'product_gender': product_Gender,
+      'product_name': product_name,
+      'product_category': product_category,
+      'product_gender': product_gender,
       'price': price,
-      'product_image': product_Image,
+      'product_image': product_image,
     };
   }
 }
