@@ -1,34 +1,31 @@
 class Customer {
-  final String customerId;
   final String name;
-  final String password;
-  final String email;
-  final String phoneNumber;
-  final String address;
-  final String city;
-  final String country;
-  final String zipCode;
+  final String? email;
+  final String? phoneNumber;
+  final String? password;
+  final String? address;
+  final String? city;
+  final String? country;
+  final String? zipCode;
 
   Customer({
-    required this.customerId,
     required this.name,
-    required this.password,
-    required this.email,
-    required this.phoneNumber,
-    required this.address,
-    required this.city,
-    required this.country,
-    required this.zipCode,
+    this.email,
+    this.phoneNumber,
+    this.password,
+    this.address,
+    this.city,
+    this.country,
+    this.zipCode,
   });
 
   // Convert JSON to Customer object
   factory Customer.fromJson(Map<String, dynamic> json) {
     return Customer(
-      customerId: json['customer_id'],
       name: json['name'],
-      password: json['password'],
       email: json['email'],
       phoneNumber: json['phone_number'],
+      password: json['password'],
       address: json['address'],
       city: json['city'],
       country: json['country'],
@@ -36,14 +33,12 @@ class Customer {
     );
   }
 
-  // Convert Customer object to JSON
   Map<String, dynamic> toJson() {
     return {
-      'customer_id': customerId,
       'name': name,
-      'password': password,
       'email': email,
       'phone_number': phoneNumber,
+      'password': password,
       'address': address,
       'city': city,
       'country': country,

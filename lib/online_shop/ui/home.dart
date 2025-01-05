@@ -4,6 +4,7 @@ import '../controller/product_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'navbar.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, this.initialQuery}) : super(key: key);
@@ -19,7 +20,7 @@ class _HomeState extends State<Home> {
   String? searchQuery;
 
   List<Product_Cart> newRelease = [];
-  bool isLoading = true; // Menambahkan status loading
+  bool isLoading = true;
 
   final List<Map<String, String>> carouselItems = [
     {'image': 'assets/carousel1.jpg', 'label': 'Promo 1'},
@@ -28,6 +29,9 @@ class _HomeState extends State<Home> {
   ];
 
   final List<String> size = ['35', '36', '37', '38', '39', '40'];
+
+  // Secure Storage instance
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   void _navigateToSearch() {
     if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
@@ -43,13 +47,14 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     searchQuery = widget.initialQuery;
-    fetchProducts(); // Panggil fungsi untuk fetch data dari database
+    fetchProducts(); // Fetch products
+    _getJwtToken(); // Get JWT token from secure storage
   }
 
   Future<void> fetchProducts() async {
     try {
-      List<Product_Cart> products = await productController.getNewReleaseProducts(); // Memanggil controller untuk mendapatkan data produk
-      if (products != null) { // Pastikan produk tidak null
+      List<Product_Cart> products = await productController.getNewReleaseProducts();
+      if (products != null) {
         setState(() {
           newRelease = products;
           isLoading = false;
@@ -57,7 +62,7 @@ class _HomeState extends State<Home> {
       } else {
         setState(() {
           newRelease = [];
-          isLoading = false; // Jika produk null, set data kosong
+          isLoading = false;
         });
       }
     } catch (e) {
@@ -68,6 +73,19 @@ class _HomeState extends State<Home> {
     }
   }
 
+  // Get JWT Token from secure storage
+  Future<void> _getJwtToken() async {
+    try {
+      String? jwtToken = await _secureStorage.read(key: 'jwt_token');
+      if (jwtToken != null) {
+        print("JWT Token: $jwtToken"); // Print JWT token
+      } else {
+        print("No JWT token found.");
+      }
+    } catch (e) {
+      print("Error retrieving JWT token: $e");
+    }
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +120,7 @@ class _HomeState extends State<Home> {
             _buildCarousel(),
             _buildNewReleaseSectionTitle(context),
             isLoading
-                ? const Center(child: CircularProgressIndicator()) // Menampilkan indikator loading
+                ? const Center(child: CircularProgressIndicator())
                 : _buildNewReleaseCarousel(context),
             const SizedBox(height: 100),
           ],
@@ -125,7 +143,7 @@ class _HomeState extends State<Home> {
                     item['image']!,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.broken_image, size: 50); // Gambar error jika gagal
+                      return const Icon(Icons.broken_image, size: 50);
                     },
                   ),
                   Positioned(
@@ -205,11 +223,11 @@ class _HomeState extends State<Home> {
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(12),
                     ),
-                    child: Image.network( // Menggunakan Image.network jika URL gambar
+                    child: Image.network(
                       item.product_image,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.broken_image, size: 50); // Gambar error jika gagal
+                        return const Icon(Icons.broken_image, size: 50);
                       },
                     ),
                   ),

@@ -1,4 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../controller/customer_controller.dart';
+import '../models/customer_register.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -9,6 +12,8 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
+  final _customerController = Customer_Controller(); // Initialize CustomerController
+
   String _name = '';
   String _email = '';
   String _password = '';
@@ -19,14 +24,52 @@ class _RegisterState extends State<Register> {
   String _zipCode = '';
   String _errorMessage = '';
 
-  void _register() {
+  Future<void> _register() async {
     final form = _formKey.currentState;
+
     if (form != null && form.validate()) {
       form.save();
       setState(() {
         _errorMessage = '';
       });
-      Navigator.pushReplacementNamed(context, '/loginPage');
+
+      try {
+        // Fetch all customers to check if the email is already used
+        final customers = await _customerController.getAllCustomers();
+
+        // Check if email is already used
+        final emailExists = customers.any((customer) => customer.email == _email);
+
+        if (emailExists) {
+          setState(() {
+            _errorMessage = 'Email already exists. Please use a different email.';
+          });
+          return;
+        }
+
+        // Create a new Customer object
+        final newCustomer = Customer(
+          name: _name,
+          email: _email,
+          password: _password,
+          phoneNumber: _phoneNumber,
+          address: _address,
+          city: _city,
+          country: _country,
+          zipCode: _zipCode,
+        );
+
+        // Call API to register customer
+        await _customerController.addCustomer(newCustomer);
+
+        // Navigate to login page on success
+        Navigator.pushReplacementNamed(context, '/loginPage');
+      } catch (error) {
+        // Handle errors (e.g., network issues)
+        setState(() {
+          _errorMessage = 'An error occurred. Please try again.';
+        });
+      }
     }
   }
 
@@ -38,7 +81,7 @@ class _RegisterState extends State<Register> {
           // Background image
           Positioned.fill(
             child: Image.asset(
-              'assets/registerBg.jpg', // Replace with your image path
+              'assets/registerBg.jpg',
               fit: BoxFit.cover,
             ),
           ),
@@ -54,9 +97,7 @@ class _RegisterState extends State<Register> {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Container(
-                      constraints: const BoxConstraints(
-                        maxWidth: 400,
-                      ),
+                      constraints: const BoxConstraints(maxWidth: 400),
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(0.7),
                         borderRadius: BorderRadius.circular(8.0),
@@ -105,17 +146,30 @@ class _RegisterState extends State<Register> {
                                   _name = value!.trim();
                                 }),
                                 const SizedBox(height: 16),
-                                _buildTextFormField('Email', (value) {
-                                  _email = value!.trim();
-                                }, TextInputType.emailAddress),
+                                _buildTextFormField(
+                                  'Email',
+                                      (value) {
+                                    _email = value!.trim();
+                                  },
+                                  TextInputType.emailAddress,
+                                ),
                                 const SizedBox(height: 16),
-                                _buildTextFormField('Password', (value) {
-                                  _password = value!.trim();
-                                }),
+                                _buildTextFormField(
+                                  'Password',
+                                      (value) {
+                                    _password = value!.trim();
+                                  },
+                                  TextInputType.text,
+                                  true,
+                                ),
                                 const SizedBox(height: 16),
-                                _buildTextFormField('Telephone Number', (value) {
-                                  _phoneNumber = value!.trim();
-                                }, TextInputType.phone),
+                                _buildTextFormField(
+                                  'Telephone Number',
+                                      (value) {
+                                    _phoneNumber = value!.trim();
+                                  },
+                                  TextInputType.phone,
+                                ),
                                 const SizedBox(height: 16),
                                 _buildTextFormField('Address', (value) {
                                   _address = value!.trim();
@@ -129,9 +183,13 @@ class _RegisterState extends State<Register> {
                                   _country = value!.trim();
                                 }),
                                 const SizedBox(height: 16),
-                                _buildTextFormField('Postal Code', (value) {
-                                  _zipCode = value!.trim();
-                                }, TextInputType.number),
+                                _buildTextFormField(
+                                  'Postal Code',
+                                      (value) {
+                                    _zipCode = value!.trim();
+                                  },
+                                  TextInputType.number,
+                                ),
                                 const SizedBox(height: 16),
                                 SizedBox(
                                   width: double.infinity,
@@ -159,11 +217,13 @@ class _RegisterState extends State<Register> {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.pushNamed(context, '/loginPage');
+                                        Navigator.pushNamed(
+                                            context, '/loginPage');
                                       },
                                       child: const Text(
-                                          'Login',
-                                          style: TextStyle(color: Colors.blueAccent),
+                                        'Login',
+                                        style:
+                                        TextStyle(color: Colors.blueAccent),
                                       ),
                                     ),
                                   ],

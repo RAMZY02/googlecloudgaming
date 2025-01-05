@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/customer.dart';
+import '../controller/customer_controller.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -8,15 +8,16 @@ class Login extends StatefulWidget {
   _LoginState createState() => _LoginState();
 }
 
-List<Customer> customers = [];
-
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
+  final Customer_Controller customerController = Customer_Controller();  // Initialize Customer_Controller
+
   String _email = '';
   String _password = '';
   String _errorMessage = '';
 
-  void _login() {
+  // Function to login
+  void _login() async {
     final form = _formKey.currentState;
     if (form != null && form.validate()) {
       form.save();
@@ -25,20 +26,23 @@ class _LoginState extends State<Login> {
         _errorMessage = '';
       });
 
-      Customer? customer = customers.firstWhereOrNull(
-            (cust) => cust.email.toLowerCase() == _email.toLowerCase(),
-      );
+      try {
+        // Call the loginUser function from the controller
+        final result = await customerController.loginUser(_email, _password);
 
-      if (customer == null) {
+        // Check the result message (login success or failure)
+        if (result == "Login successful.") {
+          // If login is successful, navigate to home page
+          Navigator.pushReplacementNamed(context, '/homePage');
+        } else {
+          setState(() {
+            _errorMessage = result;  // If any error, display the error message
+          });
+        }
+      } catch (error) {
         setState(() {
-          _errorMessage = 'Email tidak ditemukan.';
+          _errorMessage = 'An error occurred: $error';
         });
-      } else if (customer.password != _password) {
-        setState(() {
-          _errorMessage = 'Password salah.';
-        });
-      } else {
-        Navigator.pushReplacementNamed(context, '/homePage', arguments: customer);
       }
     }
   }
@@ -143,12 +147,6 @@ class _LoginState extends State<Login> {
                               suffixIcon: Icon(Icons.visibility),
                             ),
                             obscureText: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Masukkan password Anda';
-                              }
-                              return null;
-                            },
                             onSaved: (value) {
                               _password = value!.trim();
                             },
@@ -159,8 +157,8 @@ class _LoginState extends State<Login> {
                             child: ElevatedButton(
                               onPressed: _login,
                               child: const Text(
-                                  'Login',
-                                  style: TextStyle(color: Colors.white),
+                                'Login',
+                                style: TextStyle(color: Colors.white),
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blueAccent,
@@ -201,14 +199,5 @@ class _LoginState extends State<Login> {
         ],
       ),
     );
-  }
-}
-
-extension FirstWhereOrNullExtension<E> on Iterable<E> {
-  E? firstWhereOrNull(bool Function(E element) test) {
-    for (E element in this) {
-      if (test(element)) return element;
-    }
-    return null;
   }
 }
