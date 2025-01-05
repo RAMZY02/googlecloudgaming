@@ -14,6 +14,8 @@ class _DetailProductState extends State<DetailProduct> {
   bool isSearching = false;
   String? searchQuery;
 
+  final List<String> size = ['35', '36', '37', '38', '39', '40'];
+
   void _navigateToSearch() {
     if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
       Navigator.pushNamed(
@@ -64,7 +66,7 @@ class _DetailProductState extends State<DetailProduct> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
+                /*Expanded(
                   flex: 6, // Mengubah flex menjadi 6 untuk bagian kiri
                   child: Padding(
                     padding: const EdgeInsets.only(left: 16.0),
@@ -81,9 +83,9 @@ class _DetailProductState extends State<DetailProduct> {
                       ),
                     ),
                   ),
-                ),
+                ),*/
                 const SizedBox(width: 16),
-                Expanded(
+               /* Expanded(
                   flex: 4, // Mengubah flex menjadi 4 untuk bagian kanan
                   child: Padding(
                     padding: const EdgeInsets.only(right: 16.0, top: 30.0, left: 15.0),
@@ -127,7 +129,7 @@ class _DetailProductState extends State<DetailProduct> {
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
-                            children: product.product_size
+                            children: size
                                 .map<Widget>(
                                   (size) => ElevatedButton(
                                 onPressed: () {
@@ -177,7 +179,7 @@ class _DetailProductState extends State<DetailProduct> {
                       ),
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import '../controller/product_controller.dart'; // Import controller untuk fetch data
 import 'detail_product.dart';
 import 'navbar.dart';
 
@@ -12,100 +13,55 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  final List<Product> allProducts = [
-    Product(
-      product_id: '1',
-      product_name: 'Nike Roshe Run',
-      product_image: 'assets/nike.jpg',
-      product_description: 'Sepatu lari ringan dan nyaman dengan desain minimalis, cocok untuk penggunaan sehari-hari.',
-      product_category: 'sport',
-      product_gender: 'male',
-      product_size: ['35', '36', '37', '38', '39', '40'],
-      stock_qty: 60,
-      price: 900000,
-    ),
-    Product(
-      product_id: '2',
-      product_name: 'Reebok Rush',
-      product_image: 'assets/reebok.jpg',
-      product_description: 'Sepatu lari dengan teknologi responsif untuk performa maksimal, dirancang khusus untuk wanita.',
-      product_category: 'sport',
-      product_gender: 'female',
-      product_size: ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44'],
-      stock_qty: 20,
-      price: 500000,
-    ),
-    Product(
-      product_id: '3',
-      product_name: 'Adidas Fury',
-      product_image: 'assets/adidas.jpeg',
-      product_description: 'Sepatu kasual dengan desain futuristik dan nyaman dipakai sehari-hari, ideal untuk pria yang menginginkan gaya modern.',
-      product_category: 'kets',
-      product_gender: 'male',
-      product_size: ['38', '39', '40', '41', '42', '43', '44', '45'],
-      stock_qty: 80,
-      price: 770000,
-    ),
-    Product(
-      product_id: '4',
-      product_name: 'Adidas Neo Racer',
-      product_image: 'assets/neo.jpg',
-      product_description: 'Sepatu ringan dan fleksibel untuk aktivitas sehari-hari, dirancang khusus untuk wanita.',
-      product_category: 'sport',
-      product_gender: 'female',
-      product_size: ['33', '34', '35', '36', '37', '38'],
-      stock_qty: 20,
-      price: 700000,
-    ),
-    Product(
-      product_id: '5',
-      product_name: 'Adidas AX2 Full Black',
-      product_image: 'assets/ax2.jpg',
-      product_description: 'Sepatu outdoor dengan desain tangguh dan tahan lama, cocok untuk pria yang menyukai aktivitas luar ruangan.',
-      product_category: 'casual',
-      product_gender: 'male',
-      product_size: ['36', '37', '38', '39', '40', '41', '42', '43'],
-      stock_qty: 40,
-      price: 800000,
-    ),
-    Product(
-      product_id: '6',
-      product_name: 'Adidas Zoom',
-      product_image: 'assets/zoom.jpeg',
-      product_description: 'Sepatu kasual dengan desain modern dan nyaman untuk penggunaan sehari-hari, ideal untuk wanita yang menginginkan gaya trendi.',
-      product_category: 'casual',
-      product_gender: 'female',
-      product_size: ['32', '33', '34', '35', '36', '37', '38', '39', '40', '41'],
-      stock_qty: 40,
-      price: 500000,
-    ),
-  ];
-
+  final ProductController productController = ProductController(); // Inisialisasi controller
+  List<Product> allProducts = []; // List untuk menyimpan data produk
+  final List<String> size = ['35', '36', '37', '38', '39', '40'];
   String? searchQuery;
+  bool isLoading = true; // Untuk menampilkan loading saat data di-fetch
 
   @override
   void initState() {
     super.initState();
     searchQuery = widget.initialQuery;
-    if (searchQuery != null && searchQuery!.isNotEmpty) {
-      performSearch(searchQuery!);
+    fetchProducts(); // Panggil fungsi untuk fetch data dari database
+  }
+
+  // Fungsi untuk mengambil data produk dari controller
+  Future<void> fetchProducts() async {
+    try {
+      List<Product> products = await productController.getAllProducts(); // Memanggil controller untuk mendapatkan data produk
+      setState(() {
+        allProducts = products; // Menyimpan data produk yang didapat ke variabel allProducts
+        isLoading = false; // Mengubah status loading
+      });
+      // Lakukan pencarian jika ada query awal
+      if (searchQuery != null && searchQuery!.isNotEmpty) {
+        performSearch(searchQuery!);
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print("Error fetching products: $e"); // Menampilkan error jika pengambilan data gagal
     }
   }
 
+  // Fungsi untuk melakukan pencarian berdasarkan query
   void performSearch(String query) {
     setState(() {
-      searchQuery = query.trim();
+      searchQuery = query.trim(); // Menghapus spasi di awal dan akhir query pencarian
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Menyaring produk berdasarkan query pencarian
     final filteredProducts = searchQuery == null || searchQuery!.isEmpty
-        ? allProducts
+        ? allProducts // Jika tidak ada query pencarian, tampilkan semua produk
         : allProducts.where((product) {
-      final name = product.product_name.toLowerCase();
+      final name = product.product_Name.toLowerCase();
       final query = searchQuery?.toLowerCase() ?? '';
-      return name.contains(query);
+      return name.contains(query); // Menyaring produk yang sesuai dengan query pencarian
     }).toList();
 
     return Scaffold(
@@ -114,19 +70,21 @@ class _SearchState extends State<Search> {
         onSearchChanged: (value) {}, // Tidak digunakan untuk pencarian langsung
         onToggleSearch: () {
           setState(() {
-            searchQuery = '';
+            searchQuery = ''; // Reset pencarian
           });
         },
         onCartPressed: () {
-          Navigator.pushNamed(context, '/cartPage');
+          Navigator.pushNamed(context, '/cartPage'); // Navigasi ke halaman keranjang
         },
         onHistoryPressed: () {
-          Navigator.pushNamed(context, '/orderHistoryPage');
+          Navigator.pushNamed(context, '/orderHistoryPage'); // Navigasi ke halaman riwayat pesanan
         },
-        onSearchSubmitted: performSearch,
+        onSearchSubmitted: performSearch, // Pencarian yang dilakukan saat submit
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0), // Menambahkan padding kiri dan kanan secara global
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator()) // Loading indicator saat data masih diambil
+          : Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: filteredProducts.isEmpty
             ? Center(
           child: Column(
@@ -156,7 +114,7 @@ class _SearchState extends State<Search> {
                 Navigator.pushNamed(
                   context,
                   '/detailProductPage',
-                  arguments: product,
+                  arguments: product, // Mengirim data produk ke halaman detail
                 );
               },
               child: Card(
@@ -172,7 +130,7 @@ class _SearchState extends State<Search> {
                           top: Radius.circular(16),
                         ),
                         child: Image.asset(
-                          product.product_image,
+                          product.product_Image, // Menampilkan gambar produk
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
@@ -189,7 +147,7 @@ class _SearchState extends State<Search> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            product.product_name,
+                            product.product_Name,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
@@ -210,7 +168,7 @@ class _SearchState extends State<Search> {
                           Row(
                             children: [
                               Text(
-                                'Size: ${product.product_size.join(", ")}',
+                                'Size: 35-40',
                                 style: const TextStyle(fontSize: 12),
                               ),
                             ],

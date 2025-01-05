@@ -22,15 +22,15 @@ class _HomeState extends State<Home> {
   ];
 
   final List<Product> newRelease = [
-    Product(
+    /*Product(
       product_id: '1',
       product_name: 'Nike Roshe Run',
       product_image: 'assets/nike.jpg',
       product_description: 'Sepatu lari ringan dan nyaman dengan desain minimalis, cocok untuk penggunaan sehari-hari.',
       product_category: 'sport',
       product_gender: 'male',
-      product_size: ['35', '36', '37', '38', '39', '40'],
-      stock_qty: 60,
+      product_size: '37',
+      stok_qty: 60,
       price: 900000,
     ),
     Product(
@@ -40,8 +40,8 @@ class _HomeState extends State<Home> {
       product_description: 'Sepatu lari dengan teknologi responsif untuk performa maksimal, dirancang khusus untuk wanita.',
       product_category: 'sport',
       product_gender: 'female',
-      product_size: ['35', '36', '37', '38', '39', '40', '41', '42', '43', '44'],
-      stock_qty: 20,
+      product_size: '39',
+      stok_qty: 20,
       price: 500000,
     ),
     Product(
@@ -51,8 +51,8 @@ class _HomeState extends State<Home> {
       product_description: 'Sepatu kasual dengan desain futuristik dan nyaman dipakai sehari-hari, ideal untuk pria yang menginginkan gaya modern.',
       product_category: 'kets',
       product_gender: 'male',
-      product_size: ['38', '39', '40', '41', '42', '43', '44', '45'],
-      stock_qty: 80,
+      product_size: '40',
+      stok_qty: 80,
       price: 770000,
     ),
     Product(
@@ -62,8 +62,8 @@ class _HomeState extends State<Home> {
       product_description: 'Sepatu ringan dan fleksibel untuk aktivitas sehari-hari, dirancang khusus untuk wanita.',
       product_category: 'sport',
       product_gender: 'female',
-      product_size: ['33', '34', '35', '36', '37', '38'],
-      stock_qty: 20,
+      product_size: '37',
+      stok_qty: 20,
       price: 700000,
     ),
     Product(
@@ -73,8 +73,8 @@ class _HomeState extends State<Home> {
       product_description: 'Sepatu outdoor dengan desain tangguh dan tahan lama, cocok untuk pria yang menyukai aktivitas luar ruangan.',
       product_category: 'casual',
       product_gender: 'male',
-      product_size: ['36', '37', '38', '39', '40', '41', '42', '43'],
-      stock_qty: 40,
+      product_size: '38',
+      stok_qty: 40,
       price: 800000,
     ),
     Product(
@@ -84,11 +84,13 @@ class _HomeState extends State<Home> {
       product_description: 'Sepatu kasual dengan desain modern dan nyaman untuk penggunaan sehari-hari, ideal untuk wanita yang menginginkan gaya trendi.',
       product_category: 'casual',
       product_gender: 'female',
-      product_size: ['32', '33', '34', '35', '36', '37', '38', '39', '40', '41'],
-      stock_qty: 40,
+      product_size: '36',
+      stok_qty: 40,
       price: 500000,
-    ),
+    ),*/
   ];
+
+  final List<String> size = ['35', '36', '37', '38', '39', '40'];
 
   void _navigateToSearch() {
     if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
@@ -230,7 +232,7 @@ class _HomeState extends State<Home> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
+                /*Expanded(
                   child: ClipRRect(
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(12),
@@ -243,8 +245,8 @@ class _HomeState extends State<Home> {
                       },
                     ),
                   ),
-                ),
-                Padding(
+                ),*/
+                /*Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +267,7 @@ class _HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                ),
+                ),*/
               ],
             ),
           ),
