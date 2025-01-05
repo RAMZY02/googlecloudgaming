@@ -8,30 +8,7 @@ class Login extends StatefulWidget {
   _LoginState createState() => _LoginState();
 }
 
-List<Customer> dummyCustomers = [
-  Customer(
-    customerId: 'C001',
-    name: 'John Doe',
-    email: 'asd@g.com',
-    password: '123',
-    phoneNumber: '081234567890',
-    address: 'Jl. Merdeka No. 1',
-    city: 'Jakarta',
-    country: 'Indonesia',
-    zipCode: '10110',
-  ),
-  Customer(
-    customerId: 'C002',
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    password: 'securePass',
-    phoneNumber: '081298765432',
-    address: 'Jl. Sudirman No. 2',
-    city: 'Bandung',
-    country: 'Indonesia',
-    zipCode: '40291',
-  ),
-];
+List<Customer> customers = [];
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
@@ -48,7 +25,7 @@ class _LoginState extends State<Login> {
         _errorMessage = '';
       });
 
-      Customer? customer = dummyCustomers.firstWhereOrNull(
+      Customer? customer = customers.firstWhereOrNull(
             (cust) => cust.email.toLowerCase() == _email.toLowerCase(),
       );
 

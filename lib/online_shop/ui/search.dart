@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import '../models/product_card.dart';
 import '../controller/product_controller.dart'; // Import controller untuk fetch data
 import 'detail_product.dart';
 import 'navbar.dart';
@@ -14,7 +14,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   final ProductController productController = ProductController(); // Inisialisasi controller
-  List<Product> allProducts = []; // List untuk menyimpan data produk
+  List<Product_Cart> allProducts = []; // List untuk menyimpan data produk
   final List<String> size = ['35', '36', '37', '38', '39', '40'];
   String? searchQuery;
   bool isLoading = true; // Untuk menampilkan loading saat data di-fetch
@@ -29,7 +29,7 @@ class _SearchState extends State<Search> {
   // Fungsi untuk mengambil data produk dari controller
   Future<void> fetchProducts() async {
     try {
-      List<Product> products = await productController.getAllProducts(); // Memanggil controller untuk mendapatkan data produk
+      List<Product_Cart> products = await productController.getAllProducts(); // Memanggil controller untuk mendapatkan data produk
       setState(() {
         allProducts = products; // Menyimpan data produk yang didapat ke variabel allProducts
         isLoading = false; // Mengubah status loading
@@ -129,7 +129,7 @@ class _SearchState extends State<Search> {
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(16),
                         ),
-                        child: Image.asset(
+                        child: Image.network(
                           product.product_image, // Menampilkan gambar produk
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {

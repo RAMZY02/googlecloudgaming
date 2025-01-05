@@ -1,6 +1,7 @@
-import 'dart:math'; // Perlu untuk fungsi min
+import 'dart:math';
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import '../models/product_card.dart';
+import '../controller/product_controller.dart';
 import 'navbar.dart';
 
 class DetailProduct extends StatefulWidget {
@@ -13,8 +14,13 @@ class DetailProduct extends StatefulWidget {
 class _DetailProductState extends State<DetailProduct> {
   bool isSearching = false;
   String? searchQuery;
+  String? selectedSize;
+  int? stok;
+  int quantity = 0; // Variabel untuk jumlah barang
 
-  final List<String> size = ['35', '36', '37', '38', '39', '40'];
+  final List<String> size = ['40', '41', '42', '43', '44', '45'];
+
+  final ProductController productController = ProductController();
 
   void _navigateToSearch() {
     if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
@@ -26,9 +32,16 @@ class _DetailProductState extends State<DetailProduct> {
     }
   }
 
+  Future<void> getProductStock(String productName, String productSize) async {
+    final productStock = await productController.getProductStock(productName, productSize);
+    setState(() {
+      stok = productStock as int?;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final Product product = ModalRoute.of(context)!.settings.arguments as Product;
+    final Product_Cart product = ModalRoute.of(context)!.settings.arguments as Product_Cart;
 
     return Scaffold(
       appBar: Navbar(
@@ -58,20 +71,17 @@ class _DetailProductState extends State<DetailProduct> {
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: 1000, // Lebar maksimum konten dibatasi 1000 piksel
-          ),
+          constraints: const BoxConstraints(maxWidth: 1200),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /*Expanded(
-                  flex: 6, // Mengubah flex menjadi 6 untuk bagian kiri
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: Center(
-                      child: Image.asset(
+                Expanded(
+                  flex: 6,
+                  child: Column(
+                    children: [
+                      Image.asset(
                         product.product_image,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
@@ -81,105 +91,149 @@ class _DetailProductState extends State<DetailProduct> {
                           );
                         },
                       ),
-                    ),
+                    ],
                   ),
-                ),*/
+                ),
                 const SizedBox(width: 16),
-               /* Expanded(
-                  flex: 4, // Mengubah flex menjadi 4 untuk bagian kanan
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16.0, top: 30.0, left: 15.0),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.product_name,
-                            style: TextStyle(
-                              fontSize: min(MediaQuery.of(context).size.width * 0.09, 24),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            product.product_category,
-                            style: TextStyle(
-                              fontSize: min(MediaQuery.of(context).size.width * 0.08, 18),
-                              color: Colors.grey,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Rp ${product.price}',
-                            style: TextStyle(
-                              fontSize: min(MediaQuery.of(context).size.width * 0.08, 22),
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Select Size',
-                            style: TextStyle(
-                              fontSize: min(MediaQuery.of(context).size.width * 0.08, 20),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: size
-                                .map<Widget>(
-                                  (size) => ElevatedButton(
-                                onPressed: () {
-                                  print('Size selected: $size');
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.black,
-                                  backgroundColor: Colors.white,
-                                  side: const BorderSide(color: Colors.black),
+                // Bagian informasi produk
+                Expanded(
+                  flex: 4,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Nama produk
+                        Text(
+                          product.product_name,
+                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        // Kategori produk
+                        Text(
+                          product.product_category,
+                          style: const TextStyle(fontSize: 18, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 8),
+                        // Deskripsi produk
+                        Text(
+                          product.product_description,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        const SizedBox(height: 16),
+                        // Pilih ukuran
+                        const Text(
+                          'Select Size',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: size.map((currentSize) {
+                            final isSelected = selectedSize == currentSize; // Cek apakah ukuran sedang dipilih
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedSize = currentSize;
+                                  stok = null; // Reset stok
+                                  quantity = 0; // Reset jumlah barang
+                                });
+                                getProductStock(product.product_name, currentSize);
+                              },
+                              child: Container(
+                                width: 50, // Lebar tombol persegi
+                                height: 50, // Tinggi tombol persegi
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: isSelected ? Colors.blueAccent : Colors.white, // Warna biru jika dipilih
+                                  border: Border.all(
+                                    color: isSelected ? Colors.blueAccent : Colors.black, // Border warna biru
+                                    width: isSelected ? 2 : 1, // Ketebalan border
+                                  ),
+                                  borderRadius: BorderRadius.circular(8), // Sudut melengkung
                                 ),
                                 child: Text(
-                                  size,
+                                  currentSize,
                                   style: TextStyle(
-                                    fontSize: min(MediaQuery.of(context).size.width * 0.07, 14),
+                                    fontSize: 16,
+                                    color: isSelected ? Colors.white : Colors.black, // Warna teks
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                            )
-                                .toList(),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            '${product.product_description}',
-                            style: TextStyle(
-                              fontSize: min(MediaQuery.of(context).size.width * 0.08, 18),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 16),
+                        // Pilih jumlah barang dan harga barang
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: (quantity > 0)
+                                      ? () {
+                                    setState(() {
+                                      quantity--;
+                                    });
+                                  }
+                                      : null,
+                                  icon: const Icon(Icons.remove),
+                                ),
+                                Text(
+                                  quantity.toString(),
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                                IconButton(
+                                  onPressed: (stok != null && quantity < stok!)
+                                      ? () {
+                                    setState(() {
+                                      quantity++;
+                                    });
+                                  }
+                                      : null,
+                                  icon: const Icon(Icons.add),
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              print('Add to Bag: ${product.product_name}');
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
-                              minimumSize: const Size(double.infinity, 50),
-                            ),
-                            child: Text(
-                              'Add to Bag',
-                              style: TextStyle(
-                                fontSize: min(MediaQuery.of(context).size.width * 0.08, 16),
-                                color: Colors.white,
+                            Text(
+                              'Rp ${product.price}',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
                               ),
+                              textAlign: TextAlign.right,
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        // Informasi stok
+                        if (stok != null)
+                          Text(
+                            'Stok: $stok',
+                            style: const TextStyle(fontSize: 16, color: Colors.green),
                           ),
-                          const SizedBox(height: 16),
-                        ],
-                      ),
+                        const SizedBox(height: 24),
+                        // Tombol tambah ke keranjang
+                        ElevatedButton(
+                          onPressed: () {
+                            print('Add to Cart: ${product.product_name}');
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueAccent,
+                            minimumSize: const Size(double.infinity, 50),
+                          ),
+                          child: const Text(
+                            'Add to Bag',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),*/
+                ),
               ],
             ),
           ),

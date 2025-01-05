@@ -1,93 +1,30 @@
 import 'dart:math';
-import '../models/product.dart';
+import '../models/product_card.dart';
+import '../controller/product_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'navbar.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({Key? key, this.initialQuery}) : super(key: key);
+  final String? initialQuery;
 
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  final ProductController productController = ProductController();
   bool isSearching = false;
   String? searchQuery;
+
+  List<Product_Cart> newRelease = [];
+  bool isLoading = true; // Menambahkan status loading
 
   final List<Map<String, String>> carouselItems = [
     {'image': 'assets/carousel1.jpg', 'label': 'Promo 1'},
     {'image': 'assets/carousel2.jpg', 'label': 'Promo 2'},
     {'image': 'assets/carousel3.jpg', 'label': 'Promo 3'},
-  ];
-
-  final List<Product> newRelease = [
-    /*Product(
-      product_id: '1',
-      product_name: 'Nike Roshe Run',
-      product_image: 'assets/nike.jpg',
-      product_description: 'Sepatu lari ringan dan nyaman dengan desain minimalis, cocok untuk penggunaan sehari-hari.',
-      product_category: 'sport',
-      product_gender: 'male',
-      product_size: '37',
-      stok_qty: 60,
-      price: 900000,
-    ),
-    Product(
-      product_id: '2',
-      product_name: 'Reebok Rush',
-      product_image: 'assets/reebok.jpg',
-      product_description: 'Sepatu lari dengan teknologi responsif untuk performa maksimal, dirancang khusus untuk wanita.',
-      product_category: 'sport',
-      product_gender: 'female',
-      product_size: '39',
-      stok_qty: 20,
-      price: 500000,
-    ),
-    Product(
-      product_id: '3',
-      product_name: 'Adidas Fury',
-      product_image: 'assets/adidas.jpeg',
-      product_description: 'Sepatu kasual dengan desain futuristik dan nyaman dipakai sehari-hari, ideal untuk pria yang menginginkan gaya modern.',
-      product_category: 'kets',
-      product_gender: 'male',
-      product_size: '40',
-      stok_qty: 80,
-      price: 770000,
-    ),
-    Product(
-      product_id: '4',
-      product_name: 'Adidas Neo Racer',
-      product_image: 'assets/neo.jpg',
-      product_description: 'Sepatu ringan dan fleksibel untuk aktivitas sehari-hari, dirancang khusus untuk wanita.',
-      product_category: 'sport',
-      product_gender: 'female',
-      product_size: '37',
-      stok_qty: 20,
-      price: 700000,
-    ),
-    Product(
-      product_id: '5',
-      product_name: 'Adidas AX2 Full Black',
-      product_image: 'assets/ax2.jpg',
-      product_description: 'Sepatu outdoor dengan desain tangguh dan tahan lama, cocok untuk pria yang menyukai aktivitas luar ruangan.',
-      product_category: 'casual',
-      product_gender: 'male',
-      product_size: '38',
-      stok_qty: 40,
-      price: 800000,
-    ),
-    Product(
-      product_id: '6',
-      product_name: 'Adidas Zoom',
-      product_image: 'assets/zoom.jpeg',
-      product_description: 'Sepatu kasual dengan desain modern dan nyaman untuk penggunaan sehari-hari, ideal untuk wanita yang menginginkan gaya trendi.',
-      product_category: 'casual',
-      product_gender: 'female',
-      product_size: '36',
-      stok_qty: 40,
-      price: 500000,
-    ),*/
   ];
 
   final List<String> size = ['35', '36', '37', '38', '39', '40'];
@@ -103,6 +40,35 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    searchQuery = widget.initialQuery;
+    fetchProducts(); // Panggil fungsi untuk fetch data dari database
+  }
+
+  Future<void> fetchProducts() async {
+    try {
+      List<Product_Cart> products = await productController.getNewReleaseProducts(); // Memanggil controller untuk mendapatkan data produk
+      if (products != null) { // Pastikan produk tidak null
+        setState(() {
+          newRelease = products;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          newRelease = [];
+          isLoading = false; // Jika produk null, set data kosong
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print("Error fetching products: $e");
+    }
+  }
+
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Navbar(
@@ -135,7 +101,9 @@ class _HomeState extends State<Home> {
             const SizedBox(height: 30),
             _buildCarousel(),
             _buildNewReleaseSectionTitle(context),
-            _buildNewReleaseCarousel(context),
+            isLoading
+                ? const Center(child: CircularProgressIndicator()) // Menampilkan indikator loading
+                : _buildNewReleaseCarousel(context),
             const SizedBox(height: 100),
           ],
         ),
@@ -157,7 +125,7 @@ class _HomeState extends State<Home> {
                     item['image']!,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.broken_image, size: 50);
+                      return const Icon(Icons.broken_image, size: 50); // Gambar error jika gagal
                     },
                   ),
                   Positioned(
@@ -232,21 +200,21 @@ class _HomeState extends State<Home> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                /*Expanded(
+                Expanded(
                   child: ClipRRect(
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(12),
                     ),
-                    child: Image.asset(
+                    child: Image.network( // Menggunakan Image.network jika URL gambar
                       item.product_image,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.broken_image, size: 50);
+                        return const Icon(Icons.broken_image, size: 50); // Gambar error jika gagal
                       },
                     ),
                   ),
-                ),*/
-                /*Padding(
+                ),
+                Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,7 +235,7 @@ class _HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                ),*/
+                ),
               ],
             ),
           ),
