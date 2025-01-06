@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/product_card.dart';
 import '../controller/product_controller.dart';
 import 'navbar.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class DetailProduct extends StatefulWidget {
   const DetailProduct({Key? key}) : super(key: key);
@@ -16,11 +17,16 @@ class _DetailProductState extends State<DetailProduct> {
   String? searchQuery;
   String? selectedSize;
   int? stok;
-  int quantity = 0; // Variabel untuk jumlah barang
-
+  int quantity = 0;
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   final List<String> size = ['40', '41', '42', '43', '44', '45'];
-
   final ProductController productController = ProductController();
+
+  void initState() {
+    super.initState();
+    print('asda0');
+    _getJwtToken();
+  }
 
   void _navigateToSearch() {
     if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
@@ -37,6 +43,27 @@ class _DetailProductState extends State<DetailProduct> {
     setState(() {
       stok = productStock as int?;
     });
+  }
+
+  Future<void> _getJwtToken() async {
+    try {
+      String? jwtToken = await _secureStorage.read(key: 'jwt_token');
+      String? customerId = await _secureStorage.read(key: 'customer_id');
+
+      if (jwtToken != null) {
+        print("JWT Token: $jwtToken"); // Print JWT token
+      } else {
+        print("No JWT token found.");
+      }
+
+      if (customerId != null) {
+        print("Customer ID: $customerId"); // Print Customer ID
+      } else {
+        print("No Customer ID found.");
+      }
+    } catch (e) {
+      print("Error retrieving data from Secure Storage: $e");
+    }
   }
 
   @override

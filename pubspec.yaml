@@ -76,8 +76,8 @@ flutter:
     - assets/carousel1.jpg
     - assets/carousel2.jpg
     - assets/carousel3.jpg
-    - assets/loginBg.jpg
-    - assets/registerBg.jpg
+    - assets/loginImage.jpg
+    - assets/registerImage.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

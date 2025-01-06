@@ -73,17 +73,24 @@ class _HomeState extends State<Home> {
     }
   }
 
-  // Get JWT Token from secure storage
   Future<void> _getJwtToken() async {
     try {
       String? jwtToken = await _secureStorage.read(key: 'jwt_token');
+      String? customerId = await _secureStorage.read(key: 'customer_id');
+
       if (jwtToken != null) {
         print("JWT Token: $jwtToken"); // Print JWT token
       } else {
         print("No JWT token found.");
       }
+
+      if (customerId != null) {
+        print("Customer ID: $customerId"); // Print Customer ID
+      } else {
+        print("No Customer ID found.");
+      }
     } catch (e) {
-      print("Error retrieving JWT token: $e");
+      print("Error retrieving data from Secure Storage: $e");
     }
   }
 

@@ -75,8 +75,20 @@ class Customer_Controller {
         final data = json.decode(response.body);
         final token = data['token'];
 
-        // Store the JWT token securely using FlutterSecureStorage
+        // Decode the JWT token to extract the payload
+        final payloadMap = decodeJwtTokenManually(token);
+
+        // Get the customer ID from the decoded payload
+        String? customerId = payloadMap['customer_id'];
+
+        print("Customer ID: $customerId");
+
+        // Save the token and customer ID into secure storage
         await storage.write(key: 'jwt_token', value: token);
+
+        if (customerId != null) {
+          await storage.write(key: 'customer_id', value: customerId);
+        }
 
         return "Login successful.";
       } else {
@@ -85,6 +97,25 @@ class Customer_Controller {
       }
     } catch (e) {
       throw Exception('Error logging in: $e');
+    }
+  }
+
+  Map<String, dynamic> decodeJwtTokenManually(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) {
+        throw Exception('Invalid JWT token');
+      }
+
+      final payload = base64Url.decode(base64Url.normalize(parts[1]));
+      final payloadMap = json.decode(utf8.decode(payload)) as Map<String, dynamic>;
+
+      print("Decoded Payload: $payloadMap");
+
+      return payloadMap;
+    } catch (e) {
+      print("Error decoding JWT token: $e");
+      throw Exception('Error decoding JWT token');
     }
   }
 }
