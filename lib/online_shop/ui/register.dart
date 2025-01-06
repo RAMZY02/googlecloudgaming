@@ -92,7 +92,7 @@ class _RegisterState extends State<Register> {
           Expanded(
             flex: 5,
             child: Image.asset(
-              'assets/registerBg.jpg',
+              'registerImage.jpg',
               fit: BoxFit.cover,
               height: double.infinity,
             ),

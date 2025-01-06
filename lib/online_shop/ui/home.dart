@@ -139,7 +139,7 @@ class _HomeState extends State<Home> {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.asset(
+                  Image.network(
                     item['image']!,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {

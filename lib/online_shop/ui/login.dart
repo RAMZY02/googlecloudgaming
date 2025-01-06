@@ -58,7 +58,7 @@ class _LoginState extends State<Login> {
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/loginBg.jpg'), // Path gambar Anda
+                  image: AssetImage('loginImage.jpg'), // Path gambar Anda
                   fit: BoxFit.cover,
                 ),
               ),
