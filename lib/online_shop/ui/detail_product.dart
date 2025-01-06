@@ -18,7 +18,7 @@ class _DetailProductState extends State<DetailProduct> {
   bool isSearching = false;
   String? searchQuery;
   String? selectedSize;
-  String? stok;
+  int? stok;
   String? productId;  // Menambahkan variabel untuk productId
   int quantity = 0;
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
@@ -72,10 +72,12 @@ class _DetailProductState extends State<DetailProduct> {
     try {
       final productStock = await productController.getProductStock(productName, productSize);
       setState(() {
-        stok = productStock['stock_qty'].toString();  // Mengambil stok sebagai string
+        stok = productStock['stok_qty'];  // Mengambil stok sebagai string
         productId = productStock['product_id'].toString();  // Menyimpan product_id
       });
-      print('masok asu');
+      print(productStock);
+      print(stok);
+      print(productId);
     } catch (e) {
       print("Error fetching product stock: $e");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,7 +86,7 @@ class _DetailProductState extends State<DetailProduct> {
     }
   }
 
-  /*Future<void> _addToCart(Product_Cart product) async {
+  Future<void> _addToCart(Product_Cart product) async {
     if (customerId == null || jwtToken == null || productId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Customer ID, JWT Token, or Product ID not found.")),
@@ -94,7 +96,7 @@ class _DetailProductState extends State<DetailProduct> {
 
     try {
       final carts = await cartController.getCartsByCustomerId(
-        int.parse(customerId!),
+        customerId!,
         jwtToken!,
       );
 
@@ -111,7 +113,7 @@ class _DetailProductState extends State<DetailProduct> {
           cartId: cartId,
           productId: productId!,  // Menggunakan productId yang baru diperoleh
           quantity: quantity,
-          price: product.price,
+          price: product.price!,
         ),
         jwtToken!,
       );
@@ -131,7 +133,7 @@ class _DetailProductState extends State<DetailProduct> {
         const SnackBar(content: Text("An error occurred while adding item to cart.")),
       );
     }
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +177,7 @@ class _DetailProductState extends State<DetailProduct> {
                   child: Column(
                     children: [
                       Image.asset(
-                        product.product_image,
+                        product.product_image!,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
@@ -195,12 +197,12 @@ class _DetailProductState extends State<DetailProduct> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product.product_name,
+                          product.product_name!,
                           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          product.product_description,
+                          product.product_description!,
                           style: const TextStyle(fontSize: 16),
                         ),
                         const SizedBox(height: 16),
@@ -220,7 +222,7 @@ class _DetailProductState extends State<DetailProduct> {
                                   selectedSize = currentSize;
                                   quantity = 0;
                                 });
-                                getProductStock(product.product_name, currentSize);
+                                getProductStock(product.product_name!, currentSize);
                               },
                               child: Container(
                                 width: 50,
@@ -267,7 +269,7 @@ class _DetailProductState extends State<DetailProduct> {
                                   style: const TextStyle(fontSize: 16),
                                 ),
                                 IconButton(
-                                  onPressed: (stok != null && quantity < int.parse(stok!))
+                                  onPressed: (stok != null && quantity < stok!)
                                       ? () {
                                     setState(() {
                                       quantity++;
@@ -290,16 +292,16 @@ class _DetailProductState extends State<DetailProduct> {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        /*if (stok != null)
+                        if (stok != null)
                           Text(
                             'Stock: $stok',
                             style: const TextStyle(fontSize: 16, color: Colors.green),
-                          ),*/
+                          ),
                         const SizedBox(height: 24),
                         ElevatedButton(
-                          onPressed: null, /*quantity > 0 && selectedSize != null && productId != null
+                          onPressed: quantity > 0 && selectedSize != null && productId != null
                               ? () => _addToCart(product)
-                              : null,*/
+                              : null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueAccent,
                             minimumSize: const Size(double.infinity, 50),

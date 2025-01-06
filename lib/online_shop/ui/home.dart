@@ -231,7 +231,7 @@ class _HomeState extends State<Home> {
                       top: Radius.circular(12),
                     ),
                     child: Image.network(
-                      item.product_image,
+                      item.product_image!,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return const Icon(Icons.broken_image, size: 50);
@@ -245,7 +245,7 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        item.product_name,
+                        item.product_name!,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,

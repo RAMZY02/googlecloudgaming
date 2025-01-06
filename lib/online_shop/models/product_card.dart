@@ -1,10 +1,10 @@
 class Product_Cart {
-  final String product_name;
-  final String product_description;
-  final String product_category;
-  final String product_gender;
-  final int price;
-  final String product_image;
+  final String? product_name;
+  final String? product_description;
+  final String? product_category;
+  final String? product_gender;
+  final int? price;
+  final String? product_image;
 
   Product_Cart({
     required this.product_name,

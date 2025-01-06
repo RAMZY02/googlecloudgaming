@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/customer_register.dart';
 
 class Customer_Controller {
-  final String baseUrl = "http://192.168.18.18:3000/api/store";
+  final String baseUrl = "http://192.168.1.6:3000/api/store";
   final storage = FlutterSecureStorage();  // For securely storing the JWT token
   // Function to add a new customer
   Future<String> addCustomer(Customer customer) async {
