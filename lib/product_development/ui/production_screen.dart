@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 
@@ -84,6 +85,19 @@ class _ProductionScreenState extends State<ProductionScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const PendingDesignsScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.check),
+              title: const Text('Design Lists'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DesignListsScreen(),
                   ),
                 );
               },

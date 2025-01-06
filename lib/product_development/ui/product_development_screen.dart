@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:typed_data';
+import 'package:steppa/product_development/ui/design_lists_screen.dart';
+import 'package:steppa/product_development/ui/pending_designs_screen.dart';
+import 'package:steppa/product_development/ui/production_screen.dart';
 
 class ProductDevelopmentScreen extends StatefulWidget {
   const ProductDevelopmentScreen({Key? key}) : super(key: key);
@@ -31,21 +33,30 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
       ),
       drawer: Drawer(
         child: ListView(
+          padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Text(
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: const Text(
                 'Product Research & Development',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
               ),
             ),
             ListTile(
               leading: const Icon(Icons.upload),
               title: const Text('Design Workspace'),
               onTap: () {
-                Navigator.pushReplacement(
+                Navigator.pop(context);
+                Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ProductDevelopmentScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const ProductDevelopmentScreen(),
+                  ),
                 );
               },
             ),
@@ -53,14 +64,39 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
               leading: const Icon(Icons.pending),
               title: const Text('Pending Designs'),
               onTap: () {
-                Navigator.pushReplacementNamed(context, '/pendingDesigns');
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PendingDesignsScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.check),
+              title: const Text('Design Lists'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DesignListsScreen(),
+                  ),
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.factory),
               title: const Text('Production Planning'),
               onTap: () {
-                Navigator.pushReplacementNamed(context, '/production');
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProductionScreen(),
+                  ),
+                );
               },
             ),
             const Divider(),

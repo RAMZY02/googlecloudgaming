@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:steppa/product_development/models/design.dart';
-import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
+import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
 
-class PendingDesignsScreen extends StatefulWidget {
-  const PendingDesignsScreen({Key? key}) : super(key: key);
+class DesignListsScreen extends StatefulWidget {
+  const DesignListsScreen({Key? key}) : super(key: key);
 
   @override
-  State<PendingDesignsScreen> createState() => _PendingDesignsScreenState();
+  State<DesignListsScreen> createState() => _DesignListsScreenState();
 }
 
-class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
-  List<Design> designs = [
+class _DesignListsScreenState extends State<DesignListsScreen> {
+  final List<Design> designLists = [
     Design(
         name: "Nike Air Zoom",
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3zenzeewmwTBRTG0R1kZwDEiT013hybhtg&s",
@@ -39,29 +39,11 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
         bodyMaterial: "Kulit Sintesis"),
   ];
 
-  void _acceptDesign(int index) {
-    setState(() {
-      designs.removeAt(index);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Design accepted!')),
-    );
-  }
-
-  void _declineDesign(int index) {
-    setState(() {
-      designs.removeAt(index);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Design declined.')),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pending Designs'),
+        title: const Text('Design Lists'),
         backgroundColor: Colors.blue,
       ),
       drawer: Drawer(
@@ -147,9 +129,9 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.builder(
-          itemCount: designs.length,
+          itemCount: designLists.length,
           itemBuilder: (context, index) {
-            final design = designs[index];
+            final design = designLists[index];
             return Card(
               margin: const EdgeInsets.only(bottom: 16.0),
               child: ListTile(
@@ -160,34 +142,17 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
                   fit: BoxFit.cover,
                 ),
                 title: Text(design.name),
-                subtitle: const Text('Waiting for approval'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.info, color: Colors.blue),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PendingDesignDetailScreen(
-                              design: design,
-                              onAccept: () => _acceptDesign(index),
-                              onDecline: () => _declineDesign(index),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.check, color: Colors.green),
-                      onPressed: () => _acceptDesign(index),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.red),
-                      onPressed: () => _declineDesign(index),
-                    ),
-                  ],
+                subtitle: Text(design.price),
+                trailing: IconButton(
+                  icon: const Icon(Icons.info, color: Colors.blue),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DesignListsDetailScreen(design: design),
+                      ),
+                    );
+                  },
                 ),
               ),
             );
@@ -198,17 +163,10 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
   }
 }
 
-class PendingDesignDetailScreen extends StatelessWidget {
+class DesignListsDetailScreen extends StatelessWidget {
   final Design design;
-  final VoidCallback onAccept;
-  final VoidCallback onDecline;
 
-  const PendingDesignDetailScreen({
-    Key? key,
-    required this.design,
-    required this.onAccept,
-    required this.onDecline,
-  }) : super(key: key);
+  const DesignListsDetailScreen({Key? key, required this.design}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -251,49 +209,6 @@ class PendingDesignDetailScreen extends StatelessWidget {
             Text('Sole Material: ${design.soleMaterial}', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
             Text('Body Material: ${design.bodyMaterial}', style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 24),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch, // Membuat tombol penuh secara horizontal
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Latar belakang hijau
-                    padding: const EdgeInsets.symmetric(vertical: 16), // Ukuran tombol
-                  ),
-                  onPressed: () {
-                    onAccept();
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'Accept Design',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold, // Tulisan tebal
-                      color: Colors.white, // Tulisan putih
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8), // Jarak antara tombol
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red, // Latar belakang merah
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  onPressed: () {
-                    onDecline();
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'Decline Design',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            )
           ],
         ),
       ),
