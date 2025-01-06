@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
-import 'package:image_picker/image_picker.dart';
 
 class ProductDevelopmentScreen extends StatefulWidget {
   const ProductDevelopmentScreen({Key? key}) : super(key: key);
@@ -10,35 +9,24 @@ class ProductDevelopmentScreen extends StatefulWidget {
 }
 
 class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
-  Uint8List? _selectedImageBytes;
   String? _imageLink;
   String? _shoeName;
+  String? _selectedCategory;
+  String? _selectedGender;
+  String? _selectedSoleMaterial;
+  String? _selectedBodyMaterial;
+  String? _price;
 
-  Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedImage = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedImage != null) {
-      final imageBytes = await pickedImage.readAsBytes();
-      setState(() {
-        _selectedImageBytes = imageBytes;
-      });
-    }
-  }
-
-  void _setImageFromLink() {
-    if (_imageLink != null && _imageLink!.isNotEmpty) {
-      setState(() {
-        _selectedImageBytes = null; // Reset any previously selected image
-      });
-    }
-  }
+  final List<String> _categories = ['Casual', 'Running', 'Training'];
+  final List<String> _genders = ['Male', 'Female'];
+  final List<String> _soleMaterials = ['Karet', 'Foam', 'Plastik'];
+  final List<String> _bodyMaterials = ['Kain', 'Kulit', 'Kulit Sintesis'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Design Upload'),
+        title: const Text('Design Workspace'),
         backgroundColor: Colors.blue,
       ),
       drawer: Drawer(
@@ -47,13 +35,13 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
             const DrawerHeader(
               decoration: BoxDecoration(color: Colors.blue),
               child: Text(
-                'Navigation',
+                'Product Research & Development',
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
             ListTile(
               leading: const Icon(Icons.upload),
-              title: const Text('Design Upload'),
+              title: const Text('Design Workspace'),
               onTap: () {
                 Navigator.pushReplacement(
                   context,
@@ -89,51 +77,131 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Shoe Name',
-                border: OutlineInputBorder(),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Shoe Name',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _shoeName = value;
+                  });
+                },
               ),
-              onChanged: (value) {
-                setState(() {
-                  _shoeName = value;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Image Link (Google Drive)',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'Category',
+                  border: OutlineInputBorder(),
+                ),
+                value: _selectedCategory,
+                items: _categories
+                    .map((category) => DropdownMenuItem(
+                  value: category,
+                  child: Text(category),
+                ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCategory = value;
+                  });
+                },
               ),
-              onChanged: (value) {
-                setState(() {
-                  _imageLink = value;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: _pickImage,
-              child: Container(
-                height: 450,
+              const SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'Gender',
+                  border: OutlineInputBorder(),
+                ),
+                value: _selectedGender,
+                items: _genders
+                    .map((gender) => DropdownMenuItem(
+                  value: gender,
+                  child: Text(gender),
+                ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedGender = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Price (Rp)',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    _price = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'Sole Material',
+                  border: OutlineInputBorder(),
+                ),
+                value: _selectedSoleMaterial,
+                items: _soleMaterials
+                    .map((material) => DropdownMenuItem(
+                  value: material,
+                  child: Text(material),
+                ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedSoleMaterial = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'Body Material',
+                  border: OutlineInputBorder(),
+                ),
+                value: _selectedBodyMaterial,
+                items: _bodyMaterials
+                    .map((material) => DropdownMenuItem(
+                  value: material,
+                  child: Text(material),
+                ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedBodyMaterial = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Image Link (Google Drive)',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _imageLink = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              Container(
+                height: 750,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: _selectedImageBytes != null
-                    ? ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.memory(
-                    _selectedImageBytes!,
-                    fit: BoxFit.cover,
-                  ),
-                )
-                    : (_imageLink != null && _imageLink!.isNotEmpty)
+                child: (_imageLink != null && _imageLink!.isNotEmpty)
                     ? ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
@@ -148,30 +216,35 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                 )
                     : const Center(
                   child: Text(
-                    'Tap to upload image or use link',
+                    'Image will be displayed here',
                     style: TextStyle(color: Colors.grey),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if ((_selectedImageBytes != null || (_imageLink != null && _imageLink!.isNotEmpty)) &&
-                    _shoeName != null &&
-                    _shoeName!.isNotEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Design "$_shoeName" Uploaded Successfully!')),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please complete all fields!')),
-                  );
-                }
-              },
-              child: const Text('Submit Design'),
-            ),
-          ],
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if ((_imageLink != null && _imageLink!.isNotEmpty) &&
+                      _shoeName != null &&
+                      _shoeName!.isNotEmpty &&
+                      _selectedCategory != null &&
+                      _selectedGender != null &&
+                      _price != null &&
+                      _selectedSoleMaterial != null &&
+                      _selectedBodyMaterial != null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Design "$_shoeName" Uploaded Successfully!')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Please complete all fields!')),
+                    );
+                  }
+                },
+                child: const Text('Submit Design'),
+              ),
+            ],
+          ),
         ),
       ),
     );
