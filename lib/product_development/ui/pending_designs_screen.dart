@@ -14,13 +14,28 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
   List<Design> designs = [
     Design(
         name: "Nike Air Zoom",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3zenzeewmwTBRTG0R1kZwDEiT013hybhtg&s"),
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3zenzeewmwTBRTG0R1kZwDEiT013hybhtg&s",
+        category: "Running",
+        gender: "Male",
+        price: "Rp 1,500,000",
+        soleMaterial: "Karet",
+        bodyMaterial: "Kain"),
     Design(
         name: "Adidas Ultra Boost",
-        image: "https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/p1/294/2024/08/27/Artikel-452-3055304001.jpg"),
+        image: "https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/p1/294/2024/08/27/Artikel-452-3055304001.jpg",
+        category: "Casual",
+        gender: "Female",
+        price: "Rp 2,000,000",
+        soleMaterial: "Foam",
+        bodyMaterial: "Kulit"),
     Design(
         name: "Puma RS-X",
-        image: "https://m.media-amazon.com/images/I/71Vhhy6VmSL._AC_SL1500_.jpg"),
+        image: "https://m.media-amazon.com/images/I/71Vhhy6VmSL._AC_SL1500_.jpg",
+        category: "Training",
+        gender: "Male",
+        price: "Rp 1,800,000",
+        soleMaterial: "Plastik",
+        bodyMaterial: "Kulit Sintesis"),
   ];
 
   void _acceptDesign(int index) {
@@ -28,7 +43,16 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
       designs.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Design accepted successfully!')),
+      const SnackBar(content: Text('Design accepted!')),
+    );
+  }
+
+  void _declineDesign(int index) {
+    setState(() {
+      designs.removeAt(index);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Design declined.')),
     );
   }
 
@@ -57,7 +81,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.upload),
-              title: const Text('Design Upload'),
+              title: const Text('Design Workspace'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -123,17 +147,34 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
                 ),
                 title: Text(design.name),
                 subtitle: const Text('Waiting for approval'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PendingDesignDetailScreen(
-                        design: design,
-                        onAccept: () => _acceptDesign(index),
-                      ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.info, color: Colors.blue),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PendingDesignDetailScreen(
+                              design: design,
+                              onAccept: () => _acceptDesign(index),
+                              onDecline: () => _declineDesign(index),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
+                    IconButton(
+                      icon: const Icon(Icons.check, color: Colors.green),
+                      onPressed: () => _acceptDesign(index),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close, color: Colors.red),
+                      onPressed: () => _declineDesign(index),
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -146,11 +187,13 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
 class PendingDesignDetailScreen extends StatelessWidget {
   final Design design;
   final VoidCallback onAccept;
+  final VoidCallback onDecline;
 
   const PendingDesignDetailScreen({
     Key? key,
     required this.design,
     required this.onAccept,
+    required this.onDecline,
   }) : super(key: key);
 
   @override
@@ -160,14 +203,14 @@ class PendingDesignDetailScreen extends StatelessWidget {
         title: const Text('Design Details'),
         backgroundColor: Colors.blue,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(
               design.image,
-              height: 500,
+              height: 750,
               width: double.infinity,
               fit: BoxFit.cover,
             ),
@@ -179,14 +222,64 @@ class PendingDesignDetailScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                onAccept();
-                Navigator.pop(context);
-              },
-              child: const Text('Accept Design'),
+            const SizedBox(height: 8),
+            const Text(
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.',
+              style: TextStyle(fontSize: 16),
             ),
+            const SizedBox(height: 24),
+            Text('Category: ${design.category}', style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 8),
+            Text('Gender: ${design.gender}', style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 8),
+            Text('Price: ${design.price}', style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 8),
+            Text('Sole Material: ${design.soleMaterial}', style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 8),
+            Text('Body Material: ${design.bodyMaterial}', style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 24),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch, // Membuat tombol penuh secara horizontal
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Latar belakang hijau
+                    padding: const EdgeInsets.symmetric(vertical: 16), // Ukuran tombol
+                  ),
+                  onPressed: () {
+                    onAccept();
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Accept Design',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold, // Tulisan tebal
+                      color: Colors.white, // Tulisan putih
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8), // Jarak antara tombol
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red, // Latar belakang merah
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  onPressed: () {
+                    onDecline();
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Decline Design',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),
