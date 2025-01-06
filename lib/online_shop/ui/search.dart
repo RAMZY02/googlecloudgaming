@@ -59,7 +59,7 @@ class _SearchState extends State<Search> {
     final filteredProducts = searchQuery == null || searchQuery!.isEmpty
         ? allProducts // Jika tidak ada query pencarian, tampilkan semua produk
         : allProducts.where((product) {
-      final name = product.product_name.toLowerCase();
+      final name = product.product_name!.toLowerCase();
       final query = searchQuery?.toLowerCase() ?? '';
       return name.contains(query); // Menyaring produk yang sesuai dengan query pencarian
     }).toList();
@@ -130,7 +130,7 @@ class _SearchState extends State<Search> {
                           top: Radius.circular(16),
                         ),
                         child: Image.network(
-                          product.product_image, // Menampilkan gambar produk
+                          product.product_image!, // Menampilkan gambar produk
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
@@ -147,7 +147,7 @@ class _SearchState extends State<Search> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            product.product_name,
+                            product.product_name!,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,

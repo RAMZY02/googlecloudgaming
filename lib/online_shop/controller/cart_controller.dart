@@ -4,7 +4,7 @@ import '../models/cart.dart';
 import '../models/cart_item.dart';
 
 class CartController {
-  final String baseUrl = "http://192.168.18.18:3000/api/store";
+  final String baseUrl = "http://192.168.1.6:3000/api/store";
 
   // Function to add an item to the cart
   Future<bool> addToCart(cartItem request, String token) async {
@@ -32,7 +32,7 @@ class CartController {
     }
   }
 
-  Future<List<Cart>> getCartsByCustomerId(int customerId, String token) async {
+  Future<List<Cart>> getCartsByCustomerId(String customerId, String token) async {
     final url = Uri.parse("$baseUrl/carts/customer/$customerId");
 
     try {
