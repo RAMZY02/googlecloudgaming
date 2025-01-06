@@ -4,7 +4,7 @@ import '../models/cart.dart';
 import '../models/cart_item.dart';
 
 class CartController {
-  final String baseUrl = "http://192.168.1.6:3000/api/store";
+  final String baseUrl = "http://192.168.18.18:3000/api/store";
 
   // Function to add an item to the cart
   Future<bool> addToCart(cartItem request, String token) async {
@@ -39,7 +39,6 @@ class CartController {
       final response = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': 'Bearer $token', // Include the auth token here
         },
       );

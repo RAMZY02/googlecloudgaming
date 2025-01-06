@@ -157,7 +157,6 @@ class _CartState extends State<Cart> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Text('Warna: ${item['colors']}'),
                                 Text('Ukuran: ${item['size']}'),
                                 const SizedBox(height: 8),
                                 Row(

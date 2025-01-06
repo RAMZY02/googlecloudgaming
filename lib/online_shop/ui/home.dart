@@ -18,6 +18,8 @@ class _HomeState extends State<Home> {
   final ProductController productController = ProductController();
   bool isSearching = false;
   String? searchQuery;
+  String? jwtToken;
+  String? customerId;
 
   List<Product_Cart> newRelease = [];
   bool isLoading = true;
@@ -75,20 +77,8 @@ class _HomeState extends State<Home> {
 
   Future<void> _getJwtToken() async {
     try {
-      String? jwtToken = await _secureStorage.read(key: 'jwt_token');
-      String? customerId = await _secureStorage.read(key: 'customer_id');
-
-      if (jwtToken != null) {
-        print("JWT Token: $jwtToken"); // Print JWT token
-      } else {
-        print("No JWT token found.");
-      }
-
-      if (customerId != null) {
-        print("Customer ID: $customerId"); // Print Customer ID
-      } else {
-        print("No Customer ID found.");
-      }
+      jwtToken = await _secureStorage.read(key: 'jwt_token');
+      customerId = await _secureStorage.read(key: 'customer_id');
     } catch (e) {
       print("Error retrieving data from Secure Storage: $e");
     }

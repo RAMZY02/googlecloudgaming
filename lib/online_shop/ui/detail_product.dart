@@ -99,7 +99,8 @@ class _DetailProductState extends State<DetailProduct> {
         customerId!,
         jwtToken!,
       );
-
+      print(jwtToken);
+      print(customerId);
       if (carts.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("No carts found for customer.")),
@@ -108,6 +109,7 @@ class _DetailProductState extends State<DetailProduct> {
       }
 
       final cartId = carts.first.cartId;
+      print(cartId);
       final success = await cartController.addToCart(
         cartItem(
           cartId: cartId,
