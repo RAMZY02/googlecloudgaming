@@ -72,7 +72,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
                 color: Colors.blue,
               ),
               child: const Text(
-                'Product Development',
+                'Product Research & Development',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
