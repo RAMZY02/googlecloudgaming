@@ -14,6 +14,9 @@ class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   final _customerController = Customer_Controller(); // Initialize CustomerController
 
+  // Add ScrollController
+  final ScrollController _scrollController = ScrollController();
+
   String _name = '';
   String _email = '';
   String _password = '';
@@ -23,6 +26,13 @@ class _RegisterState extends State<Register> {
   String _country = '';
   String _zipCode = '';
   String _errorMessage = '';
+
+  @override
+  void dispose() {
+    // Dispose of the ScrollController when the widget is disposed.
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Future<void> _register() async {
     final form = _formKey.currentState;
@@ -76,163 +86,164 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Row(
         children: [
-          // Background image
-          Positioned.fill(
+          // Left side: Image
+          Expanded(
+            flex: 5,
             child: Image.asset(
               'assets/registerBg.jpg',
               fit: BoxFit.cover,
+              height: double.infinity,
             ),
           ),
-          ScrollConfiguration(
-            behavior: ScrollBehavior(),
-            child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height,
-                ),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Container(
-                      constraints: const BoxConstraints(maxWidth: 400),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
+
+          // Right side: Form
+          Expanded(
+            flex: 5,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+                child: Scrollbar(
+                  controller: _scrollController, // Attach the ScrollController
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    controller: _scrollController, // Attach the ScrollController
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(left: 116.0), // Add left margin
+                          child: const Text(
                             'REGISTER',
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
-                          const SizedBox(height: 16),
-                          const Text(
+                        ),
+                        const SizedBox(height: 16),
+                        Container(
+                          margin: const EdgeInsets.only(left: 116.0), // Add left margin
+                          child: const Text(
                             'Daftar untuk membuat akun baru dan menikmati berbagai keuntungan.',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.black54),
                           ),
-                          const SizedBox(height: 24),
-                          if (_errorMessage.isNotEmpty)
-                            Container(
-                              padding: const EdgeInsets.all(8.0),
-                              color: Colors.red[100],
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.error, color: Colors.red),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      _errorMessage,
-                                      style: const TextStyle(color: Colors.red),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          const SizedBox(height: 16),
-                          Form(
-                            key: _formKey,
-                            child: Column(
+                        ),
+                        const SizedBox(height: 24),
+                        if (_errorMessage.isNotEmpty)
+                          Container(
+                            padding: const EdgeInsets.all(8.0),
+                            color: Colors.red[100],
+                            child: Row(
                               children: [
-                                _buildTextFormField('Full Name', (value) {
-                                  _name = value!.trim();
-                                }),
-                                const SizedBox(height: 16),
-                                _buildTextFormField(
-                                  'Email',
-                                      (value) {
-                                    _email = value!.trim();
-                                  },
-                                  TextInputType.emailAddress,
-                                ),
-                                const SizedBox(height: 16),
-                                _buildTextFormField(
-                                  'Password',
-                                      (value) {
-                                    _password = value!.trim();
-                                  },
-                                  TextInputType.text,
-                                  true,
-                                ),
-                                const SizedBox(height: 16),
-                                _buildTextFormField(
-                                  'Telephone Number',
-                                      (value) {
-                                    _phoneNumber = value!.trim();
-                                  },
-                                  TextInputType.phone,
-                                ),
-                                const SizedBox(height: 16),
-                                _buildTextFormField('Address', (value) {
-                                  _address = value!.trim();
-                                }),
-                                const SizedBox(height: 16),
-                                _buildTextFormField('City', (value) {
-                                  _city = value!.trim();
-                                }),
-                                const SizedBox(height: 16),
-                                _buildTextFormField('Country', (value) {
-                                  _country = value!.trim();
-                                }),
-                                const SizedBox(height: 16),
-                                _buildTextFormField(
-                                  'Postal Code',
-                                      (value) {
-                                    _zipCode = value!.trim();
-                                  },
-                                  TextInputType.number,
-                                ),
-                                const SizedBox(height: 16),
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 50,
-                                  child: ElevatedButton(
-                                    onPressed: _register,
-                                    child: const Text('Register'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blueAccent,
-                                      foregroundColor: Colors.white,
-                                      textStyle: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                const Icon(Icons.error, color: Colors.red),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    _errorMessage,
+                                    style: const TextStyle(color: Colors.red),
                                   ),
-                                ),
-                                const SizedBox(height: 16),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      "Already have an account?",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, '/loginPage');
-                                      },
-                                      child: const Text(
-                                        'Login',
-                                        style:
-                                        TextStyle(color: Colors.blueAccent),
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        const SizedBox(height: 16),
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              _buildTextFormField('Full Name', (value) {
+                                _name = value!.trim();
+                              }),
+                              const SizedBox(height: 16),
+                              _buildTextFormField(
+                                'Email',
+                                    (value) {
+                                  _email = value!.trim();
+                                },
+                                TextInputType.emailAddress,
+                              ),
+                              const SizedBox(height: 16),
+                              _buildTextFormField(
+                                'Password',
+                                    (value) {
+                                  _password = value!.trim();
+                                },
+                                TextInputType.text,
+                                true,
+                              ),
+                              const SizedBox(height: 16),
+                              _buildTextFormField(
+                                'Telephone Number',
+                                    (value) {
+                                  _phoneNumber = value!.trim();
+                                },
+                                TextInputType.phone,
+                              ),
+                              const SizedBox(height: 16),
+                              _buildTextFormField('Address', (value) {
+                                _address = value!.trim();
+                              }),
+                              const SizedBox(height: 16),
+                              _buildTextFormField('City', (value) {
+                                _city = value!.trim();
+                              }),
+                              const SizedBox(height: 16),
+                              _buildTextFormField('Country', (value) {
+                                _country = value!.trim();
+                              }),
+                              const SizedBox(height: 16),
+                              _buildTextFormField(
+                                'Postal Code',
+                                    (value) {
+                                  _zipCode = value!.trim();
+                                },
+                                TextInputType.number,
+                              ),
+                              const SizedBox(height: 16),
+                              SizedBox(
+                                width: 460,
+                                height: 50,
+                                child: ElevatedButton(
+                                  onPressed: _register,
+                                  child: const Text('Register'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blueAccent,
+                                    foregroundColor: Colors.white,
+                                    textStyle: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Already have an account?",
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, '/loginPage');
+                                    },
+                                    child: const Text(
+                                      'Login',
+                                      style:
+                                      TextStyle(color: Colors.blueAccent),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -249,25 +260,31 @@ class _RegisterState extends State<Register> {
       void Function(String?) onSaved, [
         TextInputType keyboardType = TextInputType.text,
         bool obscureText = false,
+        double width = 500, // Default to full width if no width is provided
       ]) {
-    return TextFormField(
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.black),
-        floatingLabelStyle: const TextStyle(color: Colors.deepPurple),
-        filled: true,
-        fillColor: Colors.white,
-        border: const OutlineInputBorder(),
+    return Container(
+      width: width, // Apply the specified width
+      padding: const EdgeInsets.symmetric(horizontal: 16.0), // Padding for better appearance
+      child: TextFormField(
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(color: Colors.black),
+          floatingLabelStyle: const TextStyle(color: Colors.deepPurple),
+          filled: true,
+          fillColor: Colors.white,
+          border: const OutlineInputBorder(),
+        ),
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Masukkan $label Anda';
+          }
+          return null;
+        },
+        onSaved: onSaved,
       ),
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Masukkan $label Anda';
-        }
-        return null;
-      },
-      onSaved: onSaved,
     );
   }
 }
+

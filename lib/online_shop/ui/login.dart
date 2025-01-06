@@ -10,7 +10,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  final Customer_Controller customerController = Customer_Controller();  // Initialize Customer_Controller
+  final Customer_Controller customerController = Customer_Controller(); // Initialize Customer_Controller
 
   String _email = '';
   String _password = '';
@@ -36,7 +36,7 @@ class _LoginState extends State<Login> {
           Navigator.pushReplacementNamed(context, '/homePage');
         } else {
           setState(() {
-            _errorMessage = result;  // If any error, display the error message
+            _errorMessage = result; // If any error, display the error message
           });
         }
       } catch (error) {
@@ -50,34 +50,34 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Row(
         children: [
-          // Background image
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/loginBg.jpg'), // Path gambar Anda
-                fit: BoxFit.cover,
+          // Left side with image
+          Expanded(
+            flex: 1,
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/loginBg.jpg'), // Path gambar Anda
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
-          // Content
-          Center(
-            child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: 400,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6), // Warna hitam transparan
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      padding: const EdgeInsets.all(16.0),
+
+          // Right side with form
+          Expanded(
+            flex: 1,
+            child: Center(
+              child: SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: 400,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Form(
+                      key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -86,14 +86,14 @@ class _LoginState extends State<Login> {
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                           const SizedBox(height: 8),
                           const Text(
                             'Anda akan mendapatkan diskon 20% untuk pembelian pertama Anda. Dapatkan penawaran, undangan, dan hadiah eksklusif.',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black54,
                               fontSize: 14,
                             ),
                           ),
@@ -154,6 +154,7 @@ class _LoginState extends State<Login> {
                           const SizedBox(height: 16),
                           SizedBox(
                             width: double.infinity,
+                            height: 50,
                             child: ElevatedButton(
                               onPressed: _login,
                               child: const Text(
@@ -175,7 +176,7 @@ class _LoginState extends State<Login> {
                             children: [
                               const Text(
                                 "Don't have an account?",
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(color: Colors.black54),
                               ),
                               TextButton(
                                 onPressed: () {
