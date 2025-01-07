@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:steppa/welcome.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -39,9 +40,13 @@ class _AuthScreenState extends State<AuthScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      print('User logged in: ${userCredential.user?.email}');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login successful!')),
+
+      final String? username = userCredential.user?.email; // Ambil email pengguna
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WelcomeScreen(username: username ?? 'User'),
+        ),
       );
     } catch (e) {
       print('Error: $e');
@@ -50,6 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

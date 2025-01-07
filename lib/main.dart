@@ -16,6 +16,7 @@ import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
+import 'package:steppa/welcome.dart';
 import 'online_shop/ui/detail_product.dart';
 import 'online_shop/ui/login.dart';
 import 'online_shop/ui/register.dart';
