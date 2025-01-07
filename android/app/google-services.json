@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "383677905477",
+    "project_id": "apt-vine-442908-c7",
+    "storage_bucket": "apt-vine-442908-c7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383677905477:android:f77deeb2d09f7bbc8c812c",
+        "android_client_info": {
+          "package_name": "com.example.steppa2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmefzCi2zmyLsQ2s0xV8DukYxx5QrzAoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

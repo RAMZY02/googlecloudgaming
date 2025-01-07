@@ -155,15 +155,15 @@ class LoginScreen extends StatelessWidget {
                 child: Text('Master Admin'),
               ),
             ),
-            // SizedBox(height: 20),
-            // Center(
-            //   child: ElevatedButton(
-            //     onPressed: () {
-            //       Navigator.pushNamed(context, '/oracleData');
-            //     },
-            //     child: Text('Oracle Data'),
-            //   ),
-            // ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/firebase');
+                },
+                child: Text('Firebase'),
+              ),
+            ),
           ],
         ),
       ),

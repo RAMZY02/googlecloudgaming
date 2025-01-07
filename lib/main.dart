@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:steppa/admin/ui/delete_design_screen.dart';
 import 'package:steppa/admin/ui/manage_stock_screen.dart';
@@ -6,6 +7,7 @@ import 'package:steppa/factory/ui/factory_attendance_screen.dart';
 import 'package:steppa/factory/ui/factory_dashboard_screen.dart';
 import 'package:steppa/factory/ui/factory_inventory_screen.dart';
 import 'package:steppa/factory/ui/factory_materials_screen.dart';
+import 'package:steppa/firebase.dart';
 import 'package:steppa/head_office/ui/head_office_dashboard_screen.dart';
 import 'package:steppa/online_shop/ui/cart.dart';
 import 'package:steppa/online_shop/ui/home.dart';
@@ -19,8 +21,13 @@ import 'online_shop/ui/login.dart';
 import 'online_shop/ui/register.dart';
 import 'online_shop/ui/search.dart';
 import 'offline_shop/ui/offline_shop_screen.dart';
+import 'firebase_options.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -59,6 +66,7 @@ class MyApp extends StatelessWidget {
         '/designlists': (context) => const OfflineShopScreen(),
         '/manage-stock': (context) => const ManageStockScreen(),
         '/delete-design': (context) => const DeleteDesignScreen(),
+        '/firebase': (context) => const AuthScreen(),
       },
       home: const LoginScreen(),
     );
