@@ -41,11 +41,11 @@ class _HomeState extends State<Home> {
   // Secure Storage instance
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
-  void _navigateToSearch(String query) {
+  void _navigateToSearch(dynamic value) {
     Navigator.pushNamed(
       context,
       '/searchPage',
-      arguments: query,
+      arguments: value,
     );
   }
 

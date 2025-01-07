@@ -5,7 +5,10 @@ import 'navbar.dart';
 
 class Search extends StatefulWidget {
   final String? initialQuery;
-  const Search({Key? key, this.initialQuery}) : super(key: key);
+  final String? initialCategory;
+
+  const Search({Key? key, this.initialQuery, this.initialCategory})
+      : super(key: key);
 
   @override
   _SearchState createState() => _SearchState();
@@ -18,15 +21,29 @@ class _SearchState extends State<Search> {
   bool isLoading = true;
 
   String? searchQuery;
-  String? selectedGender; // Null value indicates no filter
-  String? selectedCategory; // Null value indicates no filter
-  String? sortBy; // Null value indicates no sorting
+  String? selectedGender;
+  String? selectedCategory;
+  String? sortBy;
 
   @override
   void initState() {
     super.initState();
-    searchQuery = widget.initialQuery;
     fetchProducts();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    var arguments = ModalRoute.of(context)?.settings.arguments;
+    if (arguments is String) {
+      if (arguments.contains("Sport") || arguments.contains("Casual") || arguments.contains("Running")) {
+        selectedCategory = arguments;
+        searchQuery = null;
+      } else {
+        searchQuery = arguments;
+        selectedCategory = null;
+      }
+    }
   }
 
   Future<void> fetchProducts() async {
@@ -37,7 +54,10 @@ class _SearchState extends State<Search> {
         filteredProducts = products;
         isLoading = false;
       });
-      if (searchQuery != null && searchQuery!.isNotEmpty) {
+      // Terapkan filter berdasarkan category jika ada
+      if (selectedCategory != null && selectedCategory!.isNotEmpty) {
+        applyFiltersAndSort();
+      } else if (searchQuery != null && searchQuery!.isNotEmpty) {
         performSearch(searchQuery!);
       }
     } catch (e) {
@@ -59,11 +79,15 @@ class _SearchState extends State<Search> {
     List<Product_Cart> tempProducts = allProducts;
 
     if (selectedGender != null && selectedGender!.isNotEmpty) {
-      tempProducts = tempProducts.where((product) => product.product_gender == selectedGender).toList();
+      tempProducts = tempProducts
+          .where((product) => product.product_gender == selectedGender)
+          .toList();
     }
 
     if (selectedCategory != null && selectedCategory!.isNotEmpty) {
-      tempProducts = tempProducts.where((product) => product.product_category == selectedCategory).toList();
+      tempProducts = tempProducts
+          .where((product) => product.product_category == selectedCategory)
+          .toList();
     }
 
     if (searchQuery != null && searchQuery!.isNotEmpty) {
@@ -135,12 +159,13 @@ class _SearchState extends State<Search> {
                   DropdownButton<String>(
                     value: selectedGender,
                     hint: const Text("Gender"),
-                    dropdownColor: Colors.white, // Warna dropdown tetap putih
-                    style: const TextStyle(color: Colors.black), // Warna teks item dropdown
-                    icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+                    dropdownColor: Colors.white,
+                    style: const TextStyle(color: Colors.black),
+                    icon: const Icon(Icons.arrow_drop_down,
+                        color: Colors.black),
                     underline: Container(
                       height: 2,
-                      color: Colors.blue, // Warna garis bawah dropdown
+                      color: Colors.blue,
                     ),
                     items: ["Male", "Female", "Unisex"]
                         .map((gender) => DropdownMenuItem<String>(
@@ -148,26 +173,31 @@ class _SearchState extends State<Search> {
                       child: Text(gender),
                     ))
                         .toList()
-                      ..insert(0, const DropdownMenuItem<String>(value: "", child: Text("Clear Filter"))),
+                      ..insert(
+                          0,
+                          const DropdownMenuItem<String>(
+                              value: "", child: Text("Clear Filter"))),
                     onChanged: (value) {
                       setState(() {
-                        selectedGender = value == "" ? null : value;
+                        selectedGender =
+                        value == "" ? null : value;
                         applyFiltersAndSort();
                       });
                     },
-                    // Untuk membuat dropdown tidak terlalu berbentuk kotak
                     borderRadius: BorderRadius.circular(12),
                   ),
                   const SizedBox(width: 8),
+                  // Category Dropdown
                   DropdownButton<String>(
                     value: selectedCategory,
                     hint: const Text("Category"),
-                    dropdownColor: Colors.white, // Warna dropdown tetap putih
-                    style: const TextStyle(color: Colors.black), // Warna teks item dropdown
-                    icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+                    dropdownColor: Colors.white,
+                    style: const TextStyle(color: Colors.black),
+                    icon: const Icon(Icons.arrow_drop_down,
+                        color: Colors.black),
                     underline: Container(
                       height: 2,
-                      color: Colors.blue, // Warna garis bawah dropdown
+                      color: Colors.blue,
                     ),
                     items: ["Casual", "Running", "Sport"]
                         .map((category) => DropdownMenuItem<String>(
@@ -175,27 +205,31 @@ class _SearchState extends State<Search> {
                       child: Text(category),
                     ))
                         .toList()
-                      ..insert(0, const DropdownMenuItem<String>(value: "", child: Text("Clear Filter"))),
+                      ..insert(
+                          0,
+                          const DropdownMenuItem<String>(
+                              value: "", child: Text("Clear Filter"))),
                     onChanged: (value) {
                       setState(() {
-                        selectedCategory = value == "" ? null : value;
+                        selectedCategory =
+                        value == "" ? null : value;
                         applyFiltersAndSort();
                       });
                     },
-                    // Untuk membuat dropdown tidak terlalu berbentuk kotak
                     borderRadius: BorderRadius.circular(12),
                   ),
                   const SizedBox(width: 8),
-
+                  // Sort Dropdown
                   DropdownButton<String>(
                     value: sortBy,
                     hint: const Text("Sort"),
                     dropdownColor: Colors.white,
                     style: const TextStyle(color: Colors.black),
-                    icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+                    icon: const Icon(Icons.arrow_drop_down,
+                        color: Colors.black),
                     underline: Container(
                       height: 2,
-                      color: Colors.blue, // Warna garis bawah dropdown
+                      color: Colors.blue,
                     ),
                     items: ["name", "price"]
                         .map((sort) => DropdownMenuItem<String>(
@@ -203,39 +237,44 @@ class _SearchState extends State<Search> {
                       child: Text("Sort by $sort"),
                     ))
                         .toList()
-                      ..insert(0, const DropdownMenuItem<String>(value: "", child: Text("Clear Sort"))),
+                      ..insert(
+                          0,
+                          const DropdownMenuItem<String>(
+                              value: "", child: Text("Clear Sort"))),
                     onChanged: (value) {
                       setState(() {
                         sortBy = value == "" ? null : value;
                         applyFiltersAndSort();
                       });
                     },
-                    // Untuk membuat dropdown tidak terlalu berbentuk kotak
                     borderRadius: BorderRadius.circular(12),
                   )
                 ],
               ),
             ),
           ),
-
           Expanded(
             child: filteredProducts.isEmpty
                 ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.search_off, size: 64, color: Colors.grey),
+                  const Icon(Icons.search_off,
+                      size: 64, color: Colors.grey),
                   const SizedBox(height: 10),
                   Text(
                     'Tidak ada produk yang ditemukan.',
-                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                    style: TextStyle(
+                        fontSize: 16, color: Colors.grey[600]),
                   ),
                 ],
               ),
             )
                 : GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+              gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount:
+                MediaQuery.of(context).size.width > 600 ? 4 : 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 childAspectRatio: 0.8,
@@ -260,43 +299,42 @@ class _SearchState extends State<Search> {
                       children: [
                         Expanded(
                           child: ClipRRect(
-                            borderRadius: const BorderRadius.vertical(
+                            borderRadius:
+                            const BorderRadius.vertical(
                               top: Radius.circular(16),
                             ),
                             child: Image.network(
                               product.product_image!,
                               fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
+                              errorBuilder:
+                                  (context, error, stackTrace) {
                                 return Container(
                                   color: Colors.grey[300],
-                                  child: const Icon(Icons.broken_image, size: 40),
+                                  child: const Icon(
+                                      Icons.broken_image,
+                                      size: 40),
                                 );
                               },
                             ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 8),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
                             children: [
                               Text(
                                 product.product_name!,
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                                    fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Rp ${product.price}',
+                                "Rp ${product.price}",
                                 style: const TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                    color: Colors.green),
                               ),
                             ],
                           ),
@@ -313,3 +351,4 @@ class _SearchState extends State<Search> {
     );
   }
 }
+
