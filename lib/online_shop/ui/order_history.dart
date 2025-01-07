@@ -47,6 +47,9 @@ class _OrderHistoryState extends State<OrderHistory> {
         onHistoryPressed: () {
           Navigator.pushNamed(context, '/orderHistoryPage');
         },
+        onLogoPressed: () {
+          Navigator.pushNamed(context, '/homePage'); // Navigasi ke halaman riwayat pesanan
+        },
       ),
     );
   }

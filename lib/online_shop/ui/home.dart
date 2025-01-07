@@ -30,19 +30,23 @@ class _HomeState extends State<Home> {
     {'image': 'assets/carousel3.jpg', 'label': 'Promo 3'},
   ];
 
+  final List<Map<String, String>> categories = [
+    {'image': 'assets/sport.jpg', 'label': 'Sport'},
+    {'image': 'assets/casual.jpg', 'label': 'Casual'},
+    {'image': 'assets/running.jpg', 'label': 'Running'},
+  ];
+
   final List<String> size = ['35', '36', '37', '38', '39', '40'];
 
   // Secure Storage instance
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
-  void _navigateToSearch() {
-    if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
-      Navigator.pushNamed(
-        context,
-        '/searchPage',
-        arguments: searchQuery,
-      );
-    }
+  void _navigateToSearch(String query) {
+    Navigator.pushNamed(
+      context,
+      '/searchPage',
+      arguments: query,
+    );
   }
 
   @override
@@ -97,7 +101,7 @@ class _HomeState extends State<Home> {
           setState(() {
             searchQuery = value;
           });
-          _navigateToSearch();
+          _navigateToSearch(searchQuery!);
         },
         onToggleSearch: () {
           Navigator.pushNamed(context, '/searchPage');
@@ -107,6 +111,9 @@ class _HomeState extends State<Home> {
         },
         onHistoryPressed: () {
           Navigator.pushNamed(context, '/orderHistoryPage');
+        },
+        onLogoPressed: () {
+          Navigator.pushNamed(context, '/homePage'); // Navigasi ke halaman riwayat pesanan
         },
       ),
       body: SingleChildScrollView(
@@ -119,6 +126,7 @@ class _HomeState extends State<Home> {
             isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _buildNewReleaseCarousel(context),
+            _buildCategoryCards(),
             const SizedBox(height: 100),
           ],
         ),
@@ -162,7 +170,7 @@ class _HomeState extends State<Home> {
         );
       }).toList(),
       options: CarouselOptions(
-        height: MediaQuery.of(context).size.width * 0.3,
+        height: MediaQuery.of(context).size.width * 0.4,
         autoPlay: true,
         enlargeCenterPage: true,
         viewportFraction: 0.9,
@@ -197,77 +205,148 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildNewReleaseCarousel(BuildContext context) {
-    return CarouselSlider(
-      items: newRelease.map((item) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              '/detailProductPage',
-              arguments: item,
-            );
-          },
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(12),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 48.0), // Tambahkan margin horizontal
+      child: CarouselSlider(
+        items: newRelease.map((item) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/detailProductPage',
+                arguments: item,
+              );
+            },
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(12),
+                      ),
+                      child: Image.network(
+                        item.product_image!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.broken_image, size: 50);
+                        },
+                      ),
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.product_name!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Rp. ${item.price}',
+                          style: const TextStyle(color: Colors.green),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+        options: CarouselOptions(
+          height: MediaQuery.of(context).size.height * 0.35 > 300
+              ? 300
+              : MediaQuery.of(context).size.height * 0.35,
+          enlargeCenterPage: false,
+          viewportFraction: MediaQuery.of(context).size.width > 600
+              ? 0.30
+              : MediaQuery.of(context).size.width > 300
+              ? 0.33
+              : 0.9,
+          autoPlay: false,
+          enableInfiniteScroll: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryCards() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 72.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: categories.map((category) {
+          return GestureDetector(
+            onTap: () => _navigateToSearch(category['label']!),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
                     child: Image.network(
-                      item.product_image!,
+                      category['image']!,
+                      width: MediaQuery.of(context).size.width * 0.30,
+                      height: MediaQuery.of(context).size.width * 0.40,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return const Icon(Icons.broken_image, size: 50);
                       },
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.product_name!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                  Positioned(
+                    bottom: MediaQuery.of(context).size.height < 600 ? 5 : 60, // Bottom dinamis
+                    left: 10,
+                    right: 10,
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Rp. ${item.price}',
-                        style: const TextStyle(color: Colors.green),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            category['label']!,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: MediaQuery.of(context).size.width < 600 ? 18 : 32, // Ukuran dinamis
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Kenyamanan sepatu kategori ${category['label']} membuat aktivitas lebih menyenangkan.',
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width < 600 ? 12 : 18, // Ukuran dinamis
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
-      }).toList(),
-      options: CarouselOptions(
-        height: MediaQuery.of(context).size.height * 0.35 > 300
-            ? 300
-            : MediaQuery.of(context).size.height * 0.35,
-        enlargeCenterPage: false,
-        viewportFraction: MediaQuery.of(context).size.width > 600
-            ? 0.30
-            : MediaQuery.of(context).size.width > 300
-            ? 0.33
-            : 0.9,
-        autoPlay: false,
-        enableInfiniteScroll: true,
+          );
+        }).toList(),
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../models/cart_item.dart';
+import '../models/addTocart.dart';
 import '../models/product_card.dart';
 import '../controller/product_controller.dart';
 import '../controller/cart_controller.dart'; // Import untuk CartController
@@ -165,6 +165,9 @@ class _DetailProductState extends State<DetailProduct> {
         onHistoryPressed: () {
           Navigator.pushNamed(context, '/orderHistoryPage');
         },
+        onLogoPressed: () {
+          Navigator.pushNamed(context, '/homePage'); // Navigasi ke halaman riwayat pesanan
+        },
       ),
       body: Center(
         child: ConstrainedBox(
@@ -309,7 +312,7 @@ class _DetailProductState extends State<DetailProduct> {
                             minimumSize: const Size(double.infinity, 50),
                           ),
                           child: const Text(
-                            'Add to Bag',
+                            'Add to Cart',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),

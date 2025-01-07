@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/cart.dart';
+import '../models/addTocart.dart';
 import '../models/cart_item.dart';
+import '../models/update_cart_item.dart';
 
 class CartController {
   final String baseUrl = "http://192.168.18.18:3000/api/store";
@@ -53,6 +55,55 @@ class CartController {
     } catch (error) {
       print("Error fetching carts: $error");
       return [];
+    }
+  }
+
+  Future<List<CartItem>> getCartItemsByCartId(String cartId, String token) async {
+    final url = Uri.parse('$baseUrl/cartitems/cart/$cartId');
+    try {
+      final response = await http.get(
+          url,
+          headers: {
+            'Authorization': 'Bearer $token', // Include the auth token here
+          },
+      );
+
+      if (response.statusCode == 200) {
+        return List<CartItem>.from(
+            json.decode(response.body).map((x) => CartItem.fromJson(x)),
+        );
+      } else {
+        throw Exception('Failed to load cart items');
+      }
+    } catch (error) {
+      throw Exception('Error fetching cart items: $error');
+    }
+  }
+
+  Future<bool> updateCartItemQuantity(
+      UpdateCartItemRequest request, String token) async {
+    final url = Uri.parse("$baseUrl/cart/update_quantity");
+
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', // Include the auth token
+        },
+        body: jsonEncode(request.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        print("Cart item quantity updated successfully.");
+        return true;
+      } else {
+        print("Failed to update cart item quantity: ${response.body}");
+        return false;
+      }
+    } catch (error) {
+      print("Error updating cart item quantity: $error");
+      return false;
     }
   }
 }

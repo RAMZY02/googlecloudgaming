@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product_card.dart';
 import '../controller/product_controller.dart'; // Import controller untuk fetch data
-import 'detail_product.dart';
 import 'navbar.dart';
 
 class Search extends StatefulWidget {
@@ -13,28 +12,31 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  final ProductController productController = ProductController(); // Inisialisasi controller
-  List<Product_Cart> allProducts = []; // List untuk menyimpan data produk
-  final List<String> size = ['35', '36', '37', '38', '39', '40'];
+  final ProductController productController = ProductController();
+  List<Product_Cart> allProducts = [];
+  List<Product_Cart> filteredProducts = [];
+  bool isLoading = true;
+
   String? searchQuery;
-  bool isLoading = true; // Untuk menampilkan loading saat data di-fetch
+  String? selectedGender; // Null value indicates no filter
+  String? selectedCategory; // Null value indicates no filter
+  String? sortBy; // Null value indicates no sorting
 
   @override
   void initState() {
     super.initState();
     searchQuery = widget.initialQuery;
-    fetchProducts(); // Panggil fungsi untuk fetch data dari database
+    fetchProducts();
   }
 
-  // Fungsi untuk mengambil data produk dari controller
   Future<void> fetchProducts() async {
     try {
-      List<Product_Cart> products = await productController.getAllProducts(); // Memanggil controller untuk mendapatkan data produk
+      List<Product_Cart> products = await productController.getAllProducts();
       setState(() {
-        allProducts = products; // Menyimpan data produk yang didapat ke variabel allProducts
-        isLoading = false; // Mengubah status loading
+        allProducts = products;
+        filteredProducts = products;
+        isLoading = false;
       });
-      // Lakukan pencarian jika ada query awal
       if (searchQuery != null && searchQuery!.isNotEmpty) {
         performSearch(searchQuery!);
       }
@@ -42,146 +44,271 @@ class _SearchState extends State<Search> {
       setState(() {
         isLoading = false;
       });
-      print("Error fetching products: $e"); // Menampilkan error jika pengambilan data gagal
+      print("Error fetching products: $e");
     }
   }
 
-  // Fungsi untuk melakukan pencarian berdasarkan query
   void performSearch(String query) {
     setState(() {
-      searchQuery = query.trim(); // Menghapus spasi di awal dan akhir query pencarian
+      searchQuery = query.trim();
+      applyFiltersAndSort();
+    });
+  }
+
+  void applyFiltersAndSort() {
+    List<Product_Cart> tempProducts = allProducts;
+
+    if (selectedGender != null && selectedGender!.isNotEmpty) {
+      tempProducts = tempProducts.where((product) => product.product_gender == selectedGender).toList();
+    }
+
+    if (selectedCategory != null && selectedCategory!.isNotEmpty) {
+      tempProducts = tempProducts.where((product) => product.product_category == selectedCategory).toList();
+    }
+
+    if (searchQuery != null && searchQuery!.isNotEmpty) {
+      tempProducts = tempProducts.where((product) {
+        final name = product.product_name!.toLowerCase();
+        final query = searchQuery!.toLowerCase();
+        return name.contains(query);
+      }).toList();
+    }
+
+    if (sortBy == "name") {
+      tempProducts.sort((a, b) => a.product_name!.compareTo(b.product_name!));
+    } else if (sortBy == "price") {
+      tempProducts.sort((a, b) => a.price!.compareTo(b.price!));
+    }
+
+    setState(() {
+      filteredProducts = tempProducts;
+    });
+  }
+
+  void clearFilter(String filterType) {
+    setState(() {
+      if (filterType == "gender") {
+        selectedGender = null;
+      } else if (filterType == "category") {
+        selectedCategory = null;
+      } else if (filterType == "sort") {
+        sortBy = null;
+      }
+      applyFiltersAndSort();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Menyaring produk berdasarkan query pencarian
-    final filteredProducts = searchQuery == null || searchQuery!.isEmpty
-        ? allProducts // Jika tidak ada query pencarian, tampilkan semua produk
-        : allProducts.where((product) {
-      final name = product.product_name!.toLowerCase();
-      final query = searchQuery?.toLowerCase() ?? '';
-      return name.contains(query); // Menyaring produk yang sesuai dengan query pencarian
-    }).toList();
-
     return Scaffold(
       appBar: Navbar(
         isSearching: true,
-        onSearchChanged: (value) {}, // Tidak digunakan untuk pencarian langsung
+        onSearchChanged: (value) {},
         onToggleSearch: () {
           setState(() {
-            searchQuery = ''; // Reset pencarian
+            searchQuery = '';
+            applyFiltersAndSort();
           });
         },
         onCartPressed: () {
-          Navigator.pushNamed(context, '/cartPage'); // Navigasi ke halaman keranjang
+          Navigator.pushNamed(context, '/cartPage');
         },
         onHistoryPressed: () {
-          Navigator.pushNamed(context, '/orderHistoryPage'); // Navigasi ke halaman riwayat pesanan
+          Navigator.pushNamed(context, '/orderHistoryPage');
         },
-        onSearchSubmitted: performSearch, // Pencarian yang dilakukan saat submit
+        onLogoPressed: () {
+          Navigator.pushNamed(context, '/homePage');
+        },
+        onSearchSubmitted: performSearch,
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator()) // Loading indicator saat data masih diambil
-          : Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: filteredProducts.isEmpty
-            ? Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.search_off, size: 64, color: Colors.grey),
-              const SizedBox(height: 10),
-              Text(
-                'Tidak ada produk yang ditemukan.',
-                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-              ),
-            ],
-          ),
-        )
-            : GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 0.8,
-          ),
-          itemCount: filteredProducts.length,
-          itemBuilder: (context, index) {
-            final product = filteredProducts[index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/detailProductPage',
-                  arguments: product, // Mengirim data produk ke halaman detail
-                );
-              },
-              child: Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(16),
-                        ),
-                        child: Image.network(
-                          product.product_image!, // Menampilkan gambar produk
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey[300],
-                              child: const Icon(Icons.broken_image, size: 40),
-                            );
-                          },
-                        ),
-                      ),
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  // Gender Dropdown
+                  DropdownButton<String>(
+                    value: selectedGender,
+                    hint: const Text("Gender"),
+                    dropdownColor: Colors.white, // Warna dropdown tetap putih
+                    style: const TextStyle(color: Colors.black), // Warna teks item dropdown
+                    icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.blue, // Warna garis bawah dropdown
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            product.product_name!,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                    items: ["Male", "Female", "Unisex"]
+                        .map((gender) => DropdownMenuItem<String>(
+                      value: gender,
+                      child: Text(gender),
+                    ))
+                        .toList()
+                      ..insert(0, const DropdownMenuItem<String>(value: "", child: Text("Clear Filter"))),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGender = value == "" ? null : value;
+                        applyFiltersAndSort();
+                      });
+                    },
+                    // Untuk membuat dropdown tidak terlalu berbentuk kotak
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  const SizedBox(width: 8),
+                  DropdownButton<String>(
+                    value: selectedCategory,
+                    hint: const Text("Category"),
+                    dropdownColor: Colors.white, // Warna dropdown tetap putih
+                    style: const TextStyle(color: Colors.black), // Warna teks item dropdown
+                    icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.blue, // Warna garis bawah dropdown
+                    ),
+                    items: ["Casual", "Running", "Sport"]
+                        .map((category) => DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(category),
+                    ))
+                        .toList()
+                      ..insert(0, const DropdownMenuItem<String>(value: "", child: Text("Clear Filter"))),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCategory = value == "" ? null : value;
+                        applyFiltersAndSort();
+                      });
+                    },
+                    // Untuk membuat dropdown tidak terlalu berbentuk kotak
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  const SizedBox(width: 8),
+
+                  DropdownButton<String>(
+                    value: sortBy,
+                    hint: const Text("Sort"),
+                    dropdownColor: Colors.white,
+                    style: const TextStyle(color: Colors.black),
+                    icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.blue, // Warna garis bawah dropdown
+                    ),
+                    items: ["name", "price"]
+                        .map((sort) => DropdownMenuItem<String>(
+                      value: sort,
+                      child: Text("Sort by $sort"),
+                    ))
+                        .toList()
+                      ..insert(0, const DropdownMenuItem<String>(value: "", child: Text("Clear Sort"))),
+                    onChanged: (value) {
+                      setState(() {
+                        sortBy = value == "" ? null : value;
+                        applyFiltersAndSort();
+                      });
+                    },
+                    // Untuk membuat dropdown tidak terlalu berbentuk kotak
+                    borderRadius: BorderRadius.circular(12),
+                  )
+                ],
+              ),
+            ),
+          ),
+
+          Expanded(
+            child: filteredProducts.isEmpty
+                ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.search_off, size: 64, color: Colors.grey),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Tidak ada produk yang ditemukan.',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+            )
+                : GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.8,
+              ),
+              itemCount: filteredProducts.length,
+              itemBuilder: (context, index) {
+                final product = filteredProducts[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/detailProductPage',
+                      arguments: product,
+                    );
+                  },
+                  child: Card(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(16),
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Rp ${product.price}',
-                            style: const TextStyle(
-                              color: Colors.green,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
+                            child: Image.network(
+                              product.product_image!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey[300],
+                                  child: const Icon(Icons.broken_image, size: 40),
+                                );
+                              },
                             ),
                           ),
-                          const SizedBox(height: 4),
-                          Row(
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Size: 35-40',
-                                style: const TextStyle(fontSize: 12),
+                                product.product_name!,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Rp ${product.price}',
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -7,15 +7,17 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
   final Function() onToggleSearch;
   final Function() onCartPressed;
   final Function() onHistoryPressed;
+  final Function() onLogoPressed; // Fungsi baru untuk menangani penekanan logo
 
   const Navbar({
     Key? key,
     required this.isSearching,
     required this.onSearchChanged,
-    required this.onSearchSubmitted, // Ditambahkan untuk menangani logika pencarian saat Enter ditekan
+    required this.onSearchSubmitted,
     required this.onToggleSearch,
     required this.onCartPressed,
     required this.onHistoryPressed,
+    required this.onLogoPressed, // Parameter baru untuk fungsi logo
   }) : super(key: key);
 
   @override
@@ -26,11 +28,14 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
       toolbarHeight: 60, // Tinggi AppBar
       title: Row(
         children: [
-          // Logo di kiri
-          Image.asset(
-            'assets/logoSteppa.png',
-            height: 60, // Ukuran logo
-            fit: BoxFit.contain,
+          // Logo di kiri dengan GestureDetector
+          GestureDetector(
+            onTap: onLogoPressed, // Fungsi yang akan dijalankan saat logo ditekan
+            child: Image.asset(
+              'assets/logoSteppa.png',
+              height: 60, // Ukuran logo
+              fit: BoxFit.contain,
+            ),
           ),
           const SizedBox(width: 10),
           const Spacer(), // Spacer untuk memberikan jarak dinamis
