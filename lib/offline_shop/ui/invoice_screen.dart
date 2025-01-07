@@ -3,16 +3,22 @@ import '../models/product.dart';
 
 class InvoiceScreen extends StatelessWidget {
   final List<Product> cartItems;
+  final Map<Product, int> productQuantities;  // Map<Product, int> untuk kuantitas produk
 
-  const InvoiceScreen({Key? key, required this.cartItems}) : super(key: key);
-
-  double _calculateTotal() {
-    return cartItems.fold(0, (sum, item) => sum + (item.price * item.quantity));
-  }
+  const InvoiceScreen({
+    Key? key,
+    required this.cartItems,
+    required this.productQuantities,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final total = _calculateTotal();
+    // Menghitung total harga dari semua produk dalam invoice
+    double totalAmount = 0;
+    cartItems.forEach((product) {
+      int quantity = productQuantities[product] ?? 0;  // Ambil kuantitas berdasarkan produk
+      totalAmount += product.price! * quantity;
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -33,18 +39,21 @@ class InvoiceScreen extends StatelessWidget {
                 itemCount: cartItems.length,
                 itemBuilder: (context, index) {
                   final product = cartItems[index];
+                  final quantity = productQuantities[product]!;  // Ambil kuantitas berdasarkan produk
                   return ListTile(
-                    leading: Image.network(product.imageUrl),
-                    title: Text(product.name),
-                    subtitle: Text('Quantity: ${product.quantity}'),
-                    trailing: Text('\$${(product.price * product.quantity).toStringAsFixed(2)}'),
+                    leading: Image.network(product.product_image!),
+                    title: Text(product.product_name!),
+                    subtitle: Text('Quantity: $quantity'),
+                    trailing: Text(
+                      '\$${(product.price! * quantity).toStringAsFixed(2)}',
+                    ),
                   );
                 },
               ),
             ),
             const Divider(),
             Text(
-              'Total: \$${total.toStringAsFixed(2)}',
+              'Total: \$${totalAmount.toStringAsFixed(2)}',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],

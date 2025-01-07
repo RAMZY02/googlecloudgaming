@@ -1,15 +1,30 @@
 class Product {
-  final String id;
-  final String name;
-  final String imageUrl;
-  final double price;
-  int quantity; // Untuk menyimpan jumlah yang akan dibeli
+  final String? product_name;
+  final String? product_description;
+  final String? product_category;
+  final String? product_gender;
+  final int? price;
+  final String? product_image;
 
   Product({
-    required this.id,
-    required this.name,
-    required this.imageUrl,
+    required this.product_name,
+    required this.product_description,
+    required this.product_category,
+    required this.product_gender,
     required this.price,
-    this.quantity = 0,
+    required this.product_image,
   });
+
+  // Konstruktor untuk mengonversi JSON menjadi objek Product
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      product_name: json['product_name'],
+      product_description: json['product_description'],
+      product_category: json['product_category'],
+      product_gender: json['product_gender'],
+      price: json['price'],
+      product_image: json['product_image'],
+    );
+  }
 }
+
