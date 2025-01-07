@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../controllers/material_controller.dart';
+import '../models/material.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
@@ -21,8 +23,35 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
 
   final List<String> _categories = ['Casual', 'Running', 'Training'];
   final List<String> _genders = ['Male', 'Female'];
-  final List<String> _soleMaterials = ['Karet', 'Foam', 'Plastik'];
-  final List<String> _bodyMaterials = ['Kain', 'Kulit', 'Kulit Sintesis'];
+  List<MaterialModel> _materials = [];
+
+  final MaterialController _materialController = MaterialController();
+
+  @override
+  void initState() {
+    super.initState();
+    print('initState called');
+    _fetchMaterials();
+  }
+
+  Future<void> _fetchMaterials() async {
+    print('Fetching materials...');
+    try {
+      final materials = await _materialController.fetchFilteredMaterials();
+      print('Materials fetched from API: $materials');
+      setState(() {
+        _materials = materials;
+      });
+      print('Materials assigned to _materials: $_materials');
+    } catch (e) {
+      print('Error fetching materials: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch materials: $e')),
+      );
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -186,10 +215,10 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                   border: OutlineInputBorder(),
                 ),
                 value: _selectedSoleMaterial,
-                items: _soleMaterials
+                items: _materials
                     .map((material) => DropdownMenuItem(
-                  value: material,
-                  child: Text(material),
+                  value: material.id.toString(),
+                  child: Text(material.name),
                 ))
                     .toList(),
                 onChanged: (value) {
@@ -205,10 +234,10 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                   border: OutlineInputBorder(),
                 ),
                 value: _selectedBodyMaterial,
-                items: _bodyMaterials
+                items: _materials
                     .map((material) => DropdownMenuItem(
-                  value: material,
-                  child: Text(material),
+                  value: material.id.toString(),
+                  child: Text(material.name),
                 ))
                     .toList(),
                 onChanged: (value) {
@@ -231,7 +260,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
               ),
               const SizedBox(height: 20),
               Container(
-                height: 750,
+                height: 250,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
@@ -269,7 +298,9 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                       _selectedSoleMaterial != null &&
                       _selectedBodyMaterial != null) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Design "$_shoeName" Uploaded Successfully!')),
+                      SnackBar(
+                        content: Text('Design "$_shoeName" Uploaded Successfully!'),
+                      ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
