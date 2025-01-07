@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/product_development/controllers/design_controller.dart';
 import '../controllers/material_controller.dart';
 import '../models/material.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
@@ -26,6 +27,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
   List<MaterialModel> _materials = [];
 
   final MaterialController _materialController = MaterialController();
+  final DesignController _designController = DesignController();
 
   @override
   void initState() {
@@ -260,7 +262,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
               ),
               const SizedBox(height: 20),
               Container(
-                height: 250,
+                height: 750,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
@@ -287,8 +289,9 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+              // Tombol Submit
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if ((_imageLink != null && _imageLink!.isNotEmpty) &&
                       _shoeName != null &&
                       _shoeName!.isNotEmpty &&
@@ -297,11 +300,25 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                       _price != null &&
                       _selectedSoleMaterial != null &&
                       _selectedBodyMaterial != null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Design "$_shoeName" Uploaded Successfully!'),
-                      ),
-                    );
+                    try {
+                      await _designController.submitDesign(
+                        name: _shoeName!,
+                        image: _imageLink!,
+                        category: _selectedCategory!,
+                        gender: _selectedGender!,
+                        status: "Pending",
+                        soleMaterialId: _selectedSoleMaterial!,
+                        bodyMaterialId: _selectedBodyMaterial!,
+                      );
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Design "$_shoeName" Uploaded Successfully!')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to submit design: $e')),
+                      );
+                    }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Please complete all fields!')),
