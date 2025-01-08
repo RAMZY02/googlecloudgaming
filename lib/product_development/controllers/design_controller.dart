@@ -241,4 +241,55 @@ class DesignController {
       throw Exception('Error: $e');
     }
   }
+
+  Future<List<Design>> fetchSelectedDesigns(int id) async {
+    try {
+      final retData = [];
+      String soleMaterial;
+      String bodyMaterial;
+      final resDesign = await http.get(Uri.parse('$baseUrl/design/$id'));
+
+      if (resDesign.statusCode == 200) {
+        final List<dynamic> allDesign = json.decode(resDesign.body);
+        for (var design in allDesign) {
+          if(design["status"] == "Accepted"){
+            int counter = 0;
+            soleMaterial = "";
+            bodyMaterial = "";
+            final resMaterial = await http.get(Uri.parse("$baseUrl/design-material/design/${design["id"]}"));
+
+            if (resMaterial.statusCode == 200) {
+              final List<dynamic> matsData = json.decode(resMaterial.body);
+              for (var material in matsData) {
+                if(material["material_id"] != 1 && material["material_id"] != 2){
+                  final resMatsName = await http.get(Uri.parse("$baseUrl/material/${material["material_id"]}"));
+                  final List<dynamic> matsNameData = json.decode(resMatsName.body);
+                  if(material.length < 4){
+                    soleMaterial = matsNameData[0]["name"];
+                    bodyMaterial = matsNameData[0]["name"];
+                  }
+                  else{
+                    if(counter == 0){
+                      soleMaterial = matsNameData[0]["name"];
+                    }
+                    else{
+                      bodyMaterial = matsNameData[0]["name"];
+                    }
+                  }
+                  matsNameData.clear();
+                }
+                counter++;
+              }
+              retData.add({"id": design["id"], "name":design["name"], "image":design["image"], "description":design["description"], "category":design["category"], "gender":design["gender"], "soleMaterial":soleMaterial, "bodyMaterial":bodyMaterial});
+            }
+          }
+        }
+        return retData.map((item) => Design.fromJson(item)).toList();
+      } else {
+        throw Exception('Failed to load selected designs');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 }

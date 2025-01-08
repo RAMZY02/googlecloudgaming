@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/product_development/controllers/design_controller.dart';
+import 'package:steppa/product_development/controllers/material_controller.dart';
+import 'package:steppa/product_development/controllers/production_controller.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
@@ -11,31 +14,81 @@ class ProductionScreen extends StatefulWidget {
 }
 
 class _ProductionScreenState extends State<ProductionScreen> {
-  final List<String> availableDesigns = [
-    "Nike Air Force One",
-    "Puma RS-X",
-    "Adidas Ultra Boost",
-  ];
+  List<dynamic> availableDesigns = [];
+  List<dynamic> selectedDesignData = [];
+  List<dynamic> selectedMaterialData = [];
+  final DesignController _designController = DesignController();
+  final MaterialController _materialController = MaterialController();
+  final ProductionController _productionController = ProductionController();
 
   final List<int> shoeSizes = [40, 41, 42, 43, 44];
 
   String? selectedDesign;
   int? selectedSize;
   int quantity = 1;
-
-  Map<String, int> materialsPerShoe = {
-    "Tali Sepatu": 1,
-    "Lem (gr)": 300,
-    "Kulit": 2,
-    "Karet (gr)": 400,
-  };
+  Map<String, int> materialsPerShoe = {};
 
   Map<String, String> calculateMaterials() {
     return materialsPerShoe.map((material, amount) {
-      final total = amount * quantity;
-      final unit = material.contains("(gr)") ? "gr" : "pcs";
-      return MapEntry(material, "$total $unit");
+      final total = amount;
+      return MapEntry(material, "$total pcs");
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAllAcceptedDesigns();
+  }
+
+  Future<void> _fetchAllAcceptedDesigns() async {
+    try {
+      final resData = await _designController.fetchAllAcceptedDesigns();
+      setState(() {
+        availableDesigns = resData;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch accepted designs: $e')),
+      );
+    }
+  }
+
+  Future<void> _fetchSelectedDesigns(int id) async {
+    try {
+      final resDesign = await _designController.fetchSelectedDesigns(id);
+      final resMats = await _materialController.fetchSelectedDesignMaterials(id);
+      setState(() {
+        selectedDesignData = resDesign;
+        selectedMaterialData = resMats;
+
+        if(selectedMaterialData.length == 3){
+          addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? quantity * 1 : quantity * 4);
+          addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? quantity * 1 : quantity * 4);
+          addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? quantity * 1 : quantity * 4);
+        }
+        else if(selectedMaterialData.length == 4){
+          addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? quantity * 1 : quantity * 2);
+          addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? quantity * 1 : quantity * 2);
+          addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? quantity * 1 : quantity * 2);
+          addMaterial(selectedMaterialData[3].name, selectedMaterialData[3].id == 1 || selectedMaterialData[3].id == 2 ? quantity * 1 : quantity * 2);
+        }
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch accepted designs: $e')),
+      );
+    }
+  }
+
+  void addMaterial(String materialName, int count) {
+    if (materialsPerShoe.containsKey(materialName)) {
+      // Jika sudah ada, update jumlahnya
+      materialsPerShoe[materialName] = materialsPerShoe[materialName]! + count;
+    } else {
+      // Jika belum ada, tambah material baru dengan nilai count
+      materialsPerShoe[materialName] = count;
+    }
   }
 
   @override
@@ -133,7 +186,7 @@ class _ProductionScreenState extends State<ProductionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Step 1: Choose a Design",
+              "Choose The Design",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -141,22 +194,25 @@ class _ProductionScreenState extends State<ProductionScreen> {
               value: selectedDesign,
               hint: const Text("Select a design"),
               isExpanded: true,
-              items: availableDesigns.map((design) {
-                return DropdownMenuItem(
-                  value: design,
-                  child: Text(design),
-                );
-              }).toList(),
+              items: availableDesigns
+                  .map((design) => DropdownMenuItem(
+                value: design.id.toString(),
+                child: Text(design.name),
+              ))
+                  .toList(),
               onChanged: (value) {
                 setState(() {
                   selectedDesign = value;
+                  materialsPerShoe.clear();
+                  int selectedid = int.parse(value!);
+                  _fetchSelectedDesigns(selectedid);
                 });
               },
             ),
             const SizedBox(height: 20),
 
             const Text(
-              "Step 2: Select Shoe Size",
+              "Select Shoe Size",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -179,7 +235,7 @@ class _ProductionScreenState extends State<ProductionScreen> {
             const SizedBox(height: 20),
 
             const Text(
-              "Step 3: Set Quantity",
+              "Set Quantity",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -191,6 +247,17 @@ class _ProductionScreenState extends State<ProductionScreen> {
                       ? () {
                     setState(() {
                       quantity--;
+                      if(selectedMaterialData.length == 3){
+                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? -1 : -4);
+                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? -1 : -4);
+                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? -1 : -4);
+                      }
+                      else if(selectedMaterialData.length == 4){
+                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? -1 : -2);
+                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? -1 : -2);
+                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? -1 : -2);
+                        addMaterial(selectedMaterialData[3].name, selectedMaterialData[3].id == 1 || selectedMaterialData[3].id == 2 ? -1 : -2);
+                      }
                     });
                   }
                       : null,
@@ -201,6 +268,17 @@ class _ProductionScreenState extends State<ProductionScreen> {
                   onPressed: () {
                     setState(() {
                       quantity++;
+                      if(selectedMaterialData.length == 3){
+                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? 1 : 4);
+                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? 1 : 4);
+                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? 1 : 4);
+                      }
+                      else if(selectedMaterialData.length == 4){
+                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? 1 : 2);
+                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? 1 : 2);
+                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? 1 : 2);
+                        addMaterial(selectedMaterialData[3].name, selectedMaterialData[3].id == 1 || selectedMaterialData[3].id == 2 ? 1 : 2);
+                      }
                     });
                   },
                 ),
@@ -231,6 +309,9 @@ class _ProductionScreenState extends State<ProductionScreen> {
                       setState(() {
                         selectedDesign = null;
                         selectedSize = null;
+                        selectedDesignData.clear();
+                        selectedMaterialData.clear();
+                        materialsPerShoe.clear();
                         quantity = 1;
                       });
                     },
@@ -239,7 +320,7 @@ class _ProductionScreenState extends State<ProductionScreen> {
                       minimumSize: const Size.fromHeight(50),
                     ),
                     child: const Text(
-                      "Cancel",
+                      "Reset",
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -248,15 +329,59 @@ class _ProductionScreenState extends State<ProductionScreen> {
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
-                    onPressed: selectedDesign != null && selectedSize != null
-                        ? () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Production planning created successfully!"),
-                        ),
-                      );
-                    }
-                        : null,
+                    onPressed: selectedDesign != null && selectedSize != null ?
+                        () async {
+                        try {
+                          bool enoughMats = true;
+                          for(int i = 0; i < selectedMaterialData.length; i++){
+                            String neededmats = selectedMaterialData[i].name;
+                            if(selectedMaterialData[i].stok_qty < quantity * materialsPerShoe[neededmats]!){
+                              enoughMats = false;
+                              break;
+                            }
+                          }
+
+                          if(enoughMats) {
+                            await _productionController.submitProduction(
+                              designId: selectedDesignData[0].id,
+                              expectedQty: quantity,
+                              status: "Ongoing",
+                              productionSize: selectedSize.toString(),
+                            );
+
+                            for(int i = 0; i < selectedMaterialData.length; i++){
+                              String neededmats = selectedMaterialData[i].name;
+                              await _materialController.updateMaterial(selectedMaterialData[i].id, quantity * materialsPerShoe[neededmats]!);
+                            }
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(
+                                  'Production Plan Uploaded Successfully!')),
+                            );
+
+                            // Reset form setelah berhasil submit
+                            setState(() {
+                              selectedDesign = null;
+                              selectedSize = null;
+                              selectedDesignData.clear();
+                              selectedMaterialData.clear();
+                              materialsPerShoe.clear();
+                              quantity = 1;
+                            });
+                          }
+                          else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(
+                                  'Some Materials Are Not Enough!')),
+                            );
+                          }
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to upload production plan: $e')),
+                          );
+                        }
+                      }
+                    : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.lightBlue,
                       minimumSize: const Size.fromHeight(50),
