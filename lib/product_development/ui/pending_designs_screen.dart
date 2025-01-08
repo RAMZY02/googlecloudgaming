@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/product_development/controllers/design_controller.dart';
 import 'package:steppa/product_development/models/design.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
@@ -12,36 +13,31 @@ class PendingDesignsScreen extends StatefulWidget {
 }
 
 class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
-  List<Design> designs = [
-    Design(
-        name: "Nike Air Zoom",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3zenzeewmwTBRTG0R1kZwDEiT013hybhtg&s",
-        category: "Running",
-        gender: "Male",
-        price: "Rp 1,500,000",
-        soleMaterial: "Karet",
-        bodyMaterial: "Kain"),
-    Design(
-        name: "Adidas Ultra Boost",
-        image: "https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/p1/294/2024/08/27/Artikel-452-3055304001.jpg",
-        category: "Casual",
-        gender: "Female",
-        price: "Rp 2,000,000",
-        soleMaterial: "Foam",
-        bodyMaterial: "Kulit"),
-    Design(
-        name: "Puma RS-X",
-        image: "https://m.media-amazon.com/images/I/71Vhhy6VmSL._AC_SL1500_.jpg",
-        category: "Training",
-        gender: "Male",
-        price: "Rp 1,800,000",
-        soleMaterial: "Plastik",
-        bodyMaterial: "Kulit Sintesis"),
-  ];
+  List<Design> pendingdesigns = [];
+  final DesignController _designController = DesignController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAllPendingDesigns();
+  }
+
+  Future<void> _fetchAllPendingDesigns() async {
+    try {
+      final resData = await _designController.fetchAllPendingDesigns();
+      setState(() {
+        pendingdesigns = resData;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch pending designs: $e')),
+      );
+    }
+  }
 
   void _acceptDesign(int index) {
     setState(() {
-      designs.removeAt(index);
+      pendingdesigns.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Design accepted!')),
@@ -50,7 +46,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
 
   void _declineDesign(int index) {
     setState(() {
-      designs.removeAt(index);
+      pendingdesigns.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Design declined.')),
@@ -147,9 +143,9 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.builder(
-          itemCount: designs.length,
+          itemCount: pendingdesigns.length,
           itemBuilder: (context, index) {
-            final design = designs[index];
+            final design = pendingdesigns[index];
             return Card(
               margin: const EdgeInsets.only(bottom: 16.0),
               child: ListTile(
@@ -245,8 +241,6 @@ class PendingDesignDetailScreen extends StatelessWidget {
             Text('Category: ${design.category}', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
             Text('Gender: ${design.gender}', style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 8),
-            Text('Price: ${design.price}', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
             Text('Sole Material: ${design.soleMaterial}', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 8),

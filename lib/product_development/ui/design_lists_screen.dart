@@ -14,27 +14,30 @@ class DesignListsScreen extends StatefulWidget {
 class _DesignListsScreenState extends State<DesignListsScreen> {
   final List<Design> designLists = [
     Design(
+        id: 1,
         name: "Nike Air Zoom",
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3zenzeewmwTBRTG0R1kZwDEiT013hybhtg&s",
+        description: "Test",
         category: "Running",
         gender: "Male",
-        price: "Rp 1,500,000",
         soleMaterial: "Karet",
         bodyMaterial: "Kain"),
     Design(
+        id: 2,
         name: "Adidas Ultra Boost",
         image: "https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/p1/294/2024/08/27/Artikel-452-3055304001.jpg",
+        description: "Test",
         category: "Casual",
         gender: "Female",
-        price: "Rp 2,000,000",
         soleMaterial: "Foam",
         bodyMaterial: "Kulit"),
     Design(
+        id: 3,
         name: "Puma RS-X",
         image: "https://m.media-amazon.com/images/I/71Vhhy6VmSL._AC_SL1500_.jpg",
+        description: "Test",
         category: "Training",
         gender: "Male",
-        price: "Rp 1,800,000",
         soleMaterial: "Plastik",
         bodyMaterial: "Kulit Sintesis"),
   ];
@@ -142,7 +145,7 @@ class _DesignListsScreenState extends State<DesignListsScreen> {
                   fit: BoxFit.cover,
                 ),
                 title: Text(design.name),
-                subtitle: Text(design.price),
+                subtitle: Text("Dummy"),
                 trailing: IconButton(
                   icon: const Icon(Icons.info, color: Colors.blue),
                   onPressed: () {
@@ -203,8 +206,6 @@ class DesignListsDetailScreen extends StatelessWidget {
             Text('Category: ${design.category}', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
             Text('Gender: ${design.gender}', style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 8),
-            Text('Price: ${design.price}', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
             Text('Sole Material: ${design.soleMaterial}', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 8),

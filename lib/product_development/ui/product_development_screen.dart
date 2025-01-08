@@ -20,7 +20,6 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
   String? _selectedGender;
   String? _selectedSoleMaterial;
   String? _selectedBodyMaterial;
-  String? _price;
 
   final List<String> _categories = ['Casual', 'Running', 'Training'];
   final List<String> _genders = ['Male', 'Female'];
@@ -32,21 +31,16 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
   @override
   void initState() {
     super.initState();
-    print('initState called');
     _fetchMaterials();
   }
 
   Future<void> _fetchMaterials() async {
-    print('Fetching materials...');
     try {
       final materials = await _materialController.fetchFilteredMaterials();
-      print('Materials fetched from API: $materials');
       setState(() {
         _materials = materials;
       });
-      print('Materials assigned to _materials: $_materials');
     } catch (e) {
-      print('Error fetching materials: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to fetch materials: $e')),
       );
@@ -198,19 +192,6 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Price (Rp)',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  setState(() {
-                    _price = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   labelText: 'Sole Material',
@@ -297,7 +278,6 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                       _shoeName!.isNotEmpty &&
                       _selectedCategory != null &&
                       _selectedGender != null &&
-                      _price != null &&
                       _selectedSoleMaterial != null &&
                       _selectedBodyMaterial != null) {
                     try {

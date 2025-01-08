@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../models/design.dart';
 
 class DesignController {
   final String baseUrl = "http://192.168.1.6:3000/api/rnd"; // Sesuaikan dengan backend Anda.
 
+  //Insert Design
   Future<void> submitDesign(
       {required String name,
         required String image,
@@ -32,10 +34,9 @@ class DesignController {
       }
 
       // Ambil ID design yang baru dibuat dari response backend
-      final resDesign = await http.get(Uri.parse('http://192.168.1.6:3000/api/rnd/design'));
+      final resDesign = await http.get(Uri.parse('$baseUrl/design'));
       final List<dynamic> allDesign = jsonDecode(resDesign.body);
       final designId = allDesign.length;
-      print(designId);
 
       // Insert ke tabel DESIGN_MATERIALS
       final materials = [
@@ -70,6 +71,56 @@ class DesignController {
       }
     } catch (e) {
       throw Exception("Error submitting design: $e");
+    }
+  }
+
+  Future<List<Design>> fetchAllPendingDesigns() async {
+    try {
+      final retData = [];
+      String soleMaterial;
+      String bodyMaterial;
+      final resDesign = await http.get(Uri.parse('$baseUrl/design'));
+
+      if (resDesign.statusCode == 200) {
+        final List<dynamic> allDesign = json.decode(resDesign.body);
+        for (var design in allDesign) {
+          if(design["status"] == "Pending"){
+            int counter = 0;
+            soleMaterial = "";
+            bodyMaterial = "";
+            final resMaterial = await http.get(Uri.parse("$baseUrl/design-material/design/${design["id"]}"));
+
+            if (resMaterial.statusCode == 200) {
+              final List<dynamic> matsData = json.decode(resMaterial.body);
+              for (var material in matsData) {
+                if(material["material_id"] != 1 && material["material_id"] != 2){
+                  final resMatsName = await http.get(Uri.parse("$baseUrl/material/${material["id"]}"));
+                  final List<dynamic> matsNameData = json.decode(resMatsName.body);
+                  if(material.length < 4){
+                    soleMaterial = matsNameData[0]["name"];
+                    bodyMaterial = matsNameData[0]["name"];
+                  }
+                  else{
+                    if(counter == 0){
+                      soleMaterial = matsNameData[0]["name"];
+                    }
+                    else{
+                      bodyMaterial = matsNameData[0]["name"];
+                    }
+                  }
+                }
+                counter++;
+              }
+              retData.add({"id": design["id"], "name":design["name"], "image":design["image"], "description":design["description"], "category":design["category"], "gender":design["gender"], "soleMaterial":soleMaterial, "bodyMaterial":bodyMaterial});
+            }
+          }
+        }
+        return retData.map((item) => Design.fromJson(item)).toList();
+      } else {
+        throw Exception('Failed to load pending designs');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
     }
   }
 }
