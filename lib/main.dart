@@ -15,6 +15,7 @@ import 'package:steppa/online_shop/ui/order_history.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
+import 'package:steppa/product_development/ui/production_progress_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
 import 'online_shop/ui/detail_product.dart';
 import 'online_shop/ui/login.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
         '/productDevelopmentDashboard': (context) => const ProductDevelopmentScreen(),
         '/pendingDesigns': (context) => const PendingDesignsScreen(),
         '/production': (context) => const ProductionScreen(),
+        '/production_progress': (context) => const ProductionProgressScreen(),
         '/designLists': (context) => const DesignListsScreen(),
         '/offlineShop': (context) => const OfflineShopScreen(),
         '/manage-stock': (context) => const ManageStockScreen(),

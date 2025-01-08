@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:steppa/product_development/controllers/design_controller.dart';
+import 'package:steppa/product_development/ui/production_progress_screen.dart';
 import '../controllers/material_controller.dart';
 import '../models/material.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
@@ -121,6 +122,19 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ProductionScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.hourglass_empty),
+              title: const Text('Production Planning'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProductionProgressScreen(),
                   ),
                 );
               },

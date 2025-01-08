@@ -3,6 +3,7 @@ import 'package:steppa/product_development/controllers/design_controller.dart';
 import 'package:steppa/product_development/models/design.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
+import 'package:steppa/product_development/ui/production_progress_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
 
 class PendingDesignsScreen extends StatefulWidget {
@@ -156,6 +157,19 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ProductionScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.hourglass_empty),
+              title: const Text('Production Planning'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProductionProgressScreen(),
                   ),
                 );
               },
