@@ -30,29 +30,29 @@ class _PaymentPageState extends State<PaymentPage> {
         isProcessing = true;
       });
 
-      final result = await MidtransPlugin.startPaymentUi(
-        token: widget.paymentUrl, // This should be the actual Midtrans token, not the URL
-      );
-
-      // Log the result for debugging
-      print('Midtrans Payment Result: $result');
-
-      // Handle the result from Midtrans
-      if (result['transaction_status'] == 'capture' || result['transaction_status'] == 'settlement') {
-        _showPaymentStatus('Payment Successful', 'Your payment was successful. Order ID: ${widget.orderId}');
-      } else if (result['transaction_status'] == 'pending') {
-        _showPaymentStatus('Payment Pending', 'Your payment is pending. Order ID: ${widget.orderId}');
-      } else {
-        _showPaymentStatus('Payment Failed', 'Your payment failed or was canceled. Order ID: ${widget.orderId}');
-      }
-
-      await MidtransPlugin.instance.startPayment(
-        MidtransPayload(
-          transactionDetails: transactionDetails,
-          itemDetails: itemDetails,
-          customerDetails: customerDetails,
-        ),
-      );
+      // final result = await MidtransPlugin.startPaymentUi(
+      //   token: widget.paymentUrl, // This should be the actual Midtrans token, not the URL
+      // );
+      //
+      // // Log the result for debugging
+      // print('Midtrans Payment Result: $result');
+      //
+      // // Handle the result from Midtrans
+      // if (result['transaction_status'] == 'capture' || result['transaction_status'] == 'settlement') {
+      //   _showPaymentStatus('Payment Successful', 'Your payment was successful. Order ID: ${widget.orderId}');
+      // } else if (result['transaction_status'] == 'pending') {
+      //   _showPaymentStatus('Payment Pending', 'Your payment is pending. Order ID: ${widget.orderId}');
+      // } else {
+      //   _showPaymentStatus('Payment Failed', 'Your payment failed or was canceled. Order ID: ${widget.orderId}');
+      // }
+      //
+      // await MidtransPlugin.instance.startPayment(
+      //   MidtransPayload(
+      //     transactionDetails: transactionDetails,
+      //     itemDetails: itemDetails,
+      //     customerDetails: customerDetails,
+      //   ),
+      // );
     } on PlatformException catch (e) {
       // Handle errors during Midtrans payment process
       print('Midtrans Payment Error: ${e.message}');

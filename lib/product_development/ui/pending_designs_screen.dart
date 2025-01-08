@@ -35,6 +35,20 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
     }
   }
 
+  Future<void> _deleteDesigns(int id) async {
+    try {
+      await _designController.softDeleteDesign(id);
+      final resData = await _designController.fetchAllPendingDesigns();
+      setState(() {
+        pendingdesigns = resData; // Update daftar desain setelah soft delete
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch pending designs: $e')),
+      );
+    }
+  }
+
   void _acceptDesign(int index) {
     setState(() {
       pendingdesigns.removeAt(index);
@@ -44,13 +58,8 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
     );
   }
 
-  void _declineDesign(int index) {
-    setState(() {
-      pendingdesigns.removeAt(index);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Design declined.')),
-    );
+  void _declineDesign(int id) {
+    _deleteDesigns(id);
   }
 
   @override
@@ -169,7 +178,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
                             builder: (context) => PendingDesignDetailScreen(
                               design: design,
                               onAccept: () => _acceptDesign(index),
-                              onDecline: () => _declineDesign(index),
+                              onDecline: () => _declineDesign(design.id),
                             ),
                           ),
                         );
@@ -181,7 +190,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.close, color: Colors.red),
-                      onPressed: () => _declineDesign(index),
+                      onPressed: () => _declineDesign(design.id),
                     ),
                   ],
                 ),
