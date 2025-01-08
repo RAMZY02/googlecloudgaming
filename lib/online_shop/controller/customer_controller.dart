@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../models/customer_register.dart';
 
-class Customer_Controller {
+class CustomerController {
   final String baseUrl = "http://192.168.18.18:3000/api/store";
   final storage = FlutterSecureStorage();  // For securely storing the JWT token
   // Function to add a new customer
@@ -116,6 +116,30 @@ class Customer_Controller {
     } catch (e) {
       print("Error decoding JWT token: $e");
       throw Exception('Error decoding JWT token');
+    }
+  }
+
+  Future<Customer> getCustomerById(String customerId, String token) async {
+    final url = Uri.parse('$baseUrl/customers/$customerId');
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return Customer.fromJson(data); // Map JSON response to Customer object
+      } else {
+        final error = jsonDecode(response.body)['error'] ?? response.reasonPhrase;
+        throw Exception('Failed to fetch customer: $error');
+      }
+    } catch (error) {
+      print("Error fetching customer by ID: $error");
+      rethrow;
     }
   }
 }

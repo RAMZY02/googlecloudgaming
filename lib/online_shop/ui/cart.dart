@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:steppa/online_shop/models/addTocart.dart';
 import '../controller/cart_controller.dart';
+import '../controller/payment_controller.dart';
+import '../controller/customer_controller.dart';
 import '../models/cart_item.dart';
 import '../models/update_cart_item.dart';
+import '../models/customer_register.dart';
 import 'navbar.dart';
 
 class Cart extends StatefulWidget {
@@ -21,14 +24,18 @@ class _CartState extends State<Cart> {
   String? cartId;
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   final CartController cartController = CartController();
+  final CustomerController customerController = CustomerController();
+  final PaymentController paymentController = PaymentController();
 
   List<CartItem> itemOnCart = [];
+  Customer? customer;
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     fetchCartItems();
+    fetchCustomerData();
   }
 
   Future<void> _getJwtTokenAndCustomerId() async {
@@ -96,6 +103,29 @@ class _CartState extends State<Cart> {
     }
   }
 
+  Future<void> fetchCustomerData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await _getJwtTokenAndCustomerId();
+
+      if (customerId != null && jwtToken != null) {
+        final fetchedCustomer = await customerController.getCustomerById(customerId!, jwtToken!);
+        setState(() {
+          customer = fetchedCustomer;
+          print(customer?.email);
+        });
+      }
+    } catch (error) {
+      print('Error fetching customer data: $error');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   void _navigateToSearch() {
     if (searchQuery != null && searchQuery!.trim().isNotEmpty) {
@@ -106,6 +136,45 @@ class _CartState extends State<Cart> {
       );
     }
   }
+
+  void _navigateToPayment() async {
+    final carts = await cartController.getCartsByCustomerId(
+      customerId!,
+      jwtToken!,
+    );
+    final cartId = carts.first.cartId;
+    print(cartId);
+    if (cartId != null && jwtToken != null) {
+      try {
+        final customerDetails = {
+          'customer_id': customerId,
+          'email': customer?.email,
+          'phone': customer?.phoneNumber,
+        };
+        final payment = await paymentController.checkout(cartId, customerDetails, jwtToken!);
+        print(cartId);
+        Navigator.pushNamed(
+          context,
+          '/paymentPage',
+          arguments: {
+            'paymentUrl': payment.paymentUrl,
+            'orderId': payment.orderId,
+            'totalAmount': payment.totalAmount,
+          },
+        );
+      } catch (error) {
+        print('Failed to navigate to payment: $error');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to proceed to payment.')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Cart ID or JWT Token is missing.')),
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +302,7 @@ class _CartState extends State<Cart> {
                     ),
                   );
                 },
-              )
+              ),
             ),
           ),
           Expanded(
@@ -295,9 +364,7 @@ class _CartState extends State<Cart> {
                   const Spacer(),
                   // Checkout Button
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/checkoutPage');
-                    },
+                    onPressed: _navigateToPayment,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -309,7 +376,7 @@ class _CartState extends State<Cart> {
                     ),
                     child: const Center(
                       child: Text(
-                          'CHECKOUT',
+                        'CHECKOUT',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

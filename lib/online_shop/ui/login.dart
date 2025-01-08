@@ -10,7 +10,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  final Customer_Controller customerController = Customer_Controller(); // Initialize Customer_Controller
+  final CustomerController customerController = CustomerController(); // Initialize Customer_Controller
 
   String _email = '';
   String _password = '';

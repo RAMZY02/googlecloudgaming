@@ -12,7 +12,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
-  final _customerController = Customer_Controller(); // Initialize CustomerController
+  final _customerController = CustomerController(); // Initialize CustomerController
 
   // Add ScrollController
   final ScrollController _scrollController = ScrollController();

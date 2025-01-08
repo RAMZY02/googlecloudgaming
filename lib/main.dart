@@ -17,8 +17,10 @@ import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
 import 'package:steppa/welcome.dart';
+import 'online_shop/models/payment.dart';
 import 'online_shop/ui/detail_product.dart';
 import 'online_shop/ui/login.dart';
+import 'online_shop/ui/payment.dart';
 import 'online_shop/ui/register.dart';
 import 'online_shop/ui/search.dart';
 import 'offline_shop/ui/offline_shop_screen.dart';
@@ -61,6 +63,20 @@ class MyApp extends StatelessWidget {
         '/detailProductPage': (context) => const DetailProduct(),
         '/cartPage': (context) => const Cart(),
         '/orderHistoryPage': (context) => const OrderHistory(),
+        '/paymentPage': (context) {
+          final Map<String, dynamic> args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+
+          final String paymentUrl = args['paymentUrl'];
+          final String orderId = args['orderId'];
+          final double totalAmount = args['totalAmount'];
+
+          return PaymentPage(
+            paymentUrl: paymentUrl,
+            orderId: orderId,
+            totalAmount: totalAmount,
+          );
+        },
+
         '/productDevelopmentDashboard': (context) => const ProductDevelopmentScreen(),
         '/pendingDesigns': (context) => const PendingDesignsScreen(),
         '/production': (context) => const ProductionScreen(),
