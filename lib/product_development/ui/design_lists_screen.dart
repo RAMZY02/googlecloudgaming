@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/product_development/controllers/design_controller.dart';
 import 'package:steppa/product_development/models/design.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
@@ -12,35 +13,48 @@ class DesignListsScreen extends StatefulWidget {
 }
 
 class _DesignListsScreenState extends State<DesignListsScreen> {
-  final List<Design> designLists = [
-    Design(
-        id: 1,
-        name: "Nike Air Zoom",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQm3zenzeewmwTBRTG0R1kZwDEiT013hybhtg&s",
-        description: "Test",
-        category: "Running",
-        gender: "Male",
-        soleMaterial: "Karet",
-        bodyMaterial: "Kain"),
-    Design(
-        id: 2,
-        name: "Adidas Ultra Boost",
-        image: "https://static.promediateknologi.id/crop/0x0:0x0/750x500/webp/photo/p1/294/2024/08/27/Artikel-452-3055304001.jpg",
-        description: "Test",
-        category: "Casual",
-        gender: "Female",
-        soleMaterial: "Foam",
-        bodyMaterial: "Kulit"),
-    Design(
-        id: 3,
-        name: "Puma RS-X",
-        image: "https://m.media-amazon.com/images/I/71Vhhy6VmSL._AC_SL1500_.jpg",
-        description: "Test",
-        category: "Training",
-        gender: "Male",
-        soleMaterial: "Plastik",
-        bodyMaterial: "Kulit Sintesis"),
-  ];
+  List<Design> designlists = [];
+  final DesignController _designController = DesignController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAllAcceptedDesigns();
+  }
+
+  Future<void> _fetchAllAcceptedDesigns() async {
+    try {
+      final resData = await _designController.fetchAllAcceptedDesigns();
+      setState(() {
+        designlists = resData;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch accepted designs: $e')),
+      );
+    }
+  }
+
+  Future<void> _deleteDesigns(int id) async {
+    try {
+      await _designController.softDeleteDesign(id);
+      final resData = await _designController.fetchAllAcceptedDesigns();
+      setState(() {
+        designlists = resData; // Update daftar desain setelah soft delete
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch pending designs: $e')),
+      );
+    }
+  }
+
+  void _throwDesign(int id) {
+    _deleteDesigns(id);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Design declined!')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,9 +146,9 @@ class _DesignListsScreenState extends State<DesignListsScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView.builder(
-          itemCount: designLists.length,
+          itemCount: designlists.length,
           itemBuilder: (context, index) {
-            final design = designLists[index];
+            final design = designlists[index];
             return Card(
               margin: const EdgeInsets.only(bottom: 16.0),
               child: ListTile(
@@ -145,17 +159,33 @@ class _DesignListsScreenState extends State<DesignListsScreen> {
                   fit: BoxFit.cover,
                 ),
                 title: Text(design.name),
-                subtitle: Text("Dummy"),
-                trailing: IconButton(
-                  icon: const Icon(Icons.info, color: Colors.blue),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DesignListsDetailScreen(design: design),
-                      ),
-                    );
-                  },
+                subtitle: Text(
+                  design.description,
+                  maxLines: 1, // Membatasi teks hanya pada 1 baris
+                  overflow: TextOverflow.ellipsis, // Menampilkan ... jika teks terlalu panjang
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.info, color: Colors.blue),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DesignListsDetailScreen(
+                              design: design,
+                              onDelete: () => _throwDesign(design.id),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => _throwDesign(design.id),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -168,8 +198,13 @@ class _DesignListsScreenState extends State<DesignListsScreen> {
 
 class DesignListsDetailScreen extends StatelessWidget {
   final Design design;
+  final VoidCallback onDelete;
 
-  const DesignListsDetailScreen({Key? key, required this.design}) : super(key: key);
+  const DesignListsDetailScreen({
+    Key? key,
+    required this.design,
+    required this.onDelete,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -198,8 +233,8 @@ class DesignListsDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.',
+            Text(
+              '${design.description}',
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),
@@ -210,6 +245,30 @@ class DesignListsDetailScreen extends StatelessWidget {
             Text('Sole Material: ${design.soleMaterial}', style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 8),
             Text('Body Material: ${design.bodyMaterial}', style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 24),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch, // Membuat tombol penuh secara horizontal
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red, // Latar belakang hijau
+                    padding: const EdgeInsets.symmetric(vertical: 16), // Ukuran tombol
+                  ),
+                  onPressed: () {
+                    onDelete();
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Delete Design',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold, // Tulisan tebal
+                      color: Colors.white, // Tulisan putih
+                    ),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

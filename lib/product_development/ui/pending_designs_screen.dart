@@ -35,31 +35,54 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
     }
   }
 
-  Future<void> _deleteDesigns(int id) async {
+  Future<void> _approveDesigns(int id) async {
     try {
-      await _designController.softDeleteDesign(id);
+      await _designController.acceptDesign(id);
+
+      // Ambil ulang data terbaru
       final resData = await _designController.fetchAllPendingDesigns();
       setState(() {
-        pendingdesigns = resData; // Update daftar desain setelah soft delete
+        pendingdesigns = resData;
       });
+
     } catch (e) {
+      // Tampilkan error dengan tepat
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch pending designs: $e')),
+        SnackBar(content: Text('Failed to approve design: $e')),
       );
     }
   }
 
-  void _acceptDesign(int index) {
-    setState(() {
-      pendingdesigns.removeAt(index);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Design accepted!')),
-    );
+
+  Future<void> _deleteDesigns(int id) async {
+    try {
+      await _designController.softDeleteDesign(id);
+
+      // Ambil ulang data terbaru
+      final resData = await _designController.fetchAllPendingDesigns();
+      setState(() {
+        pendingdesigns = resData;
+      });
+    } catch (e) {
+      // Tampilkan error dengan tepat
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to approve design: $e')),
+      );
+    }
   }
 
-  void _declineDesign(int id) {
-    _deleteDesigns(id);
+  void _acceptDesign(int id) async {
+    await _approveDesigns(id); // Tunggu hingga selesai
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(content: Text('Design accepted!')),
+    // );
+  }
+
+  void _declineDesign(int id) async{
+    await _deleteDesigns(id);
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(content: Text('Design declined!')),
+    // );
   }
 
   @override
@@ -154,6 +177,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
         child: ListView.builder(
           itemCount: pendingdesigns.length,
           itemBuilder: (context, index) {
+            if (index >= pendingdesigns.length) return const SizedBox.shrink();
             final design = pendingdesigns[index];
             return Card(
               margin: const EdgeInsets.only(bottom: 16.0),
@@ -165,7 +189,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
                   fit: BoxFit.cover,
                 ),
                 title: Text(design.name),
-                subtitle: const Text('Waiting for approval'),
+                subtitle: Text('Waiting for approval'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -177,7 +201,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
                           MaterialPageRoute(
                             builder: (context) => PendingDesignDetailScreen(
                               design: design,
-                              onAccept: () => _acceptDesign(index),
+                              onAccept: () => _acceptDesign(design.id),
                               onDecline: () => _declineDesign(design.id),
                             ),
                           ),
@@ -186,7 +210,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.check, color: Colors.green),
-                      onPressed: () => _acceptDesign(index),
+                      onPressed: () => _acceptDesign(design.id),
                     ),
                     IconButton(
                       icon: const Icon(Icons.close, color: Colors.red),
@@ -242,8 +266,8 @@ class PendingDesignDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.',
+            Text(
+              '${design.description}',
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 24),

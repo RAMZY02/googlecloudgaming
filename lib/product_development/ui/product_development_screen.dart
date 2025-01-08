@@ -27,6 +27,9 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
 
   final MaterialController _materialController = MaterialController();
   final DesignController _designController = DesignController();
+  final TextEditingController _shoeNameController = TextEditingController();
+  final TextEditingController _imageLinkController = TextEditingController();
+
 
   @override
   void initState() {
@@ -46,8 +49,6 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
       );
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +144,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TextField(
+                controller: _shoeNameController,
                 decoration: const InputDecoration(
                   labelText: 'Shoe Name',
                   border: OutlineInputBorder(),
@@ -231,6 +233,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
               ),
               const SizedBox(height: 20),
               TextField(
+                controller: _imageLinkController,
                 decoration: const InputDecoration(
                   labelText: 'Image Link (Google Drive)',
                   border: OutlineInputBorder(),
@@ -294,6 +297,20 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Design "$_shoeName" Uploaded Successfully!')),
                       );
+
+                      // Reset form setelah berhasil submit
+                      setState(() {
+                        _imageLink = null;
+                        _shoeName = null;
+                        _selectedCategory = null;
+                        _selectedGender = null;
+                        _selectedSoleMaterial = null;
+                        _selectedBodyMaterial = null;
+                      });
+
+                      // Kosongkan TextEditingController
+                      _shoeNameController.clear();
+                      _imageLinkController.clear();
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Failed to submit design: $e')),
