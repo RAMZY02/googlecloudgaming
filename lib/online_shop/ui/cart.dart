@@ -8,6 +8,7 @@ import '../models/cart_item.dart';
 import '../models/update_cart_item.dart';
 import '../models/customer_register.dart';
 import 'navbar.dart';
+import 'dart:html' as html; // For Flutter Web
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -138,39 +139,35 @@ class _CartState extends State<Cart> {
   }
 
   void _navigateToPayment() async {
-    final carts = await cartController.getCartsByCustomerId(
-      customerId!,
-      jwtToken!,
-    );
-    final cartId = carts.first.cartId;
-    print(cartId);
-    if (cartId != null && jwtToken != null) {
-      try {
-        final customerDetails = {
-          'customer_id': customerId,
-          'email': customer?.email,
-          'phone': customer?.phoneNumber,
-        };
-        final payment = await paymentController.checkout(cartId, customerDetails, jwtToken!);
-        print(cartId);
-        Navigator.pushNamed(
-          context,
-          '/paymentPage',
-          arguments: {
-            'paymentUrl': payment.paymentUrl,
-            'orderId': payment.orderId,
-            'totalAmount': payment.totalAmount,
-          },
+    try {
+      await _getJwtTokenAndCustomerId();
+      if (customerId != null && jwtToken != null) {
+        final carts = await cartController.getCartsByCustomerId(
+          customerId!,
+          jwtToken!,
         );
-      } catch (error) {
-        print('Failed to navigate to payment: $error');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to proceed to payment.')),
-        );
+
+        final cartId = carts.first.cartId;
+        if (cartId != null) {
+          final customerDetails = {
+            'customer_id': customerId,
+            'email': customer?.email,
+            'phone': customer?.phoneNumber,
+          };
+
+          // Request pembayaran melalui payment controller
+          final payment = await paymentController.checkout(cartId, customerDetails, jwtToken!);
+
+          // Buka halaman Snap Midtrans di tab baru
+          html.window.open(payment.paymentUrl, '_blank');
+        } else {
+          print('Cart ID is null.');
+        }
       }
-    } else {
+    } catch (error) {
+      print('Failed to proceed to payment: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Cart ID or JWT Token is missing.')),
+        SnackBar(content: Text('Failed to proceed to payment.')),
       );
     }
   }
