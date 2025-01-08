@@ -123,4 +123,37 @@ class DesignController {
       throw Exception('Error: $e');
     }
   }
+
+  Future<void> softDeleteDesign(int id) async {
+    try {
+      final url = Uri.parse("$baseUrl/design-material-by-designId");
+      final response = await http.delete(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"id": id}),
+      );
+
+      if (response.statusCode == 200) {
+        print("Design marked as deleted successfully.");
+
+        final url2 = Uri.parse("$baseUrl/design");
+        final response2 = await http.delete(
+          url2,
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode({"id": id}),
+        );
+
+        if (response2.statusCode == 200) {
+          print("Design marked as deleted successfully.");
+        } else {
+          throw Exception("Failed to mark design as deleted. Error: ${response.body}");
+        }
+      } else {
+        throw Exception("Failed to mark design as deleted. Error: ${response.body}");
+      }
+    } catch (error) {
+      print("Error occurred while soft deleting design: $error");
+      rethrow;
+    }
+  }
 }
