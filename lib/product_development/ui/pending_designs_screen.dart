@@ -150,7 +150,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.factory),
-              title: const Text('Production Planning'),
+              title: const Text('Production Planner'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -163,7 +163,7 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.hourglass_empty),
-              title: const Text('Production Planning'),
+              title: const Text('Production Progress'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(

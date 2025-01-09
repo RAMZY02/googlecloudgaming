@@ -115,7 +115,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.factory),
-              title: const Text('Production Planning'),
+              title: const Text('Production Planner'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -128,7 +128,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.hourglass_empty),
-              title: const Text('Production Planning'),
+              title: const Text('Production Progress'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(

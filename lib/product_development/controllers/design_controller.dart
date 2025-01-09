@@ -183,7 +183,7 @@ class DesignController {
           throw Exception("Failed to update design status");
         }
       } else {
-        throw Exception("Failed to mark design as deleted. Error: ${resData.body}");
+        throw Exception("Failed to mark design as accepted. Error: ${resData.body}");
       }
     } catch (error) {
       print("Error occurred while accepting design: $error");

@@ -22,7 +22,7 @@ class _ProductionScreenState extends State<ProductionScreen> {
   final MaterialController _materialController = MaterialController();
   final ProductionController _productionController = ProductionController();
 
-  final List<int> shoeSizes = [40, 41, 42, 43, 44];
+  final List<int> shoeSizes = [40, 41, 42, 43, 44, 45];
 
   String? selectedDesign;
   int? selectedSize;
@@ -158,7 +158,7 @@ class _ProductionScreenState extends State<ProductionScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.factory),
-              title: const Text('Production Planning'),
+              title: const Text('Production Planner'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -171,7 +171,7 @@ class _ProductionScreenState extends State<ProductionScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.hourglass_empty),
-              title: const Text('Production Planning'),
+              title: const Text('Production Progress'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -349,7 +349,7 @@ class _ProductionScreenState extends State<ProductionScreen> {
                           bool enoughMats = true;
                           for(int i = 0; i < selectedMaterialData.length; i++){
                             String neededmats = selectedMaterialData[i].name;
-                            if(selectedMaterialData[i].stok_qty < quantity * materialsPerShoe[neededmats]!){
+                            if(selectedMaterialData[i].stok_qty < materialsPerShoe[neededmats]!){
                               enoughMats = false;
                               break;
                             }
@@ -365,7 +365,7 @@ class _ProductionScreenState extends State<ProductionScreen> {
 
                             for(int i = 0; i < selectedMaterialData.length; i++){
                               String neededmats = selectedMaterialData[i].name;
-                              await _materialController.updateMaterial(selectedMaterialData[i].id, quantity * materialsPerShoe[neededmats]!);
+                              await _materialController.updateMaterial(selectedMaterialData[i].id, materialsPerShoe[neededmats]!);
                             }
 
                             ScaffoldMessenger.of(context).showSnackBar(
