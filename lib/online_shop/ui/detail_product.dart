@@ -137,6 +137,14 @@ class _DetailProductState extends State<DetailProduct> {
     }
   }
 
+  Future<void> _logout() async {
+    // Hapus semua data dari Secure Storage
+    await _secureStorage.deleteAll();
+
+    // Navigasi ke halaman loginPage
+    Navigator.pushReplacementNamed(context, '/loginPage');
+  }
+
   @override
   Widget build(BuildContext context) {
     final Product_Cart product = ModalRoute.of(context)!.settings.arguments as Product_Cart;
@@ -167,6 +175,33 @@ class _DetailProductState extends State<DetailProduct> {
         },
         onLogoPressed: () {
           Navigator.pushNamed(context, '/homePage'); // Navigasi ke halaman riwayat pesanan
+        },
+        onPersonPressed: () {
+          // Lebar layar
+          double screenWidth = MediaQuery.of(context).size.width;
+
+          // Tampilkan menu di kanan atas layar
+          showMenu(
+            context: context,
+            position: RelativeRect.fromLTRB(
+              screenWidth - 200, // Jarak dari kiri layar (200 = lebar pop-up)
+              50, // Jarak dari atas layar (50 = tinggi posisi logo "person")
+              16, // Jarak dari kanan layar (padding opsional)
+              0,  // Tidak ada offset di bawah
+            ),
+            items: [
+              PopupMenuItem(
+                child: ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  onTap: () async {
+                    Navigator.pop(context); // Tutup menu
+                    await _logout(); // Panggil fungsi logout
+                  },
+                ),
+              ),
+            ],
+          );
         },
       ),
       body: Center(

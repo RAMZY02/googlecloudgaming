@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/product_card.dart';
 import '../controller/product_controller.dart'; // Import controller untuk fetch data
 import 'navbar.dart';
@@ -24,11 +25,15 @@ class _SearchState extends State<Search> {
   String? selectedGender;
   String? selectedCategory;
   String? sortBy;
+  String? jwtToken;
+  String? customerId;
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   @override
   void initState() {
     super.initState();
     fetchProducts();
+    _getJwtToken();
   }
 
   @override
@@ -43,6 +48,15 @@ class _SearchState extends State<Search> {
         searchQuery = arguments;
         selectedCategory = null;
       }
+    }
+  }
+
+  Future<void> _getJwtToken() async {
+    try {
+      jwtToken = await _secureStorage.read(key: 'jwt_token');
+      customerId = await _secureStorage.read(key: 'customer_id');
+    } catch (e) {
+      print("Error retrieving data from Secure Storage: $e");
     }
   }
 
@@ -109,6 +123,14 @@ class _SearchState extends State<Search> {
     });
   }
 
+  Future<void> _logout() async {
+    // Hapus semua data dari Secure Storage
+    await _secureStorage.deleteAll();
+
+    // Navigasi ke halaman loginPage
+    Navigator.pushReplacementNamed(context, '/loginPage');
+  }
+
   void clearFilter(String filterType) {
     setState(() {
       if (filterType == "gender") {
@@ -142,6 +164,33 @@ class _SearchState extends State<Search> {
         },
         onLogoPressed: () {
           Navigator.pushNamed(context, '/homePage');
+        },
+        onPersonPressed: () {
+          // Lebar layar
+          double screenWidth = MediaQuery.of(context).size.width;
+
+          // Tampilkan menu di kanan atas layar
+          showMenu(
+            context: context,
+            position: RelativeRect.fromLTRB(
+              screenWidth - 200, // Jarak dari kiri layar (200 = lebar pop-up)
+              50, // Jarak dari atas layar (50 = tinggi posisi logo "person")
+              16, // Jarak dari kanan layar (padding opsional)
+              0,  // Tidak ada offset di bawah
+            ),
+            items: [
+              PopupMenuItem(
+                child: ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  onTap: () async {
+                    Navigator.pop(context); // Tutup menu
+                    await _logout(); // Panggil fungsi logout
+                  },
+                ),
+              ),
+            ],
+          );
         },
         onSearchSubmitted: performSearch,
       ),

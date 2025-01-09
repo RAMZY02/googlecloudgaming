@@ -6,6 +6,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
   final Function(String) onSearchSubmitted;
   final Function() onToggleSearch;
   final Function() onCartPressed;
+  final Function() onPersonPressed;
   final Function() onHistoryPressed;
   final Function() onLogoPressed; // Fungsi baru untuk menangani penekanan logo
 
@@ -16,6 +17,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
     required this.onSearchSubmitted,
     required this.onToggleSearch,
     required this.onCartPressed,
+    required this.onPersonPressed,
     required this.onHistoryPressed,
     required this.onLogoPressed, // Parameter baru untuk fungsi logo
   }) : super(key: key);
@@ -80,7 +82,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         // Ikon profil
         IconButton(
-          onPressed: () {},
+          onPressed: onPersonPressed,
           icon: const Icon(Icons.person_outline, color: Colors.blue),
           iconSize: 25,
         ),

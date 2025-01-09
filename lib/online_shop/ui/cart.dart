@@ -104,6 +104,14 @@ class _CartState extends State<Cart> {
     }
   }
 
+  Future<void> _logout() async {
+    // Hapus semua data dari Secure Storage
+    await _secureStorage.deleteAll();
+
+    // Navigasi ke halaman loginPage
+    Navigator.pushReplacementNamed(context, '/loginPage');
+  }
+
   Future<void> fetchCustomerData() async {
     setState(() {
       isLoading = true;
@@ -203,6 +211,33 @@ class _CartState extends State<Cart> {
         onLogoPressed: () {
           Navigator.pushNamed(context, '/homePage'); // Navigasi ke halaman riwayat pesanan
         },
+        onPersonPressed: () {
+          // Lebar layar
+          double screenWidth = MediaQuery.of(context).size.width;
+
+          // Tampilkan menu di kanan atas layar
+          showMenu(
+            context: context,
+            position: RelativeRect.fromLTRB(
+              screenWidth - 200, // Jarak dari kiri layar (200 = lebar pop-up)
+              50, // Jarak dari atas layar (50 = tinggi posisi logo "person")
+              16, // Jarak dari kanan layar (padding opsional)
+              0,  // Tidak ada offset di bawah
+            ),
+            items: [
+              PopupMenuItem(
+                child: ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  onTap: () async {
+                    Navigator.pop(context); // Tutup menu
+                    await _logout(); // Panggil fungsi logout
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
@@ -250,36 +285,111 @@ class _CartState extends State<Cart> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     const Text('Jumlah:'),
-                                    DropdownButton<int>(
-                                      value: itemOnCart[index].quantity, // Mengambil nilai kuantitas item yang sesuai
-                                      items: List.generate(10, (index) => index + 1)
-                                          .map((value) => DropdownMenuItem(
-                                        value: value,
-                                        child: Text('$value'),
-                                      ))
-                                          .toList(),
-                                      onChanged: (newQty) async {
-                                        if (newQty != null) {
-                                          final previousQty = itemOnCart[index].quantity;
-                                          setState(() {
-                                            itemOnCart[index] = itemOnCart[index].copyWith(quantity: newQty);
-                                          });
-
-                                          final success = await cartController.updateCartItemQuantity(
-                                            UpdateCartItemRequest(
-                                              cartItemId: itemOnCart[index].cartItemId,
-                                              quantity: newQty,
-                                            ),
-                                            jwtToken!,
-                                          );
-
-                                          if (!success) {
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.remove, color: Colors.white),
+                                          iconSize: 16, // Ukuran ikon lebih kecil
+                                          onPressed: itemOnCart[index].quantity > 0
+                                              ? () async {
+                                            final previousQty = itemOnCart[index].quantity;
                                             setState(() {
-                                              itemOnCart[index] = itemOnCart[index].copyWith(quantity: previousQty);
+                                              itemOnCart[index] = itemOnCart[index].copyWith(quantity: previousQty - 1);
                                             });
+
+                                            final success = await cartController.updateCartItemQuantity(
+                                              UpdateCartItemRequest(
+                                                cartItemId: itemOnCart[index].cartItemId,
+                                                quantity: itemOnCart[index].quantity,
+                                              ),
+                                              jwtToken!,
+                                            );
+
+                                            if (!success) {
+                                              setState(() {
+                                                itemOnCart[index] = itemOnCart[index].copyWith(quantity: previousQty);
+                                              });
+                                            }
                                           }
-                                        }
-                                      },
+                                              : null,
+                                          style: IconButton.styleFrom(
+                                            backgroundColor: Colors.blueAccent,
+                                            shape: const CircleBorder(),
+                                            padding: const EdgeInsets.all(4), // Padding lebih kecil
+                                            minimumSize: const Size(24, 24), // Ukuran tombol minimal lebih kecil
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 35, // Lebar input text
+                                          child: TextField(
+                                            textAlign: TextAlign.center,
+                                            keyboardType: TextInputType.number,
+                                            style: const TextStyle(fontSize: 12), // Ukuran teks lebih kecil
+                                            controller: TextEditingController(
+                                              text: itemOnCart[index].quantity.toString(),
+                                            ),
+                                            onSubmitted: (value) async {
+                                              final newQty = int.tryParse(value) ?? itemOnCart[index].quantity;
+                                              final previousQty = itemOnCart[index].quantity;
+
+                                              if (newQty >= 0) {
+                                                setState(() {
+                                                  itemOnCart[index] = itemOnCart[index].copyWith(quantity: newQty);
+                                                });
+
+                                                final success = await cartController.updateCartItemQuantity(
+                                                  UpdateCartItemRequest(
+                                                    cartItemId: itemOnCart[index].cartItemId,
+                                                    quantity: newQty,
+                                                  ),
+                                                  jwtToken!,
+                                                );
+
+                                                if (!success) {
+                                                  setState(() {
+                                                    itemOnCart[index] = itemOnCart[index].copyWith(quantity: previousQty);
+                                                  });
+                                                }
+                                              }
+                                            },
+                                            decoration: const InputDecoration(
+                                              isDense: true, // Mengurangi tinggi input
+                                              contentPadding: EdgeInsets.symmetric(vertical: 6), // Padding lebih kecil
+                                              border: InputBorder.none, // Menghilangkan border
+                                            ),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.add, color: Colors.white),
+                                          iconSize: 16, // Ukuran ikon lebih kecil
+                                          onPressed: () async {
+                                            final previousQty = itemOnCart[index].quantity;
+                                            setState(() {
+                                              itemOnCart[index] = itemOnCart[index].copyWith(quantity: previousQty + 1);
+                                            });
+
+                                            final success = await cartController.updateCartItemQuantity(
+                                              UpdateCartItemRequest(
+                                                cartItemId: itemOnCart[index].cartItemId,
+                                                quantity: itemOnCart[index].quantity,
+                                              ),
+                                              jwtToken!,
+                                            );
+
+                                            if (!success) {
+                                              setState(() {
+                                                itemOnCart[index] = itemOnCart[index].copyWith(quantity: previousQty);
+                                              });
+                                            }
+                                          },
+                                          style: IconButton.styleFrom(
+                                            backgroundColor: Colors.blueAccent,
+                                            shape: const CircleBorder(),
+                                            padding: const EdgeInsets.all(4), // Padding lebih kecil
+                                            minimumSize: const Size(24, 24), // Ukuran tombol minimal lebih kecil
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -324,7 +434,7 @@ class _CartState extends State<Cart> {
                     children: [
                       const Text('Subtotal:'),
                       Text(
-                        'Rp${(itemOnCart.fold(0.0, (sum, item) => sum + (item.price * item.quantity)) + 30000).toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => '.')}',
+                        'Rp${(itemOnCart.fold(0.0, (sum, item) => sum + (item.price * item.quantity))).toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => '.')}',
                       ),
                     ],
                   ),
