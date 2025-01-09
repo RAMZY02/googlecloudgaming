@@ -216,7 +216,7 @@ class _DetailProductState extends State<DetailProduct> {
                   flex: 6,
                   child: Column(
                     children: [
-                      Image.asset(
+                      Image.network(
                         product.product_image!,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) {

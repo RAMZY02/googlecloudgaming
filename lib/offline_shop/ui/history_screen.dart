@@ -1,31 +1,15 @@
 import 'package:flutter/material.dart';
-import '../models/product.dart';
-import 'history_screen.dart';
-import 'request_stock.dart';
+
 import 'offline_shop_screen.dart';
 
-class InvoiceScreen extends StatelessWidget {
-  final List<Product> cartItems;
-  final Map<Product, int> productQuantities;  // Map<Product, int> untuk kuantitas produk
-
-  const InvoiceScreen({
-    Key? key,
-    required this.cartItems,
-    required this.productQuantities,
-  }) : super(key: key);
+class HistoryScreen extends StatelessWidget {
+  const HistoryScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Menghitung total harga dari semua produk dalam invoice
-    double totalAmount = 0;
-    cartItems.forEach((product) {
-      int quantity = productQuantities[product] ?? 0;  // Ambil kuantitas berdasarkan produk
-      totalAmount += product.price! * quantity;
-    });
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Invoice'),
+        title: const Text('Raw Materials Storage'),
       ),
       drawer: Drawer(
         child: ListView(
@@ -51,7 +35,7 @@ class InvoiceScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const StocksScreen(),
+                    builder: (context) => const HistoryScreen(),
                   ),
                 );
               },
@@ -94,37 +78,24 @@ class InvoiceScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Invoice Details',
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(
+              Icons.storage,
+              size: 100,
+              color: Colors.blue,
+            ),
+            SizedBox(height: 20),
+            Text(
+              'No Stock Data Available',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: cartItems.length,
-                itemBuilder: (context, index) {
-                  final product = cartItems[index];
-                  final quantity = productQuantities[product]!;  // Ambil kuantitas berdasarkan produk
-                  return ListTile(
-                    leading: Image.network(product.product_image!),
-                    title: Text(product.product_name!),
-                    subtitle: Text('Quantity: $quantity'),
-                    trailing: Text(
-                      '\$${(product.price! * quantity).toStringAsFixed(2)}',
-                    ),
-                  );
-                },
-              ),
-            ),
-            const Divider(),
+            SizedBox(height: 10),
             Text(
-              'Total: \$${totalAmount.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              'The raw materials storage is currently empty.',
+              style: TextStyle(fontSize: 16),
             ),
           ],
         ),

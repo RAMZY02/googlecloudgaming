@@ -335,7 +335,9 @@ class _CartState extends State<Cart> {
                                           onPressed: itemOnCart[index].quantity > 1
                                               ? () async {
                                             final previousQty = itemOnCart[index].quantity;
+                                            final previousPrice = itemOnCart[index].price;
                                             setState(() {
+                                              itemOnCart[index] = itemOnCart[index].copyWith(price: previousPrice/previousQty * (previousQty - 1) );
                                               itemOnCart[index] = itemOnCart[index].copyWith(quantity: previousQty - 1);
                                             });
 
@@ -430,7 +432,9 @@ class _CartState extends State<Cart> {
                                           iconSize: 16,
                                           onPressed: () async {
                                             final previousQty = itemOnCart[index].quantity;
+                                            final previousPrice = itemOnCart[index].price;
                                             setState(() {
+                                              itemOnCart[index] = itemOnCart[index].copyWith(price: previousPrice/previousQty * (previousQty + 1) );
                                               itemOnCart[index] = itemOnCart[index].copyWith(quantity: previousQty + 1);
                                             });
 
@@ -461,7 +465,7 @@ class _CartState extends State<Cart> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Rp${(itemOnCart[index].price * itemOnCart[index].quantity).toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => '.')}',
+                                  'Rp${(itemOnCart[index].price).toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => '.')}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -500,7 +504,7 @@ class _CartState extends State<Cart> {
                     children: [
                       const Text('Subtotal:'),
                       Text(
-                        'Rp${(itemOnCart.fold(0.0, (sum, item) => sum + (item.price * item.quantity))).toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => '.')}',
+                        'Rp${(itemOnCart.fold(0.0, (sum, item) => sum + (item.price))).toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => '.')}',
                       ),
                     ],
                   ),
@@ -526,7 +530,7 @@ class _CartState extends State<Cart> {
                         ),
                       ),
                       Text(
-                        'Rp${(itemOnCart.fold(0.0, (sum, item) => sum + (item.price * item.quantity)) + 30000).toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => '.')}',
+                        'Rp${(itemOnCart.fold(0.0, (sum, item) => sum + (item.price)) + 30000).toStringAsFixed(0).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => '.')}',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,

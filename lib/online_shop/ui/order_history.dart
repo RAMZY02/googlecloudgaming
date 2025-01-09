@@ -20,7 +20,7 @@ class _OrderHistoryState extends State<OrderHistory> {
 
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   final PurchaseHistoryController controller =
-  PurchaseHistoryController(baseUrl: 'http://10.10.2.49:3000');
+  PurchaseHistoryController(baseUrl: 'http://192.168.18.18:3000');
 
   @override
   void initState() {

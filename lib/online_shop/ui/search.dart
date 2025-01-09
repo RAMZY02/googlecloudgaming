@@ -24,6 +24,7 @@ class _SearchState extends State<Search> {
   String? searchQuery;
   String? selectedGender;
   String? selectedCategory;
+  String? kategori;
   String? sortBy;
   String? jwtToken;
   String? customerId;
@@ -41,13 +42,16 @@ class _SearchState extends State<Search> {
     super.didChangeDependencies();
     var arguments = ModalRoute.of(context)?.settings.arguments;
     if (arguments is String) {
-      if (arguments.contains("Sport") || arguments.contains("Casual") || arguments.contains("Running")) {
-        selectedCategory = arguments;
-        searchQuery = null;
-      } else {
-        searchQuery = arguments;
-        selectedCategory = null;
-      }
+      setState(() {
+        // Memperbarui nilai selectedCategory dan searchQuery sesuai dengan argumen
+        if (arguments.contains("Sport") || arguments.contains("Casual") || arguments.contains("Running")) {
+          kategori = arguments;
+          searchQuery = null; // Tidak perlu search query jika kategori dipilih
+        } else {
+          searchQuery = arguments;
+          selectedCategory = null; // Tidak ada kategori yang dipilih
+        }
+      });
     }
   }
 
@@ -55,6 +59,7 @@ class _SearchState extends State<Search> {
     try {
       jwtToken = await _secureStorage.read(key: 'jwt_token');
       customerId = await _secureStorage.read(key: 'customer_id');
+      selectedCategory = kategori;
     } catch (e) {
       print("Error retrieving data from Secure Storage: $e");
     }
@@ -242,12 +247,8 @@ class _SearchState extends State<Search> {
                     hint: const Text("Category"),
                     dropdownColor: Colors.white,
                     style: const TextStyle(color: Colors.black),
-                    icon: const Icon(Icons.arrow_drop_down,
-                        color: Colors.black),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.blue,
-                    ),
+                    icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+                    underline: Container(height: 2, color: Colors.blue),
                     items: ["Casual", "Running", "Sport"]
                         .map((category) => DropdownMenuItem<String>(
                       value: category,
@@ -260,9 +261,9 @@ class _SearchState extends State<Search> {
                               value: "", child: Text("Clear Filter"))),
                     onChanged: (value) {
                       setState(() {
-                        selectedCategory =
-                        value == "" ? null : value;
-                        applyFiltersAndSort();
+                        // Selalu update selectedCategory dengan value yang baru
+                        selectedCategory = value == "" ? null : value;
+                        applyFiltersAndSort();  // Pastikan filter dijalankan setelah perubahan
                       });
                     },
                     borderRadius: BorderRadius.circular(12),
