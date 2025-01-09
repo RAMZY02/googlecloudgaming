@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/cart.dart';
-import '../models/addTocart.dart';
+import '../models/add_to_cart.dart';
 import '../models/cart_item.dart';
+import '../models/delete_cart_item.dart';
 import '../models/update_cart_item.dart';
 
 class CartController {
-  final String baseUrl = "http://192.168.18.18:3000/api/store";
+  final String baseUrl = "http://10.10.2.49:3000/api/store";
 
   // Function to add an item to the cart
   Future<bool> addToCart(cartItem request, String token) async {
@@ -104,6 +105,31 @@ class CartController {
     } catch (error) {
       print("Error updating cart item quantity: $error");
       return false;
+    }
+  }
+
+  Future<void> removeCartItemById(String cartItemId, String token) async {
+    final url = Uri.parse('$baseUrl/cart/remove_item');
+    try {
+      final response = await http.put(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'cart_item_id': cartItemId, // Mengirim cart_item_id sesuai backend
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final message = json.decode(response.body)['message'];
+        print(message); // Menampilkan pesan sukses
+      } else {
+        throw Exception('Failed to remove cart item: ${response.body}');
+      }
+    } catch (error) {
+      throw Exception('Error removing cart item: $error');
     }
   }
 }

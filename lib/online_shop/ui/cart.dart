@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:steppa/online_shop/models/addTocart.dart';
+import 'package:steppa/online_shop/models/add_to_cart.dart';
 import '../controller/cart_controller.dart';
 import '../controller/payment_controller.dart';
 import '../controller/customer_controller.dart';
@@ -180,6 +180,48 @@ class _CartState extends State<Cart> {
     }
   }
 
+  Future<void> removeCartItemByCartId(String cartItemId) async {
+    try {
+      await cartController.removeCartItemById(cartItemId, jwtToken!);
+      setState(() {
+        itemOnCart.removeWhere((item) => item.cartItemId == cartItemId);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Item removed successfully.')),
+      );
+    } catch (error) {
+      print('Error removing cart item: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to remove item.')),
+      );
+    }
+  }
+
+  Future<void> showRemoveItemDialog(String cartItemId) async {
+    final shouldRemove = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Remove Item'),
+          content: const Text('Are you sure you want to remove this item from your cart?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldRemove == true) {
+      await removeCartItemByCartId(cartItemId);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -289,8 +331,8 @@ class _CartState extends State<Cart> {
                                       children: [
                                         IconButton(
                                           icon: const Icon(Icons.remove, color: Colors.white),
-                                          iconSize: 16, // Ukuran ikon lebih kecil
-                                          onPressed: itemOnCart[index].quantity > 0
+                                          iconSize: 16,
+                                          onPressed: itemOnCart[index].quantity > 1
                                               ? () async {
                                             final previousQty = itemOnCart[index].quantity;
                                             setState(() {
@@ -311,20 +353,44 @@ class _CartState extends State<Cart> {
                                               });
                                             }
                                           }
-                                              : null,
+                                              : () async {
+                                            final shouldRemove = await showDialog<bool>(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text('Hapus Item'),
+                                                  content: const Text('Apakah Anda yakin ingin menghapus item ini dari keranjang?'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () => Navigator.of(context).pop(false),
+                                                      child: const Text('Batal'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () => Navigator.of(context).pop(true),
+                                                      child: const Text('Hapus'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+
+                                            if (shouldRemove == true) {
+                                              await removeCartItemByCartId(itemOnCart[index].cartItemId);
+                                            }
+                                          },
                                           style: IconButton.styleFrom(
                                             backgroundColor: Colors.blueAccent,
                                             shape: const CircleBorder(),
-                                            padding: const EdgeInsets.all(4), // Padding lebih kecil
-                                            minimumSize: const Size(24, 24), // Ukuran tombol minimal lebih kecil
+                                            padding: const EdgeInsets.all(4),
+                                            minimumSize: const Size(24, 24),
                                           ),
                                         ),
                                         SizedBox(
-                                          width: 35, // Lebar input text
+                                          width: 35,
                                           child: TextField(
                                             textAlign: TextAlign.center,
                                             keyboardType: TextInputType.number,
-                                            style: const TextStyle(fontSize: 12), // Ukuran teks lebih kecil
+                                            style: const TextStyle(fontSize: 12),
                                             controller: TextEditingController(
                                               text: itemOnCart[index].quantity.toString(),
                                             ),
@@ -353,15 +419,15 @@ class _CartState extends State<Cart> {
                                               }
                                             },
                                             decoration: const InputDecoration(
-                                              isDense: true, // Mengurangi tinggi input
-                                              contentPadding: EdgeInsets.symmetric(vertical: 6), // Padding lebih kecil
-                                              border: InputBorder.none, // Menghilangkan border
+                                              isDense: true,
+                                              contentPadding: EdgeInsets.symmetric(vertical: 6),
+                                              border: InputBorder.none,
                                             ),
                                           ),
                                         ),
                                         IconButton(
                                           icon: const Icon(Icons.add, color: Colors.white),
-                                          iconSize: 16, // Ukuran ikon lebih kecil
+                                          iconSize: 16,
                                           onPressed: () async {
                                             final previousQty = itemOnCart[index].quantity;
                                             setState(() {
@@ -385,8 +451,8 @@ class _CartState extends State<Cart> {
                                           style: IconButton.styleFrom(
                                             backgroundColor: Colors.blueAccent,
                                             shape: const CircleBorder(),
-                                            padding: const EdgeInsets.all(4), // Padding lebih kecil
-                                            minimumSize: const Size(24, 24), // Ukuran tombol minimal lebih kecil
+                                            padding: const EdgeInsets.all(4),
+                                            minimumSize: const Size(24, 24),
                                           ),
                                         ),
                                       ],
