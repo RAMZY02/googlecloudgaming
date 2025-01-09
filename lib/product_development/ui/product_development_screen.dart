@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:steppa/product_development/controllers/design_controller.dart';
+import 'package:steppa/product_development/ui/materials_storage_screen.dart';
 import 'package:steppa/product_development/ui/production_progress_screen.dart';
 import '../controllers/material_controller.dart';
 import '../models/material.dart';
@@ -135,6 +136,19 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ProductionProgressScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.storage),
+              title: const Text('Raw Materials Storage'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MaterialsStorageScreen(),
                   ),
                 );
               },
