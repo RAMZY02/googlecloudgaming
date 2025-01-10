@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:steppa/supplier/controllers/raw_controller.dart';
 import 'package:steppa/supplier/controllers/supplier_controller.dart';
 import 'package:steppa/supplier/models/supplier.dart';
+import 'package:steppa/supplier/ui/add_supplier_screen.dart';
 
 class SupplierScreen extends StatefulWidget {
   const SupplierScreen({Key? key}) : super(key: key);
@@ -95,6 +96,41 @@ class _SupplierScreenState extends State<SupplierScreen> {
                   fontSize: 24,
                 ),
               ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.storage),
+              title: const Text('Add New Supplier'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddSupplierScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.storage),
+              title: const Text('Supplier Lists'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SupplierScreen(),
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Back To Menu'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/landing');
+              },
             ),
             // Tambahkan item lainnya jika diperlukan
           ],

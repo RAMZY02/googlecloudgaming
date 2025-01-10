@@ -132,6 +132,15 @@ class LoginScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
+                  Navigator.pushNamed(context, '/addSupplier');
+                },
+                child: Text('Suppliers'),
+              ),
+            ),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
                   Navigator.pushNamed(context, '/loginPage');
                 },
                 child: Text('Online Shop'),

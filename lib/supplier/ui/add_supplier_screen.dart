@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:steppa/supplier/controllers/supplier_controller.dart';
+import 'package:steppa/supplier/ui/supplier_screen.dart';
 
 class AddSupplierScreen extends StatefulWidget {
   const AddSupplierScreen({Key? key}) : super(key: key);
@@ -48,7 +49,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                 color: Colors.blue,
               ),
               child: const Text(
-                'Product Research & Development',
+                'Supplier Management',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -56,8 +57,8 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.upload),
-              title: const Text('Design Workspace'),
+              leading: const Icon(Icons.storage),
+              title: const Text('Add New Supplier'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -68,15 +69,29 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                 );
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.storage),
+              title: const Text('Supplier Lists'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SupplierScreen(),
+                  ),
+                );
+              },
+            ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Back To Menu'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/login');
+                Navigator.pushNamed(context, '/landing');
               },
             ),
+            // Tambahkan item lainnya jika diperlukan
           ],
         ),
       ),
@@ -162,7 +177,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     );
                   }
                 },
-                child: const Text('Add Supplier'),
+                child: const Text('Add New Supplier'),
               ),
             ],
           ),

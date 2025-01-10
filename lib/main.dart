@@ -73,6 +73,8 @@ class MyApp extends StatelessWidget {
         '/production_progress': (context) => const ProductionProgressScreen(),
         '/designLists': (context) => const DesignListsScreen(),
         '/materialstorage': (context) => const MaterialsStorageScreen(),
+        '/addSupplier': (context) => const MaterialsStorageScreen(),
+        '/supplierList': (context) => const MaterialsStorageScreen(),
         '/offlineShop': (context) => const OfflineShopScreen(),
         '/manage-stock': (context) => const ManageStockScreen(),
         '/delete-design': (context) => const DeleteDesignScreen(),
