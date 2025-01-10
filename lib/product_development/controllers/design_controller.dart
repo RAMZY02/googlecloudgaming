@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/design.dart';
 
 class DesignController {
-  final String baseUrl = "http://10.10.2.56:3000/api/rnd"; // Sesuaikan dengan backend Anda.
+  final String baseUrl = "http://192.168.1.6:3000/api/rnd"; // Sesuaikan dengan backend Anda.
 
   //Insert Design
   Future<void> submitDesign(
