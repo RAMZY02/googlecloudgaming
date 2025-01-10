@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/payment.dart';
 
 class PaymentController {
-  final String baseUrl = 'http://192.168.18.18:3000/api/store'; // Update this with your server URL
+  final String baseUrl = 'http://192.168.195.213:3000/api/store'; // Update this with your server URL
 
   Future<Payment> checkout(String cartId, Map<String, dynamic> customerDetails, String token) async {
     final url = Uri.parse('$baseUrl/cart/checkout');

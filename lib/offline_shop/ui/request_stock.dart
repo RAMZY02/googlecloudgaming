@@ -116,7 +116,7 @@ class _StocksScreenState extends State<StocksScreen> {
               title: const Text('Back To Menu'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/login');
+                Navigator.pushNamed(context, '/landing');
               },
             ),
           ],

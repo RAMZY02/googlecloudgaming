@@ -2,7 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:steppa/admin/ui/delete_design_screen.dart';
 import 'package:steppa/admin/ui/manage_stock_screen.dart';
+import 'package:steppa/auth/ui/landing_page.dart';
 import 'package:steppa/auth/ui/login_screen.dart';
+import 'package:steppa/auth/ui/steppa_landing_page.dart';
+import 'package:steppa/auth/ui/steppa_login.dart';
 import 'package:steppa/factory/ui/factory_attendance_screen.dart';
 import 'package:steppa/factory/ui/factory_dashboard_screen.dart';
 import 'package:steppa/factory/ui/factory_inventory_screen.dart';
@@ -46,13 +49,15 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routes: <String, WidgetBuilder>{
-        '/login': (context) => const LoginScreen(),
+        '/landing': (context) => const LandingPage(),
+        '/steppa': (context) => const SteppaLandingPage(),
+        '/loginPage': (context) => const Login(),
+        '/loginSteppa': (context) => const SteppaLogin(),
         '/factoryDashboard': (context) => const FactoryDashboard(),
         '/factoryAttendance': (context) => const FactoryAttendance(),
         '/factoryMaterials': (context) => const FactoryMaterials(),
         '/factoryInventory': (context) => const FactoryInventory(),
         '/headOfficeDashboard': (context) => const HeadOfficeDashboard(),
-        '/loginPage': (context) => const Login(),
         '/registerPage': (context) => const Register(),
         '/homePage': (context) => const Home(),
         '/searchPage': (context) {
@@ -73,7 +78,7 @@ class MyApp extends StatelessWidget {
         '/delete-design': (context) => const DeleteDesignScreen(),
         '/firebase': (context) => const AuthScreen(),
       },
-      home: const LoginScreen(),
+      home: const LandingPage(),
     );
   }
 }

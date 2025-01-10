@@ -1,58 +1,58 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import '../models/customer_register.dart';
+import '../models/staff_register.dart';
 
-class CustomerController {
+class StaffController {
   final String baseUrl = "http://192.168.195.213:3000/api/store";
   final storage = FlutterSecureStorage();  // For securely storing the JWT token
-  // Function to add a new customer
-  Future<String> addCustomer(Customer customer) async {
+  // Function to add a new staff
+  Future<String> addStaff(Staff staff) async {
     final url = Uri.parse('$baseUrl/register');
     try {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},  // Set the content type to JSON
-        body: jsonEncode(customer.toJson()),  // Send customer data in the body
+        body: jsonEncode(staff.toJson()),  // Send staff data in the body
       );
 
       if (response.statusCode == 201) {
-        return "Customer added successfully.";  // If customer added successfully
+        return "Staff added successfully.";  // If staff added successfully
       } else {
         // If the response is not successful, throw an exception
         final error = jsonDecode(response.body)['error'] ?? response.reasonPhrase;
-        throw Exception('Failed to add customer: $error');
+        throw Exception('Failed to add staff: $error');
       }
     } catch (error) {
       // Catch and rethrow any errors
-      print("Error adding customer: $error");
+      print("Error adding staff: $error");
       rethrow;
     }
   }
 
-  // Function to fetch all customers
-  Future<List<Customer>> getAllCustomers() async {
-    final url = Uri.parse('$baseUrl/customers');
+  // Function to fetch all staffs
+  Future<List<Staff>> getAllStaffs() async {
+    final url = Uri.parse('$baseUrl/staffs');
     try {
       final response = await http.get(
         url,
         headers: {'Content-Type': 'application/json'},  // Set the content type to JSON
-      );  // Send GET request to fetch customers
+      );  // Send GET request to fetch staffs
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);  // Decode response body
         if (data.isEmpty) {
-          print("No customers found.");
+          print("No staffs found.");
         }
-        return data.map((json) => Customer.fromJson(json)).toList();  // Map JSON to List<Customer>
+        return data.map((json) => Staff.fromJson(json)).toList();  // Map JSON to List<Staff>
       } else {
         // If the response is not successful, throw an exception
         final error = jsonDecode(response.body)['error'] ?? response.reasonPhrase;
-        throw Exception('Failed to fetch customers: $error');
+        throw Exception('Failed to fetch staffs: $error');
       }
     } catch (error) {
       // Catch and rethrow any errors
-      print("Error fetching customers: $error");
+      print("Error fetching staffs: $error");
       rethrow;
     }
   }
@@ -78,16 +78,16 @@ class CustomerController {
         // Decode the JWT token to extract the payload
         final payloadMap = decodeJwtTokenManually(token);
 
-        // Get the customer ID from the decoded payload
-        String? customerId = payloadMap['customer_id'];
+        // Get the staff ID from the decoded payload
+        String? staffId = payloadMap['staff_id'];
 
-        print("Customer ID: $customerId");
+        print("Staff ID: $staffId");
 
-        // Save the token and customer ID into secure storage
+        // Save the token and staff ID into secure storage
         await storage.write(key: 'jwt_token', value: token);
 
-        if (customerId != null) {
-          await storage.write(key: 'customer_id', value: customerId);
+        if (staffId != null) {
+          await storage.write(key: 'customer_id', value: staffId);
         }
 
         return "Login successful.";
@@ -119,8 +119,8 @@ class CustomerController {
     }
   }
 
-  Future<Customer> getCustomerById(String customerId, String token) async {
-    final url = Uri.parse('$baseUrl/customers/$customerId');
+  Future<Staff> getStaffById(String staffId, String token) async {
+    final url = Uri.parse('$baseUrl/staffs/$staffId');
     try {
       final response = await http.get(
         url,
@@ -132,13 +132,13 @@ class CustomerController {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        return Customer.fromJson(data); // Map JSON response to Customer object
+        return Staff.fromJson(data); // Map JSON response to Staff object
       } else {
         final error = jsonDecode(response.body)['error'] ?? response.reasonPhrase;
-        throw Exception('Failed to fetch customer: $error');
+        throw Exception('Failed to fetch staff: $error');
       }
     } catch (error) {
-      print("Error fetching customer by ID: $error");
+      print("Error fetching staff by ID: $error");
       rethrow;
     }
   }
