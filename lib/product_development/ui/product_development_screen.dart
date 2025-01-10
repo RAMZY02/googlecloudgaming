@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:steppa/product_development/controllers/design_controller.dart';
 import 'package:steppa/product_development/ui/materials_storage_screen.dart';
@@ -7,9 +8,11 @@ import '../models/material.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
+import 'dart:typed_data';
+import 'package:image_picker/image_picker.dart';
 
 class ProductDevelopmentScreen extends StatefulWidget {
-  const ProductDevelopmentScreen({Key? key}) : super(key: key);
+  const ProductDevelopmentScreen({super.key});
 
   @override
   State<ProductDevelopmentScreen> createState() => _ProductDevelopmentScreenState();
@@ -32,6 +35,96 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
   final TextEditingController _shoeNameController = TextEditingController();
   final TextEditingController _imageLinkController = TextEditingController();
 
+  Uint8List? _selectedImage;
+  final ImagePicker _imagePicker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      final bytes = await image.readAsBytes();
+      setState(() {
+        _selectedImage = bytes;
+      });
+    }
+  }
+
+  Future<void> _uploadImageToFirebase() async {
+    if (_selectedImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select an image first!')),
+      );
+      return;
+    }
+
+    try {
+      final storageRef = FirebaseStorage.instance.ref();
+      final fileName = 'files/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final uploadTask = storageRef.child(fileName).putData(_selectedImage!);
+
+      final snapshot = await uploadTask;
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+
+      setState(() {
+        _imageLink = downloadUrl;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Image uploaded successfully: $_imageLink')),
+      );
+
+      if ((_imageLink != null && _imageLink!.isNotEmpty) &&
+          _shoeName != null &&
+          _shoeName!.isNotEmpty &&
+          _selectedCategory != null &&
+          _selectedGender != null &&
+          _selectedSoleMaterial != null &&
+          _selectedBodyMaterial != null) {
+        try {
+          await _designController.submitDesign(
+            name: _shoeName!,
+            image: _imageLink!,
+            category: _selectedCategory!,
+            gender: _selectedGender!,
+            status: "Pending",
+            soleMaterialId: _selectedSoleMaterial!,
+            bodyMaterialId: _selectedBodyMaterial!,
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Design "$_shoeName" Uploaded Successfully!')),
+          );
+
+          // Reset form setelah berhasil submit
+          setState(() {
+            _imageLink = null;
+            _shoeName = null;
+            _selectedCategory = null;
+            _selectedGender = null;
+            _selectedSoleMaterial = null;
+            _selectedBodyMaterial = null;
+            _selectedImage = null;
+          });
+
+          // Kosongkan TextEditingController
+          _shoeNameController.clear();
+          _imageLinkController.clear();
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to submit design: $e')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please complete all fields!')),
+        );
+      }
+
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Image upload failed: $e')),
+      );
+    }
+  }
 
   @override
   void initState() {
@@ -260,96 +353,28 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              TextField(
-                controller: _imageLinkController,
-                decoration: const InputDecoration(
-                  labelText: 'Image Link (Google Drive)',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _imageLink = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-
-              Container(
-                height: 750,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: (_imageLink != null && _imageLink!.isNotEmpty)
-                    ? ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    _imageLink!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Center(
-                        child: Text('Failed to load image'),
-                      );
-                    },
-                  ),
-                )
-                    : const Center(
-                  child: Text(
-                    'Image will be displayed here',
-                    style: TextStyle(color: Colors.grey),
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: _pickImage,
+                      child: Text('Select Image'),
+                    ),
+                    SizedBox(height: 20),
+                    if (_selectedImage != null)
+                      Image.memory(
+                        _selectedImage!,
+                        height: 200,
+                      ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
               // Tombol Submit
               ElevatedButton(
                 onPressed: () async {
-                  if ((_imageLink != null && _imageLink!.isNotEmpty) &&
-                      _shoeName != null &&
-                      _shoeName!.isNotEmpty &&
-                      _selectedCategory != null &&
-                      _selectedGender != null &&
-                      _selectedSoleMaterial != null &&
-                      _selectedBodyMaterial != null) {
-                    try {
-                      await _designController.submitDesign(
-                        name: _shoeName!,
-                        image: _imageLink!,
-                        category: _selectedCategory!,
-                        gender: _selectedGender!,
-                        status: "Pending",
-                        soleMaterialId: _selectedSoleMaterial!,
-                        bodyMaterialId: _selectedBodyMaterial!,
-                      );
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Design "$_shoeName" Uploaded Successfully!')),
-                      );
-
-                      // Reset form setelah berhasil submit
-                      setState(() {
-                        _imageLink = null;
-                        _shoeName = null;
-                        _selectedCategory = null;
-                        _selectedGender = null;
-                        _selectedSoleMaterial = null;
-                        _selectedBodyMaterial = null;
-                      });
-
-                      // Kosongkan TextEditingController
-                      _shoeNameController.clear();
-                      _imageLinkController.clear();
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Failed to submit design: $e')),
-                      );
-                    }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please complete all fields!')),
-                    );
-                  }
+                  _uploadImageToFirebase();
                 },
                 child: const Text('Submit Design'),
               ),
