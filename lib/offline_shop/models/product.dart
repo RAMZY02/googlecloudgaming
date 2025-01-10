@@ -7,6 +7,7 @@ class Product {
   final String? product_image;
   final String? product_id;
   final String? product_size;
+  final int? product_quantity;
 
   Product({
     required this.product_name,
@@ -17,6 +18,7 @@ class Product {
     required this.product_image,
     required this.product_id,
     required this.product_size,
+    required this.product_quantity,
   });
 
   // Konstruktor untuk mengonversi JSON menjadi objek Product
@@ -30,6 +32,7 @@ class Product {
       product_image: json['product_image'],
       product_id: json['product_id'],
       product_size: json['product_size'],
+      product_quantity: json['product_quantity'],
     );
   }
 }

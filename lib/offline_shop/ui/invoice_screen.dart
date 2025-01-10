@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/offline_shop/models/transaction.dart';
 import '../models/product.dart';
 import 'history_screen.dart';
 import 'request_stock.dart';
 import 'offline_shop_screen.dart';
+import '../controller/transaction_controller.dart';  // Import the Transaction Service
 
 class InvoiceScreen extends StatelessWidget {
   final List<Product> cartItems;
@@ -22,6 +24,50 @@ class InvoiceScreen extends StatelessWidget {
       int quantity = productQuantities[product] ?? 0;  // Ambil kuantitas berdasarkan produk
       totalAmount += product.price! * quantity;
     });
+
+    // Create a function to handle the offline transaction
+    void _handleOfflineTransaction() async {
+      String saleChannel = "Offline";
+      List<String> products = cartItems.map((product) {
+        if (product.product_id == null) {
+          throw Exception('Missing product ID for product: ${product.product_name}');
+        }
+        return product.product_id!;
+      }).toList();
+
+      List<int> quantities = cartItems.map((product) {
+        final quantity = productQuantities[product];
+        if (quantity == null) {
+          throw Exception('Missing quantity for product: ${product.product_name}');
+        }
+        return quantity;
+      }).toList();
+
+      List<int> prices = cartItems.map((product) {
+        if (product.price == null) {
+          throw Exception('Missing price for product: ${product.product_name}');
+        }
+        return product.price!;
+      }).toList();
+
+      TransactionService transactionService = TransactionService();
+      try {
+        Transaction result = await transactionService.offlineTransactionNonMember(
+          saleChannel,
+          products,
+          quantities,
+          prices,
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Transaction completed! Total: \$${result.total.toStringAsFixed(2)} (Sale ID: ${result.saleId})')),
+        );
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $error')),
+        );
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -110,12 +156,23 @@ class InvoiceScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final product = cartItems[index];
                   final quantity = productQuantities[product]!;  // Ambil kuantitas berdasarkan produk
-                  return ListTile(
-                    leading: Image.network(product.product_image!),
-                    title: Text(product.product_name!),
-                    subtitle: Text('Quantity: $quantity'),
-                    trailing: Text(
-                      '\$${(product.price! * quantity).toStringAsFixed(2)}',
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(
+                      leading: Image.network(product.product_image!),
+                      title: Text(product.product_name!),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Size: ${product.product_size}'),  // Menampilkan ukuran produk
+                          Text('Price: \Rp. ${product.price?.toStringAsFixed(2)}'),  // Menampilkan harga produk
+                          Text('Quantity: $quantity'),  // Menampilkan kuantitas produk
+                          Text('Id: ${product.product_id}'),
+                        ],
+                      ),
+                      trailing: Text(
+                        '\Rp. ${(product.price! * quantity).toStringAsFixed(2)}', // Total harga produk * kuantitas
+                      ),
                     ),
                   );
                 },
@@ -125,6 +182,11 @@ class InvoiceScreen extends StatelessWidget {
             Text(
               'Total: \$${totalAmount.toStringAsFixed(2)}',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _handleOfflineTransaction,  // Call the function to handle the offline transaction
+              child: const Text('Print Invoice & Complete Transaction'),
             ),
           ],
         ),

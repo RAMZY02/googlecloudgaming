@@ -15,7 +15,7 @@ class OfflineShopScreen extends StatefulWidget {
 class _OfflineShopScreenState extends State<OfflineShopScreen> {
   List<Product> _products = [];
   List<Product> _filteredProducts = []; // List to store filtered products
-  Map<int, int> _productQuantities = {};  // Variabel untuk menyimpan quantity produk berdasarkan indeks
+  Map<int, int> _productQuantities = {};  // Variable to store product quantities based on index
   bool isLoading = true;
   final ProductController productController = ProductController();
   final TextEditingController _searchController = TextEditingController(); // Controller for search input
@@ -34,9 +34,9 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
         _filteredProducts = products;  // Initially, show all products
         isLoading = false;
 
-        // Inisialisasi quantity produk dengan 0 untuk setiap produk yang ada
+        // Initialize product quantities to 0 for each product
         for (int i = 0; i < _products.length; i++) {
-          _productQuantities[i] = 0;  // Default quantity adalah 0
+          _productQuantities[i] = 0;  // Default quantity is 0
         }
       });
     } catch (e) {
@@ -49,23 +49,29 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
 
   void _updateQuantity(int index, int change) {
     setState(() {
-      _productQuantities[index] = (_productQuantities[index]! + change).clamp(0, 100);  // Batasi quantity antara 0 dan 100
+      int newQuantity = _productQuantities[index]! + change;
+
+      // Update quantity only if the new quantity is between 0 and the product stock
+      int maxQuantity = _products[index].product_quantity ?? 0; // Fallback to 0 if product_quantity is null
+      if (newQuantity >= 0 && newQuantity <= maxQuantity) {
+        _productQuantities[index] = newQuantity;
+      }
     });
   }
 
   void _goToCart() {
-    // Filter produk berdasarkan quantity > 0 tanpa menyertakan null
+    // Filter products based on quantity > 0 and exclude null
     final cartItems = _filteredProducts.where((product) {
       final index = _filteredProducts.indexOf(product);
-      return _productQuantities[index]! > 0; // Produk dengan quantity > 0
-    }).toList(); // Menghasilkan List<Product> yang valid
+      return _productQuantities[index]! > 0; // Only products with quantity > 0
+    }).toList();
 
-    // Mengubah Map<int, int> menjadi Map<Product, int>
+    // Convert Map<int, int> to Map<Product, int>
     final productQuantities = Map<Product, int>.fromIterable(cartItems,
         key: (product) => product,
         value: (product) {
           final index = _filteredProducts.indexOf(product);
-          return _productQuantities[index]!;  // Dapatkan kuantitas dari Map<int, int>
+          return _productQuantities[index]!;  // Get quantity from Map<int, int>
         });
 
     Navigator.push(
@@ -97,7 +103,7 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
           builder: (context) => IconButton(
             icon: const Icon(Icons.menu),
             onPressed: () {
-              Scaffold.of(context).openDrawer(); // Membuka drawer
+              Scaffold.of(context).openDrawer(); // Open the drawer
             },
           ),
         ),
@@ -187,10 +193,10 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
           // ListView to display products
           Expanded(
             child: ListView.builder(
-              itemCount: _filteredProducts.length,  // Gunakan list yang sudah difilter
+              itemCount: _filteredProducts.length,  // Use filtered list
               itemBuilder: (context, index) {
                 final product = _filteredProducts[index];
-                final productQuantity = _productQuantities[index]!;  // Ambil quantity dari map
+                final productQuantity = _productQuantities[index]!;  // Get quantity from map
                 return Card(
                   margin: const EdgeInsets.all(8.0),
                   child: ListTile(
@@ -199,9 +205,10 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('\$${product.price?.toStringAsFixed(2)}'), // Menampilkan harga
-                        Text('Category: ${product.product_category}'),  // Menampilkan kategori
-                        Text('Size: ${product.product_size}'),          // Menampilkan ukuran
+                        Text('\Rp. ${product.price?.toStringAsFixed(2)}'), // Show price
+                        Text('Category: ${product.product_category}'),  // Show category
+                        Text('Size: ${product.product_size}'),          // Show size
+                        Text('Stock: ${product.product_quantity}'),                 // Show stock
                       ],
                     ),
                     trailing: Row(
@@ -209,12 +216,16 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.remove),
-                          onPressed: () => _updateQuantity(index, -1),
+                          onPressed: productQuantity > 0
+                              ? () => _updateQuantity(index, -1)
+                              : null, // Disable button if quantity is 0
                         ),
                         Text('$productQuantity'),
                         IconButton(
                           icon: const Icon(Icons.add),
-                          onPressed: () => _updateQuantity(index, 1),
+                          onPressed: productQuantity < product.product_quantity!
+                              ? () => _updateQuantity(index, 1)
+                              : null, // Disable button if stock is 0
                         ),
                       ],
                     ),

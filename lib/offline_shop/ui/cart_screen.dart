@@ -123,9 +123,16 @@ class CartScreen extends StatelessWidget {
                   child: ListTile(
                     leading: Image.network(product.product_image!),
                     title: Text(product.product_name!),
-                    subtitle: Text('Quantity: $quantity'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Size: ${product.product_size}'),  // Menampilkan ukuran produk
+                        Text('Price: \Rp. ${product.price?.toStringAsFixed(2)}'),  // Menampilkan harga produk
+                        Text('Quantity: $quantity'),  // Menampilkan kuantitas produk
+                      ],
+                    ),
                     trailing: Text(
-                      '\$${(product.price! * quantity).toStringAsFixed(2)}',
+                      '\Rp. ${(product.price! * quantity).toStringAsFixed(2)}', // Total harga produk * kuantitas
                     ),
                   ),
                 );
