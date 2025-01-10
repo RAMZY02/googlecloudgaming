@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
   List<Product_Cart> newRelease = [];
   bool isLoading = true;
 
-  final storageRef = FirebaseStorage.instance.ref('gs://apt-vine-442908-c7.firebasestorage.app/adidas.jpeg');
+  final storageRef = FirebaseStorage.instance.ref();
 
   String? _imageUrl;
 
@@ -70,10 +70,26 @@ class _HomeState extends State<Home> {
     _getJwtToken(); // Get JWT token from secure storage
   }
 
+  Future<String> getFirebaseImageUrl(String imagePath) async {
+    try {
+      print(imagePath);
+      final ref = FirebaseStorage.instance.ref(imagePath);
+      return await ref.getDownloadURL();
+    } catch (e) {
+      print("Error fetching image URL: $e");
+      return ''; // URL fallback jika terjadi error
+    }
+  }
+
   Future<void> fetchProducts() async {
     try {
       List<Product_Cart> products = await productController.getNewReleaseProducts();
       if (products != null) {
+        for (var product in products) {
+          if (product.product_image != null) {
+            product.product_image = await getFirebaseImageUrl(product.product_image!);
+          }
+        }
         setState(() {
           newRelease = products;
           isLoading = false;
@@ -278,11 +294,24 @@ class _HomeState extends State<Home> {
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(12),
                       ),
-                      child: _imageUrl != null
-                          ? Image.network(_imageUrl!)
-                          : ElevatedButton(
-                        onPressed: _getImage,
-                        child: Text('Panggil Gambar'),
+                      child: Image.network(
+                        item.product_image ?? '',
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover, // Gunakan URL kosong jika _imageUrl tidak tersedia
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child; // Gambar selesai dimuat
+                          return Center(
+                            child: CircularProgressIndicator(), // Placeholder loading (opsional)
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.broken_image, // Placeholder broken image
+                            size: 100,
+                            color: Colors.grey,
+                          );
+                        },
                       ),
                     ),
                   ),
