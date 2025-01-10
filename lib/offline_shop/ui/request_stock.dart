@@ -20,11 +20,40 @@ class _StocksScreenState extends State<StocksScreen> {
     _shipmentsFuture = ShipmentService().fetchShipments();
   }
 
+  void _cancelShipment(Shipment shipment) {
+    // Logic untuk membatalkan shipment
+    print('Cancelled shipment with ID: ${shipment.shipmentId}');
+    // Tambahkan logika lain seperti update status shipment di server
+  }
+
+  void _acceptShipment(Shipment shipment) async {
+    try {
+      // Menampilkan pesan bahwa shipment diterima
+      await ShipmentService().acceptShipment(shipment.shipmentId);
+
+      // Menampilkan SnackBar dengan pesan "Accept Success"
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Shipment accepted successfully!')),
+      );
+
+      // Memperbarui daftar shipment setelah menerima shipment
+      setState(() {
+        _shipmentsFuture = ShipmentService().fetchShipments();
+      });
+    } catch (e) {
+      print('Error: $e');
+      // Menampilkan pesan jika terjadi error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to accept shipment: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Raw Materials Storage'),
+        title: const Text('Shipment'),
       ),
       drawer: Drawer(
         child: ListView(
@@ -43,8 +72,8 @@ class _StocksScreenState extends State<StocksScreen> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.storage),
-              title: const Text('Stock'),
+              leading: const Icon(Icons.delivery_dining),
+              title: const Text('Shipment'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -134,19 +163,43 @@ class _StocksScreenState extends State<StocksScreen> {
                   DataColumn(label: Text('Shipment ID')),
                   DataColumn(label: Text('Shipment Date')),
                   DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Details')),
+                  DataColumn(label: Text('Actions')), // Kolom baru untuk tombol
                 ],
                 rows: shipments.map((shipment) {
-                  final details = shipment.details.map((detail) {
-                    return 'Product: ${detail.productName}, Qty: ${detail.quantity}';
-                  }).join('\n');
-
                   return DataRow(
                     cells: [
-                      DataCell(Text(shipment.shipmentId.toString())),
+                      DataCell(Text(shipment.shipmentId)),
                       DataCell(Text(shipment.shipmentDate)),
                       DataCell(Text(shipment.shipmentStatus)),
-                      DataCell(Text(details)),
+                      DataCell(
+                        Row(
+                          children: [
+                            // Menampilkan tombol "Accept" hanya jika status shipment adalah "shipped"
+                            if (shipment.shipmentStatus == 'Shipped')
+                              ElevatedButton(
+                                onPressed: () {
+                                  _acceptShipment(shipment);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                ),
+                                child: const Text('Accept'),
+                              ),
+                            const SizedBox(width: 8),
+                            // Menampilkan tombol "Cancel" hanya jika status shipment adalah "shipped"
+                            if (shipment.shipmentStatus == 'Shipped')
+                              ElevatedButton(
+                                onPressed: () {
+                                  _cancelShipment(shipment);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                ),
+                                child: const Text('Cancel'),
+                              ),
+                          ],
+                        ),
+                      ),
                     ],
                   );
                 }).toList(),

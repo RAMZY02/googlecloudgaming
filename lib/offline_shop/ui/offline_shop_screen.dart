@@ -119,8 +119,8 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.storage),
-              title: const Text('Stock'),
+              leading: const Icon(Icons.delivery_dining),
+              title: const Text('Shipment'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -187,7 +187,7 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
           // ListView to display products
           Expanded(
             child: ListView.builder(
-              itemCount: _filteredProducts.length,  // Use the filtered list here
+              itemCount: _filteredProducts.length,  // Gunakan list yang sudah difilter
               itemBuilder: (context, index) {
                 final product = _filteredProducts[index];
                 final productQuantity = _productQuantities[index]!;  // Ambil quantity dari map
@@ -196,7 +196,14 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
                   child: ListTile(
                     leading: Image.network(product.product_image!),
                     title: Text(product.product_name!),
-                    subtitle: Text('\$${product.price?.toStringAsFixed(2)}'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('\$${product.price?.toStringAsFixed(2)}'), // Menampilkan harga
+                        Text('Category: ${product.product_category}'),  // Menampilkan kategori
+                        Text('Size: ${product.product_size}'),          // Menampilkan ukuran
+                      ],
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
