@@ -1,6 +1,6 @@
 class ShipmentDetail {
-  final int shipmentDetailId;
-  final int productId;
+  final String shipmentDetailId;
+  final String productId;
   final int quantity;
   final String productName;
 
