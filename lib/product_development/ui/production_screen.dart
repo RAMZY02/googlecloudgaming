@@ -65,15 +65,15 @@ class _ProductionScreenState extends State<ProductionScreen> {
         selectedMaterialData = resMats;
 
         if(selectedMaterialData.length == 3){
-          addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? quantity * 1 : quantity * 4);
-          addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? quantity * 1 : quantity * 4);
-          addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? quantity * 1 : quantity * 4);
+          addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == "MAT0001" || selectedMaterialData[0].id == "MAT0002" ? quantity * 1 : quantity * 4);
+          addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == "MAT0001" || selectedMaterialData[1].id == "MAT0002" ? quantity * 1 : quantity * 4);
+          addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == "MAT0001" || selectedMaterialData[2].id == "MAT0002" ? quantity * 1 : quantity * 4);
         }
         else if(selectedMaterialData.length == 4){
-          addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? quantity * 1 : quantity * 2);
-          addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? quantity * 1 : quantity * 2);
-          addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? quantity * 1 : quantity * 2);
-          addMaterial(selectedMaterialData[3].name, selectedMaterialData[3].id == 1 || selectedMaterialData[3].id == 2 ? quantity * 1 : quantity * 2);
+          addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == "MAT0001" || selectedMaterialData[0].id == "MAT0002" ? quantity * 1 : quantity * 2);
+          addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == "MAT0001" || selectedMaterialData[1].id == "MAT0002" ? quantity * 1 : quantity * 2);
+          addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == "MAT0001" || selectedMaterialData[2].id == "MAT0002" ? quantity * 1 : quantity * 2);
+          addMaterial(selectedMaterialData[3].name, selectedMaterialData[3].id == "MAT0001" || selectedMaterialData[3].id == "MAT0002" ? quantity * 1 : quantity * 2);
         }
       });
     } catch (e) {
@@ -276,15 +276,15 @@ class _ProductionScreenState extends State<ProductionScreen> {
                     setState(() {
                       quantity--;
                       if(selectedMaterialData.length == 3){
-                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? -1 : -4);
-                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? -1 : -4);
-                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? -1 : -4);
+                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == "MAT0001" || selectedMaterialData[0].id == "MAT0002" ? -1 : -4);
+                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == "MAT0001" || selectedMaterialData[1].id == "MAT0002" ? -1 : -4);
+                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == "MAT0001" || selectedMaterialData[2].id == "MAT0002" ? -1 : -4);
                       }
                       else if(selectedMaterialData.length == 4){
-                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? -1 : -2);
-                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? -1 : -2);
-                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? -1 : -2);
-                        addMaterial(selectedMaterialData[3].name, selectedMaterialData[3].id == 1 || selectedMaterialData[3].id == 2 ? -1 : -2);
+                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == "MAT0001" || selectedMaterialData[0].id == "MAT0002" ? -1 : -2);
+                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == "MAT0001" || selectedMaterialData[1].id == "MAT0002" ? -1 : -2);
+                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == "MAT0001" || selectedMaterialData[2].id == "MAT0002" ? -1 : -2);
+                        addMaterial(selectedMaterialData[3].name, selectedMaterialData[3].id == "MAT0001" || selectedMaterialData[3].id == "MAT0002" ? -1 : -2);
                       }
                     });
                   }
@@ -297,15 +297,15 @@ class _ProductionScreenState extends State<ProductionScreen> {
                     setState(() {
                       quantity++;
                       if(selectedMaterialData.length == 3){
-                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? 1 : 4);
-                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? 1 : 4);
-                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? 1 : 4);
+                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == "MAT0001" || selectedMaterialData[0].id == "MAT0002" ? 1 : 4);
+                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == "MAT0001" || selectedMaterialData[1].id == "MAT0002" ? 1 : 4);
+                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == "MAT0001" || selectedMaterialData[2].id == "MAT0002" ? 1 : 4);
                       }
                       else if(selectedMaterialData.length == 4){
-                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == 1 || selectedMaterialData[0].id == 2 ? 1 : 2);
-                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == 1 || selectedMaterialData[1].id == 2 ? 1 : 2);
-                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == 1 || selectedMaterialData[2].id == 2 ? 1 : 2);
-                        addMaterial(selectedMaterialData[3].name, selectedMaterialData[3].id == 1 || selectedMaterialData[3].id == 2 ? 1 : 2);
+                        addMaterial(selectedMaterialData[0].name, selectedMaterialData[0].id == "MAT0001" || selectedMaterialData[0].id == "MAT0002" ? 1 : 2);
+                        addMaterial(selectedMaterialData[1].name, selectedMaterialData[1].id == "MAT0001" || selectedMaterialData[1].id == "MAT0002" ? 1 : 2);
+                        addMaterial(selectedMaterialData[2].name, selectedMaterialData[2].id == "MAT0001" || selectedMaterialData[2].id == "MAT0002" ? 1 : 2);
+                        addMaterial(selectedMaterialData[3].name, selectedMaterialData[3].id == "MAT0001" || selectedMaterialData[3].id == "MAT0002" ? 1 : 2);
                       }
                     });
                   },

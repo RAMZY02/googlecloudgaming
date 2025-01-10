@@ -40,8 +40,8 @@ class DesignController {
 
       // Insert ke tabel DESIGN_MATERIALS
       final materials = [
-        {"materialId": "1", "qty": 2}, // Tali Sepatu
-        {"materialId": "2", "qty": 1}, // Lem 200 gr
+        {"materialId": "MAT0001", "qty": 2}, // Tali Sepatu
+        {"materialId": "MAT0002", "qty": 1}, // Lem 200 gr
       ];
 
       // Jika soleMaterialId == bodyMaterialId, tambahkan 1 material dengan qty 4
@@ -93,7 +93,7 @@ class DesignController {
             if (resMaterial.statusCode == 200) {
               final List<dynamic> matsData = json.decode(resMaterial.body);
               for (var material in matsData) {
-                if(material["material_id"] != 1 && material["material_id"] != 2){
+                if(material["material_id"] != "MAT0001" && material["material_id"] != "MAT0002"){
                   final resMatsName = await http.get(Uri.parse("$baseUrl/material/${material["material_id"]}"));
                   final List<dynamic> matsNameData = json.decode(resMatsName.body);
                   if(material.length < 4){
@@ -210,7 +210,7 @@ class DesignController {
             if (resMaterial.statusCode == 200) {
               final List<dynamic> matsData = json.decode(resMaterial.body);
               for (var material in matsData) {
-                if(material["material_id"] != 1 && material["material_id"] != 2){
+                if(material["material_id"] != "MAT0001" && material["material_id"] != "MAT0002"){
                   final resMatsName = await http.get(Uri.parse("$baseUrl/material/${material["material_id"]}"));
                   final List<dynamic> matsNameData = json.decode(resMatsName.body);
                   if(material.length < 4){
@@ -261,7 +261,7 @@ class DesignController {
             if (resMaterial.statusCode == 200) {
               final List<dynamic> matsData = json.decode(resMaterial.body);
               for (var material in matsData) {
-                if(material["material_id"] != 1 && material["material_id"] != 2){
+                if(material["material_id"] != "MAT0001" && material["material_id"] != "MAT0002"){
                   final resMatsName = await http.get(Uri.parse("$baseUrl/material/${material["material_id"]}"));
                   final List<dynamic> matsNameData = json.decode(resMatsName.body);
                   if(material.length < 4){

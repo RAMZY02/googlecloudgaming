@@ -55,7 +55,7 @@ class MaterialController {
     }
   }
 
-  Future<void> updateMaterial(int id, int qty) async {
+  Future<void> updateMaterial(String id, int qty) async {
     try {
       final resData = await http.get(Uri.parse('$_baseUrl/material/$id'));
       final List<dynamic> matsData = json.decode(resData.body);
