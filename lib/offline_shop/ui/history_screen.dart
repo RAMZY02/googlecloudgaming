@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/offline_shop/ui/request_stock.dart';
 
 import 'offline_shop_screen.dart';
 
@@ -28,14 +29,14 @@ class HistoryScreen extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.storage),
-              title: const Text('Stock'),
+              leading: const Icon(Icons.delivery_dining),
+              title: const Text('Shipment'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const HistoryScreen(),
+                    builder: (context) => const StocksScreen(),
                   ),
                 );
               },

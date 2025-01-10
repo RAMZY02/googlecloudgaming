@@ -60,8 +60,8 @@ class CartScreen extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.storage),
-              title: const Text('Stock'),
+              leading: const Icon(Icons.delivery_dining),
+              title: const Text('Shipment'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
