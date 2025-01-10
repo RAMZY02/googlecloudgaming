@@ -1,5 +1,5 @@
 class MaterialModel {
-  final int id;
+  final String id;
   final String name;
   final int stok_qty;
   final String last_update;

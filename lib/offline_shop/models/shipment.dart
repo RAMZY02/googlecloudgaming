@@ -1,7 +1,7 @@
 import 'shipment_detail.dart';
 
 class Shipment {
-  final int shipmentId;
+  final String shipmentId;
   final String shipmentDate;
   final String shipmentStatus;
   final List<ShipmentDetail> details;

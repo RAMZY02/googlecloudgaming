@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/material.dart';
 
 class MaterialController {
-  final String _baseUrl = 'http://10.10.2.56:3000/api/rnd'; // Ganti dengan URL backend Anda
+  final String _baseUrl = 'http://192.168.1.6:3000/api/rnd'; // Ganti dengan URL backend Anda
 
   Future<List<MaterialModel>> fetchAllMaterials() async {
     try {
@@ -55,7 +55,7 @@ class MaterialController {
     }
   }
 
-  Future<void> updateMaterial(int id, int qty) async {
+  Future<void> updateMaterial(String id, int qty) async {
     try {
       final resData = await http.get(Uri.parse('$_baseUrl/material/$id'));
       final List<dynamic> matsData = json.decode(resData.body);

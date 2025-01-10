@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/product.dart';
 
 class ProductController {
-  final String baseUrl = "http://192.168.18.18:3000/api/store";
+  final String baseUrl = "http://192.168.195.213:3000/api/store";
 
   Future<List<Product>> getAllProducts() async {
     try {

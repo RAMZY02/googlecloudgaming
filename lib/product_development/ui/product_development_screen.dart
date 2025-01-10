@@ -230,7 +230,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                 value: _selectedSoleMaterial,
                 items: _materials
                     .map((material) => DropdownMenuItem(
-                  value: material.id.toString(),
+                  value: material.id,
                   child: Text(material.name),
                 ))
                     .toList(),
@@ -249,7 +249,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                 value: _selectedBodyMaterial,
                 items: _materials
                     .map((material) => DropdownMenuItem(
-                  value: material.id.toString(),
+                  value: material.id,
                   child: Text(material.name),
                 ))
                     .toList(),
@@ -273,6 +273,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                 },
               ),
               const SizedBox(height: 20),
+
               Container(
                 height: 750,
                 width: double.infinity,

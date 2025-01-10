@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:firebase_storage/firebase_storage.dart';
+
 import '../models/product_card.dart';
 import '../controller/product_controller.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,17 @@ class _HomeState extends State<Home> {
 
   List<Product_Cart> newRelease = [];
   bool isLoading = true;
+
+  final storageRef = FirebaseStorage.instance.ref('gs://apt-vine-442908-c7.firebasestorage.app/adidas.jpeg');
+
+  String? _imageUrl;
+
+  Future<void> _getImage() async {
+    final downloadURL = await storageRef.getDownloadURL();
+    setState(() {
+      _imageUrl = downloadURL;
+    });
+  }
 
   final List<Map<String, String>> carouselItems = [
     {'image': 'assets/carousel1.jpg', 'label': 'Promo 1'},
@@ -265,12 +278,11 @@ class _HomeState extends State<Home> {
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(12),
                       ),
-                      child: Image.network(
-                        item.product_image!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.broken_image, size: 50);
-                        },
+                      child: _imageUrl != null
+                          ? Image.network(_imageUrl!)
+                          : ElevatedButton(
+                        onPressed: _getImage,
+                        child: Text('Panggil Gambar'),
                       ),
                     ),
                   ),
