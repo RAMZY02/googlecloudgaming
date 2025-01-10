@@ -1,16 +1,16 @@
 class MaterialModel {
-  final String id;
-  final String name;
-  final int stok_qty;
+  final String material_id;
+  final String material_name;
+  final int stock_quantity;
   final String last_update;
 
-  MaterialModel({required this.id, required this.name, required this.stok_qty, required this.last_update});
+  MaterialModel({required this.material_id, required this.material_name, required this.stock_quantity, required this.last_update});
 
   factory MaterialModel.fromJson(Map<String, dynamic> json) {
     return MaterialModel(
-      id: json['id'],
-      name: json['name'],
-      stok_qty: json['stok_qty'],
+      material_id: json['material_id'],
+      material_name: json['material_name'],
+      stock_quantity: json['stock_quantity'],
       last_update: json['last_update'],
     );
   }

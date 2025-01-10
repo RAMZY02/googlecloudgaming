@@ -160,8 +160,8 @@ class _MaterialsStorageScreenState extends State<MaterialsStorageScreen> {
             return Card(
               margin: const EdgeInsets.only(bottom: 16.0),
               child: ListTile(
-                title: Text(material.name),
-                subtitle: Text('Stock: ${material.stok_qty}'),
+                title: Text(material.material_name),
+                subtitle: Text('Stock: ${material.stock_quantity}'),
               ),
             );
           },

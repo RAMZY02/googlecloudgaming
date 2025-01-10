@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/material.dart';
 
 class MaterialController {
-  final String _baseUrl = 'http://192.168.1.6:3000/api/rnd'; // Ganti dengan URL backend Anda
+  final String _baseUrl = 'http://192.168.195.148:3000/api/rnd'; // Ganti dengan URL backend Anda
 
   Future<List<MaterialModel>> fetchAllMaterials() async {
     try {
@@ -43,7 +43,7 @@ class MaterialController {
         for (var designmats in allDesignMats) {
           final resMats = await http.get(Uri.parse('$_baseUrl/material/${designmats["material_id"]}'));
           final List<dynamic> matsData = json.decode(resMats.body);
-          retData.add({"id": matsData[0]["id"], "name": matsData[0]["name"], "stok_qty": matsData[0]["stok_qty"], "last_update": matsData[0]["last_update"]});
+          retData.add({"material_id": matsData[0]["material_id"], "material_name": matsData[0]["material_name"], "stock_quantity": matsData[0]["stock_quantity"], "last_update": matsData[0]["last_update"]});
           matsData.clear();
         }
       } else {
@@ -59,15 +59,19 @@ class MaterialController {
     try {
       final resData = await http.get(Uri.parse('$_baseUrl/material/$id'));
       final List<dynamic> matsData = json.decode(resData.body);
-
+      print(id);
+      print(qty);
+      print(matsData);
+        var quantity = matsData[0]["stock_quantity"] - qty;
+        print(quantity);
         final url2 = Uri.parse("$_baseUrl/material");
         final response = await http.put(
           url2,
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({
-            "id": matsData[0]["id"],
-            "name": matsData[0]["name"],
-            "stokQty": matsData[0]["stok_qty"] - qty,
+            "material_id": matsData[0]["material_id"],
+            "material_name": matsData[0]["material_name"],
+            "stock_quantity": quantity,
           }),
         );
 

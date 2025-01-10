@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/design.dart';
 
 class DesignController {
-  final String baseUrl = "http://192.168.1.6:3000/api/rnd"; // Sesuaikan dengan backend Anda.
+  final String baseUrl = "http://192.168.195.148:3000/api/rnd"; // Sesuaikan dengan backend Anda.
 
   //Insert Design
   Future<void> submitDesign(
@@ -36,22 +36,22 @@ class DesignController {
       // Ambil ID design yang baru dibuat dari response backend
       final resDesign = await http.get(Uri.parse('$baseUrl/design'));
       final List<dynamic> allDesign = jsonDecode(resDesign.body);
-      final designId = allDesign.length;
+      final designId = allDesign[allDesign.length - 1]['id'];
 
       // Insert ke tabel DESIGN_MATERIALS
-      final materials = [
-        {"materialId": "MAT0001", "qty": 2}, // Tali Sepatu
-        {"materialId": "MAT0002", "qty": 1}, // Lem 200 gr
+      var materials = [
+        {"material_id": "MAT0001", "qty": 2}, // Tali Sepatu
+        {"material_id": "MAT0002", "qty": 1}, // Lem 200 gr
       ];
 
       // Jika soleMaterialId == bodyMaterialId, tambahkan 1 material dengan qty 4
       if (bodyMaterialId == soleMaterialId) {
-        materials.add({"materialId": soleMaterialId, "qty": 4});
+        materials.add({"material_id": soleMaterialId, "qty": 4});
       }
       else {
         // Jika beda, tambahkan 2 material masing-masing qty 2
-        materials.add({"materialId": soleMaterialId, "qty": 2});
-        materials.add({"materialId": bodyMaterialId, "qty": 2});
+        materials.add({"material_id": soleMaterialId, "qty": 2});
+        materials.add({"material_id": bodyMaterialId, "qty": 2});
       }
 
       for (var material in materials) {
@@ -60,7 +60,7 @@ class DesignController {
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({
             "designId": designId,
-            "materialId": material["materialId"],
+            "material_id": material["material_id"],
             "qty": material["qty"],
           }),
         );
@@ -89,23 +89,22 @@ class DesignController {
             soleMaterial = "";
             bodyMaterial = "";
             final resMaterial = await http.get(Uri.parse("$baseUrl/design-material/design/${design["id"]}"));
-
             if (resMaterial.statusCode == 200) {
               final List<dynamic> matsData = json.decode(resMaterial.body);
               for (var material in matsData) {
-                if(material["material_id"] != "MAT0001" && material["material_id"] != "MAT0002"){
+                if(material["material_id"] != "MAT0013" && material["material_id"] != "MAT0014"){
                   final resMatsName = await http.get(Uri.parse("$baseUrl/material/${material["material_id"]}"));
                   final List<dynamic> matsNameData = json.decode(resMatsName.body);
                   if(material.length < 4){
-                    soleMaterial = matsNameData[0]["name"];
-                    bodyMaterial = matsNameData[0]["name"];
+                    soleMaterial = matsNameData[0]["material_name"];
+                    bodyMaterial = matsNameData[0]["material_name"];
                   }
                   else{
                     if(counter == 0){
-                      soleMaterial = matsNameData[0]["name"];
+                      soleMaterial = matsNameData[0]["material_name"];
                     }
                     else{
-                      bodyMaterial = matsNameData[0]["name"];
+                      bodyMaterial = matsNameData[0]["material_name"];
                     }
                   }
                   matsNameData.clear();
@@ -214,15 +213,15 @@ class DesignController {
                   final resMatsName = await http.get(Uri.parse("$baseUrl/material/${material["material_id"]}"));
                   final List<dynamic> matsNameData = json.decode(resMatsName.body);
                   if(material.length < 4){
-                    soleMaterial = matsNameData[0]["name"];
-                    bodyMaterial = matsNameData[0]["name"];
+                    soleMaterial = matsNameData[0]["material_name"];
+                    bodyMaterial = matsNameData[0]["material_name"];
                   }
                   else{
                     if(counter == 0){
-                      soleMaterial = matsNameData[0]["name"];
+                      soleMaterial = matsNameData[0]["material_name"];
                     }
                     else{
-                      bodyMaterial = matsNameData[0]["name"];
+                      bodyMaterial = matsNameData[0]["material_name"];
                     }
                   }
                   matsNameData.clear();
@@ -265,15 +264,15 @@ class DesignController {
                   final resMatsName = await http.get(Uri.parse("$baseUrl/material/${material["material_id"]}"));
                   final List<dynamic> matsNameData = json.decode(resMatsName.body);
                   if(material.length < 4){
-                    soleMaterial = matsNameData[0]["name"];
-                    bodyMaterial = matsNameData[0]["name"];
+                    soleMaterial = matsNameData[0]["material_name"];
+                    bodyMaterial = matsNameData[0]["material_name"];
                   }
                   else{
                     if(counter == 0){
-                      soleMaterial = matsNameData[0]["name"];
+                      soleMaterial = matsNameData[0]["material_name"];
                     }
                     else{
-                      bodyMaterial = matsNameData[0]["name"];
+                      bodyMaterial = matsNameData[0]["material_name"];
                     }
                   }
                   matsNameData.clear();
