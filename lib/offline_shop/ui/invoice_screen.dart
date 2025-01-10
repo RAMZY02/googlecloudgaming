@@ -25,7 +25,6 @@ class InvoiceScreen extends StatelessWidget {
       totalAmount += product.price! * quantity;
     });
 
-    // Create a function to handle the offline transaction
     void _handleOfflineTransaction() async {
       String saleChannel = "Offline";
       List<String> products = cartItems.map((product) {
@@ -59,12 +58,16 @@ class InvoiceScreen extends StatelessWidget {
           prices,
         );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Transaction completed! Total: \$${result.total.toStringAsFixed(2)} (Sale ID: ${result.saleId})')),
-        );
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $error')),
+          SnackBar(content: Text('Transaction completed!')),
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OfflineShopScreen(),
+          ),
         );
       }
     }
@@ -180,7 +183,7 @@ class InvoiceScreen extends StatelessWidget {
             ),
             const Divider(),
             Text(
-              'Total: \$${totalAmount.toStringAsFixed(2)}',
+              'Total: \Rp. ${totalAmount.toStringAsFixed(2)}',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),

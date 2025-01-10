@@ -8,7 +8,11 @@ class TransactionService {
   final String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcl9pZCI6IkNVUzAwMDQiLCJpYXQiOjE3MzY1MTM3OTcsImV4cCI6MTczNjUxNzM5N30.B2FDfiQzu3tin2xfrn50jbwQcaJTfYhGrTCZWB5EDRI';
   // Function to handle the transaction
   Future<Transaction> offlineTransactionNonMember(
-      String saleChannel, List<String> products, List<int> quantities, List<int> prices) async {
+      String saleChannel,
+      List<String> products,
+      List<int> quantities,
+      List<int> prices,
+      ) async {
     try {
       final url = Uri.parse('$apiUrl/cart/offline_transaction_non_member');
       final response = await http.post(
@@ -27,7 +31,7 @@ class TransactionService {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        return Transaction.fromJson(responseData);
+        return Transaction.fromJson(responseData); // Mengonversi JSON response menjadi objek Transaction
       } else {
         throw Exception('Failed to complete the transaction. Status code: ${response.statusCode}');
       }
