@@ -34,9 +34,11 @@ class DesignController {
       }
 
       // Ambil ID design yang baru dibuat dari response backend
-      final resDesign = await http.get(Uri.parse('$baseUrl/design'));
+      final resDesign = await http.get(Uri.parse('$baseUrl/designs'));
       final List<dynamic> allDesign = jsonDecode(resDesign.body);
       final designId = allDesign[allDesign.length - 1]['id'];
+
+      print(designId);
 
       // Insert ke tabel DESIGN_MATERIALS
       var materials = [

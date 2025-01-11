@@ -68,9 +68,11 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
         _imageLink = downloadUrl;
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Image uploaded successfully: $_imageLink')),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Image uploaded successfully: $_imageLink')),
+      // );
+      print(_selectedSoleMaterial);
+      print(_selectedBodyMaterial);
 
       if ((_imageLink != null && _imageLink!.isNotEmpty) &&
           _shoeName != null &&
