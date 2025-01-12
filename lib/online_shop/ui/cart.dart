@@ -155,6 +155,8 @@ class _CartState extends State<Cart> {
           jwtToken!,
         );
 
+        print("masuk");
+
         final cartId = carts.first.cartId;
         if (cartId != null) {
           final customerDetails = {
@@ -163,6 +165,7 @@ class _CartState extends State<Cart> {
             'phone': customer?.phoneNumber,
           };
 
+        print("masuk 2");
           // Request pembayaran melalui payment controller
           final payment = await paymentController.checkout(cartId, customerDetails, jwtToken!);
 

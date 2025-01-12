@@ -246,11 +246,13 @@ class DesignListsDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              design.image,
-              height: 750,
-              width: double.infinity,
-              fit: BoxFit.cover,
+            Center(
+              child: Image.network(
+                design.image,
+                height: 300,
+                width: 300,
+                fit: BoxFit.cover,
+              ),
             ),
             const SizedBox(height: 16),
             Text(

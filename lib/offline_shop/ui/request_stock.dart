@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../controller/shipment_controller.dart';
 import '../models/shipment.dart';
 import 'history_screen.dart';
@@ -13,11 +14,33 @@ class StocksScreen extends StatefulWidget {
 
 class _StocksScreenState extends State<StocksScreen> {
   late Future<List<Shipment>> _shipmentsFuture;
+  String? jwtToken;
+  String? customerId;
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
+
+  Future<void> _getJwtToken() async {
+    try {
+      jwtToken = await _secureStorage.read(key: 'jwt_token');
+      customerId = await _secureStorage.read(key: 'customer_id');
+    } catch (e) {
+      print("Error retrieving data from Secure Storage: $e");
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _shipmentsFuture = ShipmentService().fetchShipments();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _getJwtToken(); // Ambil JWT Token secara asinkron
+    if (jwtToken != null) {
+      // Pastikan token tidak null sebelum dipakai
+      setState(() {
+        _shipmentsFuture = ShipmentService().fetchShipments(jwtToken!);
+      });
+    }
   }
 
   void _cancelShipment(Shipment shipment) {
@@ -29,7 +52,7 @@ class _StocksScreenState extends State<StocksScreen> {
   void _acceptShipment(Shipment shipment) async {
     try {
       // Menampilkan pesan bahwa shipment diterima
-      await ShipmentService().acceptShipment(shipment.shipmentId);
+      await ShipmentService().acceptShipment(shipment.shipmentId, jwtToken!);
 
       // Menampilkan SnackBar dengan pesan "Accept Success"
       ScaffoldMessenger.of(context).showSnackBar(
@@ -38,7 +61,9 @@ class _StocksScreenState extends State<StocksScreen> {
 
       // Memperbarui daftar shipment setelah menerima shipment
       setState(() {
-        _shipmentsFuture = ShipmentService().fetchShipments();
+        print("masuk pak");
+        print(jwtToken!);
+        _shipmentsFuture = ShipmentService().fetchShipments(jwtToken!);
       });
     } catch (e) {
       print('Error: $e');

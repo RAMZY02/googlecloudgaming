@@ -22,7 +22,11 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
   @override
   void initState() {
     super.initState();
-    _getJwtToken();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _getJwtToken();
   }
 
   Future<void> _getJwtToken() async {
@@ -108,6 +112,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                   border: OutlineInputBorder(),
                 ),
               ),
+              SizedBox(height: 20),
               TextField(
                 controller: _materialNameController,
                 decoration: const InputDecoration(
@@ -146,11 +151,11 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     try {
                       if(jwtToken != null) {
                         await _supplierController.addSupplier(
-                          name: supplierName,
-                          material_name: material_name,
-                          location: location,
-                          contact_info: contact_info,
-                          token : jwtToken!,
+                          supplierName,
+                          material_name,
+                          location,
+                          contact_info,
+                          jwtToken!,
                         );
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(
@@ -170,6 +175,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Failed to add supplier: $e')),
                       );
+                        print('Failed to add supplier: $e');
                     }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(

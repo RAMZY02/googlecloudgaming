@@ -22,17 +22,26 @@ class _SupplierScreenState extends State<SupplierScreen> {
   @override
   void initState() {
     super.initState();
-    _getJwtToken();
-    _fetchSuppliers();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _getJwtToken();
+    await _fetchSuppliers();
   }
 
   Future<void> _fetchSuppliers() async {
     try {
       if(jwtToken != null){
+        print("object");
         final resData = await _supplierController.fetchAllSuppliers(jwtToken!);
+        print("masuk");
+        print(resData);
         setState(() {
           suppliers = resData;
         });
+        print("suppliers : ");
+        print(suppliers);
       }
       else{
         ScaffoldMessenger.of(context).showSnackBar(
@@ -43,6 +52,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to fetch suppliers: $e')),
       );
+      print('Failed to fetch suppliers: $e');
     }
   }
 

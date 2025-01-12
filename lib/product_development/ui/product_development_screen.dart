@@ -71,9 +71,6 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
       // ScaffoldMessenger.of(context).showSnackBar(
       //   SnackBar(content: Text('Image uploaded successfully: $_imageLink')),
       // );
-      print(_selectedSoleMaterial);
-      print(_selectedBodyMaterial);
-
       if ((_imageLink != null && _imageLink!.isNotEmpty) &&
           _shoeName != null &&
           _shoeName!.isNotEmpty &&

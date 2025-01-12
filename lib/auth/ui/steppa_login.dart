@@ -58,7 +58,7 @@ class _SteppaLoginState extends State<SteppaLogin> {
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('loginImage.jpg'), // Path gambar Anda
+                  image: AssetImage('loginEmployeeImage.jpg'), // Path gambar Anda
                   fit: BoxFit.cover,
                 ),
               ),

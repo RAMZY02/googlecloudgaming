@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/material.dart';
 
 class MaterialController {
-  final String _baseUrl = 'http://192.168.1.6:3000/api/rnd'; // Ganti dengan URL backend Anda
+  final String _baseUrl = 'http://192.168.195.148:3000/api/rnd'; // Ganti dengan URL backend Anda
 
   Future<List<MaterialModel>> fetchAllMaterials() async {
     try {
