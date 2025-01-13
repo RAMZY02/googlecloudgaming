@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
         '/supplierList': (context) => const MaterialsStorageScreen(),
         '/offlineShop': (context) => const OfflineShopScreen(),
         '/manage-stock': (context) => const ManageStockScreen(),
-        '/factory_stock': (context) => const FactoryStock(),
+        '/factory_stock': (context) => const FactoryStockScreen(),
         '/delete-design': (context) => const DeleteDesignScreen(),
         '/firebase': (context) => const AuthScreen(),
         '/supplier': (context) => const SupplierScreen(),

@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import '../models/factory_stock.dart'; // Ganti dengan model yang sesuai, misalnya ProductModel
+import '../controller/factory_controller.dart'; // Import FactoryController
 import 'history_screen.dart';
 import 'request_stock.dart';
 import 'invoice_screen.dart';
 import 'offline_shop_screen.dart';
 
-class FactoryStock extends StatelessWidget {
-  const FactoryStock({Key? key}) : super(key: key);
+class FactoryStockScreen extends StatefulWidget {
+  const FactoryStockScreen({Key? key}) : super(key: key);
+
+  @override
+  _FactoryStockScreenState createState() => _FactoryStockScreenState();
+}
+
+class _FactoryStockScreenState extends State<FactoryStockScreen> {
+  final FactoryController factoryController = FactoryController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cart'),
+        title: const Text('Factory Stock'),
       ),
       drawer: Drawer(
         child: ListView(
@@ -77,7 +85,7 @@ class FactoryStock extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const FactoryStock(),
+                    builder: (context) => const FactoryStockScreen(),
                   ),
                 );
               },
@@ -94,7 +102,43 @@ class FactoryStock extends StatelessWidget {
           ],
         ),
       ),
-      body: Column()
+      body: FutureBuilder<List<FactoryStock>>(
+        future: factoryController.fetchProducts(), // Memanggil fetchProducts dari FactoryController
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No products available'));
+          } else {
+            List<FactoryStock> products = snapshot.data!; // Data produk yang diterima
+            return ListView.builder(
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                final product = products[index];
+                return Card(
+                  margin: const EdgeInsets.all(10),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(10),
+                    leading: Image.network(product.productImage),
+                    title: Text(product.productName),
+                    subtitle: Text(product.productDescription),
+                    trailing: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text('Stock: ${product.stokQty}'),
+                        Text('Price: \$${product.price.toStringAsFixed(2)}'),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+        },
+      ),
     );
   }
 }

@@ -144,7 +144,7 @@ class _StocksScreenState extends State<StocksScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const FactoryStock(),
+                    builder: (context) => const FactoryStockScreen(),
                   ),
                 );
               },

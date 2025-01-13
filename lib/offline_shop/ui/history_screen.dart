@@ -135,7 +135,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const FactoryStock(),
+                    builder: (context) => const FactoryStockScreen(),
                   ),
                 );
               },
