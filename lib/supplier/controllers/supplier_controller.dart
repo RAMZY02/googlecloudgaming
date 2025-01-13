@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/supplier.dart';
 
 class SupplierController {
-  final String baseUrl = 'http://192.168.195.148:3000/api/pengepul'; // Ganti dengan URL backend Anda
+  final String baseUrl = 'http://192.168.1.6:3000/api/pengepul'; // Ganti dengan URL backend Anda
 
   Future<List<Supplier>> fetchAllSuppliers(String token) async {
     try {

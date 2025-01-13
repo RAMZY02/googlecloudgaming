@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:steppa/product_development/ui/accept_shipment.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
+import 'package:steppa/product_development/ui/materials_storage_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 import 'package:steppa/product_development/ui/production_progress_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
-import 'package:steppa/product_development/ui/supplier_storage_screen.dart';
 import '../models/material.dart';
 import 'package:steppa/product_development/controllers/material_controller.dart';
 
-class MaterialsStorageScreen extends StatefulWidget {
-  const MaterialsStorageScreen({Key? key}) : super(key: key);
+class SupplierStorageScreen extends StatefulWidget {
+  const SupplierStorageScreen({Key? key}) : super(key: key);
 
   @override
-  State<MaterialsStorageScreen> createState() => _MaterialsStorageScreenState();
+  State<SupplierStorageScreen> createState() => _SupplierStorageScreenState();
 }
 
-class _MaterialsStorageScreenState extends State<MaterialsStorageScreen> {
+class _SupplierStorageScreenState extends State<SupplierStorageScreen> {
   List<MaterialModel> rawmats = [];
   final MaterialController _materialController = MaterialController();
 
@@ -28,7 +28,7 @@ class _MaterialsStorageScreenState extends State<MaterialsStorageScreen> {
 
   Future<void> _fetchAllMaterials() async {
     try {
-      final resData = await _materialController.fetchAllMaterials();
+      final resData = await _materialController.fetchSupplierMaterials();
       setState(() {
         rawmats = resData;
       });
@@ -43,7 +43,7 @@ class _MaterialsStorageScreenState extends State<MaterialsStorageScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Raw Materials Storage'),
+        title: const Text('Supplier Materials Storage'),
         backgroundColor: Colors.blue,
       ),
       drawer: Drawer(

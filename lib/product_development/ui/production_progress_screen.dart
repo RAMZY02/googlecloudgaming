@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:steppa/product_development/controllers/production_controller.dart';
 import 'package:steppa/product_development/models/production.dart';
+import 'package:steppa/product_development/ui/accept_shipment.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/materials_storage_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 import 'package:steppa/product_development/ui/pending_designs_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
+import 'package:steppa/product_development/ui/supplier_storage_screen.dart';
 
 class ProductionProgressScreen extends StatefulWidget {
   const ProductionProgressScreen({Key? key}) : super(key: key);
@@ -148,6 +150,32 @@ class _ProductionProgressScreenState extends State<ProductionProgressScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const MaterialsStorageScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.storage),
+              title: const Text('Supplier Materials Storage'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SupplierStorageScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.send),
+              title: const Text('Shipments'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AcceptShipmentScreen(),
                   ),
                 );
               },

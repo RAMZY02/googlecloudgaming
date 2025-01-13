@@ -1,8 +1,10 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:steppa/product_development/controllers/design_controller.dart';
+import 'package:steppa/product_development/ui/accept_shipment.dart';
 import 'package:steppa/product_development/ui/materials_storage_screen.dart';
 import 'package:steppa/product_development/ui/production_progress_screen.dart';
+import 'package:steppa/product_development/ui/supplier_storage_screen.dart';
 import '../controllers/material_controller.dart';
 import '../models/material.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
@@ -241,6 +243,32 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const MaterialsStorageScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.storage),
+              title: const Text('Supplier Materials Storage'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SupplierStorageScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.send),
+              title: const Text('Shipments'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AcceptShipmentScreen(),
                   ),
                 );
               },

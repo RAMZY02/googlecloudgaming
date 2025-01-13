@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/raw.dart';
 
 class RawController {
-  final String baseUrl = 'http://192.168.195.148:3000/api/pengepul'; // Ganti dengan URL backend Anda
+  final String baseUrl = 'http://192.168.1.6:3000/api/pengepul'; // Ganti dengan URL backend Anda
 
   Future<void> placeOrder(String id, int qty, String token) async {
     try {

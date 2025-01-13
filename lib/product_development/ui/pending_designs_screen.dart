@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:steppa/product_development/controllers/design_controller.dart';
 import 'package:steppa/product_development/models/design.dart';
+import 'package:steppa/product_development/ui/accept_shipment.dart';
 import 'package:steppa/product_development/ui/design_lists_screen.dart';
 import 'package:steppa/product_development/ui/materials_storage_screen.dart';
 import 'package:steppa/product_development/ui/product_development_screen.dart';
 import 'package:steppa/product_development/ui/production_progress_screen.dart';
 import 'package:steppa/product_development/ui/production_screen.dart';
+import 'package:steppa/product_development/ui/supplier_storage_screen.dart';
 
 class PendingDesignsScreen extends StatefulWidget {
   const PendingDesignsScreen({Key? key}) : super(key: key);
@@ -184,6 +186,32 @@ class _PendingDesignsScreenState extends State<PendingDesignsScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const MaterialsStorageScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.storage),
+              title: const Text('Supplier Materials Storage'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SupplierStorageScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.send),
+              title: const Text('Shipments'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AcceptShipmentScreen(),
                   ),
                 );
               },
