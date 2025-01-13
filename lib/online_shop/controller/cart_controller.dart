@@ -7,7 +7,7 @@ import '../models/delete_cart_item.dart';
 import '../models/update_cart_item.dart';
 
 class CartController {
-  final String baseUrl = "http://192.168.195.148:3000/api/store";
+  final String baseUrl = "http://192.168.195.5:3000/api/store";
 
   // Function to add an item to the cart
   Future<bool> addToCart(cartItem request, String token) async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../controller/shipment_controller.dart';
 import '../models/shipment.dart';
+import 'factory_stock.dart';
 import 'history_screen.dart';
 import 'offline_shop_screen.dart';
 
@@ -135,6 +136,19 @@ class _StocksScreenState extends State<StocksScreen> {
                 );
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.factory),
+              title: const Text('Factory Stock'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FactoryStock(),
+                  ),
+                );
+              },
+            ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout),
@@ -181,54 +195,69 @@ class _StocksScreenState extends State<StocksScreen> {
             );
           } else {
             final shipments = snapshot.data!;
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('Shipment ID')),
-                  DataColumn(label: Text('Shipment Date')),
-                  DataColumn(label: Text('Status')),
-                  DataColumn(label: Text('Actions')), // Kolom baru untuk tombol
-                ],
-                rows: shipments.map((shipment) {
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(shipment.shipmentId)),
-                      DataCell(Text(shipment.shipmentDate)),
-                      DataCell(Text(shipment.shipmentStatus)),
-                      DataCell(
-                        Row(
-                          children: [
-                            // Menampilkan tombol "Accept" hanya jika status shipment adalah "shipped"
-                            if (shipment.shipmentStatus == 'Shipped')
-                              ElevatedButton(
-                                onPressed: () {
-                                  _acceptShipment(shipment);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                ),
-                                child: const Text('Accept'),
-                              ),
-                            const SizedBox(width: 8),
-                            // Menampilkan tombol "Cancel" hanya jika status shipment adalah "shipped"
-                            if (shipment.shipmentStatus == 'Shipped')
-                              ElevatedButton(
-                                onPressed: () {
-                                  _cancelShipment(shipment);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                ),
-                                child: const Text('Cancel'),
-                              ),
-                          ],
-                        ),
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final tableWidth = constraints.maxWidth; // Ambil lebar layar
+                return SingleChildScrollView(
+                  scrollDirection: Axis.vertical, // Gulir vertikal tetap diaktifkan
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: tableWidth, // Membuat tabel selebar layar
+                            child: DataTable(
+                              columnSpacing: tableWidth / 10, // Sesuaikan jarak antar kolom
+                              columns: const [
+                                DataColumn(label: Text('Shipment ID')),
+                                DataColumn(label: Text('Shipment Date')),
+                                DataColumn(label: Text('Status')),
+                                DataColumn(label: Text('Actions')),
+                              ],
+                              rows: shipments.map((shipment) {
+                                return DataRow(
+                                  cells: [
+                                    DataCell(Text(shipment.shipmentId)),
+                                    DataCell(Text(shipment.shipmentDate)),
+                                    DataCell(Text(shipment.shipmentStatus)),
+                                    DataCell(
+                                      Row(
+                                        children: [
+                                          if (shipment.shipmentStatus == 'Shipped')
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _acceptShipment(shipment);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.green,
+                                              ),
+                                              child: const Text('Accept'),
+                                            ),
+                                          const SizedBox(width: 8),
+                                          if (shipment.shipmentStatus == 'Shipped')
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _cancelShipment(shipment);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.red,
+                                              ),
+                                              child: const Text('Cancel'),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  );
-                }).toList(),
-              ),
+                  ),
+                );
+              },
             );
           }
         },

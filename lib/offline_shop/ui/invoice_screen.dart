@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:steppa/offline_shop/models/transaction.dart';
 import '../models/product.dart';
+import 'factory_stock.dart';
 import 'history_screen.dart';
 import 'request_stock.dart';
 import 'offline_shop_screen.dart';
@@ -127,6 +128,19 @@ class InvoiceScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const HistoryScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.factory),
+              title: const Text('Factory Stock'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FactoryStock(),
                   ),
                 );
               },

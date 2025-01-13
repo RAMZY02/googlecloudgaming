@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import 'factory_stock.dart';
 import 'history_screen.dart';
 import 'request_stock.dart';
 import 'invoice_screen.dart';
@@ -26,9 +27,6 @@ class CartScreen extends StatelessWidget {
       ),
     );
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +92,19 @@ class CartScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const HistoryScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.factory),
+              title: const Text('Factory Stock'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FactoryStock(),
                   ),
                 );
               },

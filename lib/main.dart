@@ -12,6 +12,7 @@ import 'package:steppa/factory/ui/factory_inventory_screen.dart';
 import 'package:steppa/factory/ui/factory_materials_screen.dart';
 import 'package:steppa/firebase.dart';
 import 'package:steppa/head_office/ui/head_office_dashboard_screen.dart';
+import 'package:steppa/offline_shop/ui/factory_stock.dart';
 import 'package:steppa/online_shop/ui/cart.dart';
 import 'package:steppa/online_shop/ui/home.dart';
 import 'package:steppa/online_shop/ui/order_history.dart';
@@ -79,6 +80,7 @@ class MyApp extends StatelessWidget {
         '/supplierList': (context) => const MaterialsStorageScreen(),
         '/offlineShop': (context) => const OfflineShopScreen(),
         '/manage-stock': (context) => const ManageStockScreen(),
+        '/factory_stock': (context) => const FactoryStock(),
         '/delete-design': (context) => const DeleteDesignScreen(),
         '/firebase': (context) => const AuthScreen(),
         '/supplier': (context) => const SupplierScreen(),

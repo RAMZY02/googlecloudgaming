@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../models/staff_register.dart';
 
 class StaffController {
-  final String baseUrl = "http://192.168.195.148:3000/api/store";
+  final String baseUrl = "http://192.168.195.5:3000/api/store";
   final storage = FlutterSecureStorage();  // For securely storing the JWT token
   // Function to add a new staff
   Future<String> addStaff(Staff staff) async {

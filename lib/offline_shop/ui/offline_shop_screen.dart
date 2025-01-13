@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:steppa/offline_shop/ui/factory_stock.dart';
 import '../models/product.dart';
 import '../controller/product_controller.dart';
 import 'history_screen.dart';
@@ -33,8 +34,6 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
         _products = products;
         _filteredProducts = products;  // Initially, show all products
         isLoading = false;
-
-        // Initialize product quantities to 0 for each product
         for (int i = 0; i < _products.length; i++) {
           _productQuantities[i] = 0;  // Default quantity is 0
         }
@@ -50,8 +49,6 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
   void _updateQuantity(int index, int change) {
     setState(() {
       int newQuantity = _productQuantities[index]! + change;
-
-      // Update quantity only if the new quantity is between 0 and the product stock
       int maxQuantity = _products[index].product_quantity ?? 0; // Fallback to 0 if product_quantity is null
       if (newQuantity >= 0 && newQuantity <= maxQuantity) {
         _productQuantities[index] = newQuantity;
@@ -159,6 +156,19 @@ class _OfflineShopScreenState extends State<OfflineShopScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const HistoryScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.factory),
+              title: const Text('Factory Stock'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FactoryStock(),
                   ),
                 );
               },

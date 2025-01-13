@@ -4,7 +4,7 @@ import '../models/product_card.dart';
 import '../models/product_stock.dart';
 
 class ProductController {
-  final String baseUrl = "http://192.168.195.148:3000/api/store";
+  final String baseUrl = "http://192.168.195.5:3000/api/store";
 
   Future<List<Product_Cart>> getAllProducts() async {
     try {
