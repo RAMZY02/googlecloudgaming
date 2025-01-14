@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:steppa/supplier/controllers/supplier_controller.dart';
+import 'package:steppa/supplier/ui/add_shipment_screen.dart';
 import 'package:steppa/supplier/ui/supplier_screen.dart';
 
 class AddSupplierScreen extends StatefulWidget {
@@ -82,6 +83,19 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const SupplierScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.send),
+              title: const Text('New Shipments'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddShipmentScreen(),
                   ),
                 );
               },

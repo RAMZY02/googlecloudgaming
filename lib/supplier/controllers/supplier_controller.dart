@@ -16,7 +16,6 @@ class SupplierController {
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        print(data);
         return data.map((item) => Supplier.fromJson(item)).toList();
       } else {
         throw Exception('Failed to load suppliers');
@@ -34,7 +33,6 @@ class SupplierController {
         String token) async {
     try {
       // Insert ke tabel SUPPLIERS
-      print(token);
       final supplierResponse = await http.post(
         Uri.parse("$baseUrl/supplier"),
         headers: {
@@ -54,7 +52,6 @@ class SupplierController {
 
       // Ambil ID supplier yang baru dibuat dari response backend
       final resSupplier = await http.get(Uri.parse('$baseUrl/supplier'), headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $token'});
-      print(resSupplier.body);
       final List<dynamic> allSupplier = jsonDecode(resSupplier.body);
       final String supplierId = allSupplier[allSupplier.length - 1]["supplier_id"];
 

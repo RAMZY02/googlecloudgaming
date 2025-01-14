@@ -1,9 +1,9 @@
 class Raw {
   final String material_id;
   final String material_name;
-  final String stock_quantity;
+  final int stock_quantity;
   final String supplier_id;
-  final DateTime last_update;
+  final String last_update;
 
   Raw({
     required this.material_id,

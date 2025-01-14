@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:steppa/supplier/controllers/raw_controller.dart';
 import 'package:steppa/supplier/controllers/supplier_controller.dart';
 import 'package:steppa/supplier/models/supplier.dart';
+import 'package:steppa/supplier/ui/add_shipment_screen.dart';
 import 'package:steppa/supplier/ui/add_supplier_screen.dart';
 
 class SupplierScreen extends StatefulWidget {
@@ -33,15 +34,10 @@ class _SupplierScreenState extends State<SupplierScreen> {
   Future<void> _fetchSuppliers() async {
     try {
       if(jwtToken != null){
-        print("object");
         final resData = await _supplierController.fetchAllSuppliers(jwtToken!);
-        print("masuk");
-        print(resData);
         setState(() {
           suppliers = resData;
         });
-        print("suppliers : ");
-        print(suppliers);
       }
       else{
         ScaffoldMessenger.of(context).showSnackBar(
@@ -129,6 +125,19 @@ class _SupplierScreenState extends State<SupplierScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const SupplierScreen(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.send),
+              title: const Text('New Shipments'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddShipmentScreen(),
                   ),
                 );
               },

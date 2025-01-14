@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/shipment.dart';
 
 class ShipmentService {
-  final String baseUrl = "http://192.168.195.5:3000/api/store"; // Sesuaikan URL backend Anda
+  final String baseUrl = "http://192.168.1.6:3000/api/store"; // Sesuaikan URL backend Anda
 
   // final String token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21lcl9pZCI6IkNVUzAwMDQiLCJpYXQiOjE3MzY1MDc2NjUsImV4cCI6MTczNjUxMTI2NX0.Fe9bt_ImS01-B-7y3w6MGs6vkSOAm8d8pYvHuz9qZLs';
 

@@ -5,6 +5,27 @@ import '../models/raw.dart';
 class RawController {
   final String baseUrl = 'http://192.168.1.6:3000/api/pengepul'; // Ganti dengan URL backend Anda
 
+  Future<List<Raw>> fetchAllRaws(String token) async {
+    final url = Uri.parse("$baseUrl/material");
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer $token', // Include the auth token here
+        },
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((item) => Raw.fromJson(item)).toList();
+      } else {
+        throw Exception('Failed to load materials');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
   Future<void> placeOrder(String id, int qty, String token) async {
     try {
       final resMaterial = await http.get(Uri.parse('$baseUrl/material/bysupplier/$id'));
