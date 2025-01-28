@@ -23,6 +23,7 @@ class ProductDevelopmentScreen extends StatefulWidget {
 class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
   String? _imageLink;
   String? _shoeName;
+  String? _description;
   String? _selectedCategory;
   String? _selectedGender;
   String? _selectedSoleMaterial;
@@ -35,6 +36,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
   final MaterialController _materialController = MaterialController();
   final DesignController _designController = DesignController();
   final TextEditingController _shoeNameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _imageLinkController = TextEditingController();
 
   Uint8List? _selectedImage;
@@ -75,7 +77,9 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
       // );
       if ((_imageLink != null && _imageLink!.isNotEmpty) &&
           _shoeName != null &&
+          _description != null &&
           _shoeName!.isNotEmpty &&
+          _description!.isNotEmpty &&
           _selectedCategory != null &&
           _selectedGender != null &&
           _selectedSoleMaterial != null &&
@@ -84,6 +88,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
           await _designController.submitDesign(
             name: _shoeName!,
             image: _imageLink!,
+            description: _description!,
             category: _selectedCategory!,
             gender: _selectedGender!,
             status: "Pending",
@@ -99,6 +104,7 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
           setState(() {
             _imageLink = null;
             _shoeName = null;
+            _description = null;
             _selectedCategory = null;
             _selectedGender = null;
             _selectedSoleMaterial = null;
@@ -300,6 +306,19 @@ class _ProductDevelopmentScreenState extends State<ProductDevelopmentScreen> {
                 onChanged: (value) {
                   setState(() {
                     _shoeName = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _description = value;
                   });
                 },
               ),

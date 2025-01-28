@@ -9,6 +9,7 @@ class DesignController {
   Future<void> submitDesign(
       {required String name,
         required String image,
+        required String description,
         required String category,
         required String gender,
         required String status,
@@ -22,7 +23,7 @@ class DesignController {
         body: jsonEncode({
           "name": name,
           "image": image,
-          "description": "Description placeholder", // Jika ada input deskripsi, sesuaikan
+          "description": description,
           "category": category,
           "gender": gender,
           "status": status,
